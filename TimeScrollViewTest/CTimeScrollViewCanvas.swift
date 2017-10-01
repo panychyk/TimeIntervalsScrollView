@@ -15,7 +15,7 @@ class CTimeScrollViewCanvas: UIView {
     lazy var date: Date = {
         return Date().dateWithZeroHourAndMinute(self.parentView.calendar)!
     }()
-    
+        
     convenience init(_ parent: CTimeScrollView) {
         let frame = CGRect(origin: parent.bounds.origin, size: parent.contentSize)
         self.init(frame: frame)

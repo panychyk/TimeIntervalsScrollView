@@ -68,6 +68,8 @@ class CTimeScrollView: UIScrollView {
         }
     }
     
+    var tapGesture: UITapGestureRecognizer? = nil
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
@@ -79,17 +81,28 @@ class CTimeScrollView: UIScrollView {
     }
     
     func configureUI() {
-        self.showsHorizontalScrollIndicator = false
-        self.showsVerticalScrollIndicator   = false
+        showsHorizontalScrollIndicator = false
+        showsVerticalScrollIndicator   = false
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapAction(_:)))
+        if let tapGesture = tapGesture {
+            tapGesture.require(toFail: panGestureRecognizer)
+            addGestureRecognizer(tapGesture)
+        }
     }
     
     func drawTimeIntervals() {
-        self.contentSize = CGSize(width: (CGFloat(oneDayInSec/timeIntervals.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
+        contentSize = CGSize(width: (CGFloat(oneDayInSec/timeIntervals.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
         setNeedsDisplay()
     }
     
     override func draw(_ rect: CGRect) {
         canvas.setNeedsDisplay()
+    }
+    
+    @objc private func tapAction(_ gesture: UITapGestureRecognizer) {
+        let points = gesture.location(in: canvas)
+        let index = Int(points.x/intervalStepInPx)
+        print("startDate = \(hashMap[NSNumber(value: index)]!)")
     }
     
 //    @objc func setUnavailableIntervals(_ intervals: [CDateInterval]) -> (Void) {
