@@ -1,9 +1,9 @@
 //
 //  Date+Concatination.swift
-//  Cadence
+//  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 7/21/17.
-//  Copyright © 2017 Cadence. All rights reserved.
+//  Copyright © 2017 d'Man. All rights reserved.
 //
 
 import Foundation

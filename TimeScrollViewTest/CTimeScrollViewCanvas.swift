@@ -77,10 +77,11 @@ class CTimeScrollViewCanvas: UIView {
         
         if height == parentView.mins60SeparatorHeight {
             if let dateTime = parentView.hashMap[NSNumber(value: index)] {
-                drawText(dateTime.shortHoursString(parentView.calendar),
+                drawText(dateTime.startDate.shortHoursString(parentView.calendar),
                          at: CGPoint(x: (xOrigin + 6.0), y: yOrigin))
             }
         }
+        
         context?.setStrokeColor(parentView.separatorColor)
         context?.move(to: CGPoint(x: xOrigin, y: yOrigin))
         context?.addLine(to: CGPoint(x: xOrigin, y: rect.height))
@@ -94,8 +95,9 @@ class CTimeScrollViewCanvas: UIView {
     }
     
     func appendDate(forIndex index: Int) {
-        let newDateTime = date.dateByAppendingSecs(parentView.timeIntervals.rawValue * index, calendar: parentView.calendar)
-        parentView.appliedDate(newDateTime, forIndex: NSNumber(value: index))
+        let startDateTime = date.dateByAppendingSecs(parentView.timeIntervals.rawValue * index, calendar: parentView.calendar)
+        let newDateInterval = CDateInterval(start: startDateTime, duration: TimeInterval(parentView.timeIntervals.rawValue))
+        parentView.appliedDateInterval(newDateInterval, forIndex: NSNumber(value: index))
     }
     
 }

@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+@class CDateInterval;
+
 @protocol CTimeScrollViewCanvasDelegate <NSObject>
 
-- (void)appliedDate:(NSDate *)date forIndex:(NSNumber *)index;
+- (void)appliedDateInterval:(CDateInterval *)dateInterval forIndex:(NSNumber *)index;
 
 @end

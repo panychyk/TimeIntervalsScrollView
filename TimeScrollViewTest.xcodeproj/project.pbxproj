@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */ = {isa = PBXBuildFile; fileRef = C6AC8ADB1F822C610049A52B /* CDateInterval.m */; };
 		E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626C1F811AE700C77FAE /* AppDelegate.swift */; };
 		E240626F1F811AE700C77FAE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626E1F811AE700C77FAE /* ViewController.swift */; };
 		E24062721F811AE700C77FAE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E24062701F811AE700C77FAE /* Main.storyboard */; };
@@ -19,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C6AC8ADA1F822C600049A52B /* CDateInterval.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDateInterval.h; sourceTree = "<group>"; };
+		C6AC8ADB1F822C610049A52B /* CDateInterval.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDateInterval.m; sourceTree = "<group>"; };
 		E24062691F811AE700C77FAE /* TimeScrollViewTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeScrollViewTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E240626C1F811AE700C77FAE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E240626E1F811AE700C77FAE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -71,6 +74,8 @@
 				E24062801F8121EA00C77FAE /* CTimeScrollViewCanvas.swift */,
 				E24062841F81576E00C77FAE /* String+Attributes.swift */,
 				E24062861F815C9E00C77FAE /* Date+Extensions.swift */,
+				C6AC8ADA1F822C600049A52B /* CDateInterval.h */,
+				C6AC8ADB1F822C610049A52B /* CDateInterval.m */,
 				E24062701F811AE700C77FAE /* Main.storyboard */,
 				E24062731F811AE700C77FAE /* Assets.xcassets */,
 				E24062751F811AE700C77FAE /* LaunchScreen.storyboard */,
@@ -157,6 +162,7 @@
 				E240627F1F811AF400C77FAE /* CTimeScrollView.swift in Sources */,
 				E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */,
 				E24062871F815C9E00C77FAE /* Date+Extensions.swift in Sources */,
+				C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */,
 				E240628C1F81665700C77FAE /* CTimeScrollViewCanvas.swift in Sources */,
 				E24062851F81576F00C77FAE /* String+Attributes.swift in Sources */,
 			);

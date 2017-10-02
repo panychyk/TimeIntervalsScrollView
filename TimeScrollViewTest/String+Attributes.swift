@@ -1,9 +1,9 @@
 //
 //  String+Attributes.swift
-//  Cadence
+//  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 7/26/17.
-//  Copyright © 2017 Cadence. All rights reserved.
+//  Copyright © 2017 d'Man. All rights reserved.
 //
 
 import Foundation

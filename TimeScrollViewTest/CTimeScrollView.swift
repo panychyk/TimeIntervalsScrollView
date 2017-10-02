@@ -1,9 +1,9 @@
 //
 //  CTimeScrollView.swift
-//  Cadence
+//  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 9/28/17.
-//  Copyright © 2017 Cadence. All rights reserved.
+//  Copyright © 2017 d'Man. All rights reserved.
 //
 
 import UIKit
@@ -22,7 +22,7 @@ class CTimeScrollView: UIScrollView {
         return tmpCanvas
     }()
     
-    var hashMap = [NSNumber : Date]()
+    var hashMap = [NSNumber : CDateInterval]()
     
     let oneDayInSec = 86400 // 24*60*60
     lazy var calendar: Calendar = {
@@ -102,20 +102,20 @@ class CTimeScrollView: UIScrollView {
     @objc private func tapAction(_ gesture: UITapGestureRecognizer) {
         let points = gesture.location(in: canvas)
         let index = Int(points.x/intervalStepInPx)
-        print("startDate = \(hashMap[NSNumber(value: index)]!)")
+        print("startDate = \(hashMap[NSNumber(value: index)]!.startDate)\nendDate = \(hashMap[NSNumber(value: index)]!.endDate)")
     }
     
-//    @objc func setUnavailableIntervals(_ intervals: [CDateInterval]) -> (Void) {
-//
-//    }
+    @objc func setUnavailableIntervals(_ intervals: [CDateInterval]) -> (Void) {
+        
+    }
     
     
 }
 
 extension CTimeScrollView: CTimeScrollViewCanvasDelegate {
     
-    func appliedDate(_ date: Date!, forIndex index: NSNumber!) {
-        hashMap[index] = date
+    func appliedDateInterval(_ dateInterval: CDateInterval!, forIndex index: NSNumber!) {
+        hashMap[index] = dateInterval
     }
     
 }
