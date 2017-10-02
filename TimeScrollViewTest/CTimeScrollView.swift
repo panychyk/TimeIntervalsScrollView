@@ -53,6 +53,12 @@ class CTimeScrollView: UIScrollView {
         }
     }
     
+    @objc var unavailableIntervals: [CDateInterval]? {
+        didSet {
+            drawTimeIntervals()
+        }
+    }
+    
     var intervalStepInPx: CGFloat {
         get {
             switch self.timeIntervals {
@@ -104,11 +110,6 @@ class CTimeScrollView: UIScrollView {
         let index = Int(points.x/intervalStepInPx)
         print("startDate = \(hashMap[NSNumber(value: index)]!.startDate)\nendDate = \(hashMap[NSNumber(value: index)]!.endDate)")
     }
-    
-    @objc func setUnavailableIntervals(_ intervals: [CDateInterval]) -> (Void) {
-        
-    }
-    
     
 }
 
