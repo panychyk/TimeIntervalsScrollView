@@ -24,6 +24,15 @@ class CTimeScrollView: UIScrollView {
     
     var hashMap = [NSNumber : CDateInterval]()
     
+    var unavailableTimeIntervals = [CDateInterval]() {
+        didSet {
+            unavailableTimeIntervals.sort { (dateInterval1, dateInterval2) -> Bool in
+                return dateInterval1.startDate < dateInterval2.startDate
+            }
+            drawTimeIntervals()
+        }
+    }
+    
     let oneDayInSec = 86400 // 24*60*60
     lazy var calendar: Calendar = {
         var cal = Calendar.current
@@ -42,7 +51,7 @@ class CTimeScrollView: UIScrollView {
     
     // Design:
     let separatorWidth: CGFloat     = 1.0
-    let separatorColor: CGColor     = UIColor.black.cgColor
+    let separatorColor: CGColor     = UIColor(red: 233/255, green: 233/255, blue: 233/255, alpha: 1).cgColor
     let timeLabelColor: UIColor     = .red
     let timeLabelFont: UIFont       = UIFont.systemFont(ofSize: 10)
     let timeLabelCharSpacing: Float = 0.7
@@ -104,11 +113,6 @@ class CTimeScrollView: UIScrollView {
         let index = Int(points.x/intervalStepInPx)
         print("startDate = \(hashMap[NSNumber(value: index)]!.startDate)\nendDate = \(hashMap[NSNumber(value: index)]!.endDate)")
     }
-    
-    @objc func setUnavailableIntervals(_ intervals: [CDateInterval]) -> (Void) {
-        
-    }
-    
     
 }
 
