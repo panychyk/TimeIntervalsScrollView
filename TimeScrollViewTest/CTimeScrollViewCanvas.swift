@@ -15,7 +15,9 @@ class CTimeScrollViewCanvas: UIView {
     lazy var date: Date = {
         return Date().dateWithZeroHourAndMinute(self.parentView.calendar)!
     }()
-        
+    
+    let blockImage = UIImage(named: "reserved_image")
+    
     convenience init(_ parent: CTimeScrollView) {
         let frame = CGRect(origin: parent.bounds.origin, size: parent.contentSize)
         self.init(frame: frame)
@@ -51,7 +53,6 @@ class CTimeScrollViewCanvas: UIView {
                          rect:    rect)
             }
         }
-        context?.strokePath()
     }
     
     func drawLine(_ context: CGContext?, index: Int, xOrigin: CGFloat, rect: CGRect) {
@@ -72,8 +73,21 @@ class CTimeScrollViewCanvas: UIView {
                 break
             }
         }
-        
         let yOrigin = rect.height - height
+        
+        for dateInterval in parentView.unavailableTimeIntervals {
+            if let dateTime = parentView.hashMap[NSNumber(value: index)] {
+                if dateInterval.startDate > dateTime.startDate {
+                    break
+                }
+                if dateInterval.contains(dateTime.startDate) && dateInterval.endDate > dateTime.startDate {
+                    let imageHeight: CGFloat = 50
+                    let r = CGRect(origin: CGPoint(x: CGFloat(xOrigin), y: rect.height - imageHeight), size: CGSize(width: parentView.intervalStepInPx, height: imageHeight))
+                    setUnavailable(in: r, at: index)
+                    break
+                }
+            }
+        }
         
         if height == parentView.mins60SeparatorHeight {
             if let dateTime = parentView.hashMap[NSNumber(value: index)] {
@@ -81,10 +95,18 @@ class CTimeScrollViewCanvas: UIView {
                          at: CGPoint(x: (xOrigin + 6.0), y: yOrigin))
             }
         }
-        
+
         context?.setStrokeColor(parentView.separatorColor)
         context?.move(to: CGPoint(x: xOrigin, y: yOrigin))
         context?.addLine(to: CGPoint(x: xOrigin, y: rect.height))
+        context?.strokePath()
+
+    }
+    
+    func setUnavailable(in rect: CGRect, at index: Int) {
+        blockImage?.draw(in: rect)
+        UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 0.6).setFill()
+        UIRectFillUsingBlendMode(rect, .multiply)
     }
     
     func drawText(_ text: String, at point: CGPoint) {
