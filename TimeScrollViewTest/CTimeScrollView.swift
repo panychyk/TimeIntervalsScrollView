@@ -62,12 +62,6 @@ class CTimeScrollView: UIScrollView {
         }
     }
     
-    @objc var unavailableIntervals: [CDateInterval]? {
-        didSet {
-            drawTimeIntervals()
-        }
-    }
-    
     var intervalStepInPx: CGFloat {
         get {
             switch self.timeIntervals {
