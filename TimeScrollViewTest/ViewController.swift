@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    weak var scrollView: CTimeScrollView!
+    weak var scrollView: CTimeIntervalScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,9 +21,9 @@ class ViewController: UIViewController {
         let unavailableTimeIntervals: [CDateInterval] = [CDateInterval(start: date.apply(hours: 0, minutes: 0, calendar: calendar), duration: 3*60*60),
                                                          CDateInterval(start: date.apply(hours: 6, minutes: 0, calendar: calendar), duration: 60*60)]
         
-        scrollView = self.view as! CTimeScrollView
+        scrollView = self.view as! CTimeIntervalScrollView
         scrollView.timeIntervals = .mins15
-        scrollView.unavailableTimeIntervals = unavailableTimeIntervals
+        scrollView.unavailableTimeIntervalsList = unavailableTimeIntervals
     }
 
     override func didReceiveMemoryWarning() {

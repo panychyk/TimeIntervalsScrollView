@@ -8,17 +8,15 @@
 
 import UIKit
 
-class CTimeScrollViewCanvas: UIView {
+class CTimeIntervalDrawableView: UIView {
     
-    private(set) weak var parentView: CTimeScrollView!
+    private(set) weak var parentView: CTimeIntervalScrollView!
     
     lazy var date: Date = {
         return Date().dateWithZeroHourAndMinute(self.parentView.calendar)!
     }()
-    
-    let blockImage = UIImage(named: "reserved_image")
-    
-    convenience init(_ parent: CTimeScrollView) {
+        
+    convenience init(_ parent: CTimeIntervalScrollView) {
         let frame = CGRect(origin: parent.bounds.origin, size: parent.contentSize)
         self.init(frame: frame)
         backgroundColor = .white
@@ -75,8 +73,8 @@ class CTimeScrollViewCanvas: UIView {
         }
         let yOrigin = rect.height - height
         
-        for dateInterval in parentView.unavailableTimeIntervals {
-            if let dateTime = parentView.hashMap[NSNumber(value: index)] {
+        for dateInterval in parentView.unavailableTimeIntervalsList {
+            if let dateTime = parentView.timeSectorsMap[NSNumber(value: index)] {
                 if dateInterval.startDate > dateTime.startDate {
                     break
                 }
@@ -90,7 +88,7 @@ class CTimeScrollViewCanvas: UIView {
         }
         
         if height == parentView.mins60SeparatorHeight {
-            if let dateTime = parentView.hashMap[NSNumber(value: index)] {
+            if let dateTime = parentView.timeSectorsMap[NSNumber(value: index)] {
                 drawText(dateTime.startDate.shortHoursString(parentView.calendar),
                          at: CGPoint(x: (xOrigin + 6.0), y: yOrigin))
             }
@@ -104,7 +102,7 @@ class CTimeScrollViewCanvas: UIView {
     }
     
     func setUnavailable(in rect: CGRect, at index: Int) {
-        blockImage?.draw(in: rect)
+        parentView.unavailableSectorImage?.draw(in: rect)
         UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 0.6).setFill()
         UIRectFillUsingBlendMode(rect, .multiply)
     }

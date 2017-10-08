@@ -1,5 +1,5 @@
 //
-//  CTimeScrollView.swift
+//  CTimeIntervalScrollView.swift
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 9/28/17.
@@ -14,19 +14,19 @@ import UIKit
     case mins60 = 3600 // 60*60
 }
 
-class CTimeScrollView: UIScrollView {
+class CTimeIntervalScrollView: UIScrollView {
     
-    lazy var canvas: CTimeScrollViewCanvas = {
-        let tmpCanvas = CTimeScrollViewCanvas(self)
+    lazy var canvas: CTimeIntervalDrawableView = {
+        let tmpCanvas = CTimeIntervalDrawableView(self)
         self.addSubview(tmpCanvas)
         return tmpCanvas
     }()
     
-    var hashMap = [NSNumber : CDateInterval]()
+    var timeSectorsMap = [NSNumber : CDateInterval]()
     
-    var unavailableTimeIntervals = [CDateInterval]() {
+    var unavailableTimeIntervalsList = [CDateInterval]() {
         didSet {
-            unavailableTimeIntervals.sort { (dateInterval1, dateInterval2) -> Bool in
+            unavailableTimeIntervalsList.sort { (dateInterval1, dateInterval2) -> Bool in
                 return dateInterval1.startDate < dateInterval2.startDate
             }
             drawTimeIntervals()
@@ -39,6 +39,8 @@ class CTimeScrollView: UIScrollView {
         cal.timeZone = TimeZone(secondsFromGMT: 0)!
         return cal
     }()
+    
+    let unavailableSectorImage = UIImage(named: "reserved_image")
     
     // Parameters:
     let mins15Step: CGFloat = 28.0
@@ -72,12 +74,12 @@ class CTimeScrollView: UIScrollView {
             case .mins60:
                 return mins60Step
             default:
-                preconditionFailure("CTimeScrollView wrong intervalStepInPx")
+                preconditionFailure("CTimeIntervalScrollView wrong intervalStepInPx")
             }
         }
     }
     
-    var tapGesture: UITapGestureRecognizer? = nil
+    var onTimeSectionTapGesture: UITapGestureRecognizer? = nil
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -92,10 +94,10 @@ class CTimeScrollView: UIScrollView {
     func configureUI() {
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator   = false
-        tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapAction(_:)))
-        if let tapGesture = tapGesture {
-            tapGesture.require(toFail: panGestureRecognizer)
-            addGestureRecognizer(tapGesture)
+        onTimeSectionTapGesture = UITapGestureRecognizer(target: self, action: #selector(onTimeSectionTapAction(_:)))
+        if let onTimeSectionTapGesture = onTimeSectionTapGesture {
+            onTimeSectionTapGesture.require(toFail: panGestureRecognizer)
+            addGestureRecognizer(onTimeSectionTapGesture)
         }
     }
     
@@ -108,18 +110,18 @@ class CTimeScrollView: UIScrollView {
         canvas.setNeedsDisplay()
     }
     
-    @objc private func tapAction(_ gesture: UITapGestureRecognizer) {
+    @objc private func onTimeSectionTapAction(_ gesture: UITapGestureRecognizer) {
         let points = gesture.location(in: canvas)
         let index = Int(points.x/intervalStepInPx)
-        print("startDate = \(hashMap[NSNumber(value: index)]!.startDate)\nendDate = \(hashMap[NSNumber(value: index)]!.endDate)")
+        print("startDate = \(timeSectorsMap[NSNumber(value: index)]!.startDate)\nendDate = \(timeSectorsMap[NSNumber(value: index)]!.endDate)")
     }
     
 }
 
-extension CTimeScrollView: CTimeScrollViewCanvasDelegate {
+extension CTimeIntervalScrollView: CTimeScrollViewCanvasDelegate {
     
     func appliedDateInterval(_ dateInterval: CDateInterval!, forIndex index: NSNumber!) {
-        hashMap[index] = dateInterval
+        timeSectorsMap[index] = dateInterval
     }
     
 }
