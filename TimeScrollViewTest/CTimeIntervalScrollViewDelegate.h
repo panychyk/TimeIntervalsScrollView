@@ -1,5 +1,5 @@
 //
-//  CTimeScrollViewCanvasDelegate.h
+//  CTimeIntervalScrollViewDelegate.h
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/1/17.
@@ -10,8 +10,8 @@
 
 @class CDateInterval;
 
-@protocol CTimeScrollViewCanvasDelegate <NSObject>
+@protocol CTimeIntervalScrollViewDelegate <NSObject>
 
-- (void)appliedDateInterval:(CDateInterval *)dateInterval forIndex:(NSNumber *)index;
+- (void)onApplyDateInterval:(CDateInterval *)dateInterval forIndex:(NSNumber *)index;
 
 @end

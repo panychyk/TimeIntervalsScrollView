@@ -24,11 +24,8 @@ class CTimeIntervalScrollView: UIScrollView {
     
     var timeSectorsMap = [NSNumber : CDateInterval]()
     
-    var unavailableTimeIntervalsList = [CDateInterval]() {
+    var timeIntervalScrollViewModel: CTimeIntervalScrollViewModel? {
         didSet {
-            unavailableTimeIntervalsList.sort { (dateInterval1, dateInterval2) -> Bool in
-                return dateInterval1.startDate < dateInterval2.startDate
-            }
             drawTimeIntervals()
         }
     }
@@ -40,8 +37,6 @@ class CTimeIntervalScrollView: UIScrollView {
         return cal
     }()
     
-    let unavailableSectorImage = UIImage(named: "reserved_image")
-    
     // Parameters:
     let mins15Step: CGFloat = 28.0
     let mins30Step: CGFloat = 42.0
@@ -51,12 +46,16 @@ class CTimeIntervalScrollView: UIScrollView {
     let mins30SeparatorHeight: CGFloat = 40.0
     let mins60SeparatorHeight: CGFloat = 70.0
     
+    let unavailableSectorImageHeight: CGFloat = 50.0
+    
     // Design:
     let separatorWidth: CGFloat     = 1.0
     let separatorColor: CGColor     = UIColor(red: 233/255, green: 233/255, blue: 233/255, alpha: 1).cgColor
     let timeLabelColor: UIColor     = .red
     let timeLabelFont: UIFont       = UIFont.systemFont(ofSize: 10)
     let timeLabelCharSpacing: Float = 0.7
+    
+    let unavailableSectorImage = UIImage(named: "reserved_image")
     
     @objc var timeIntervals: CTimeIntervals = .mins30 {
         didSet {
@@ -118,9 +117,9 @@ class CTimeIntervalScrollView: UIScrollView {
     
 }
 
-extension CTimeIntervalScrollView: CTimeScrollViewCanvasDelegate {
-    
-    func appliedDateInterval(_ dateInterval: CDateInterval!, forIndex index: NSNumber!) {
+extension CTimeIntervalScrollView: CTimeIntervalScrollViewDelegate {
+
+    func onApply(_ dateInterval: CDateInterval!, forIndex index: NSNumber!) {
         timeSectorsMap[index] = dateInterval
     }
     
