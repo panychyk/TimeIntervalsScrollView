@@ -10,6 +10,8 @@ import Foundation
 
 class CTimeIntervalScrollViewModel: NSObject {
     
+    var selectedTimeInterval: CDateInterval?
+    
     var reservadTimeIntervalsList = [ReservationModel]() {
         didSet {
             reservadTimeIntervalsList.sort { $0.reservationTimeInterval.startDate < $1.reservationTimeInterval.startDate }

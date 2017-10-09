@@ -11,10 +11,12 @@ import UIKit
 class CSelectedTimeIntervalView: UIView {
     
     // Parameters:
-    let viewHeight: CGFloat  = 50.0
+    let viewHeight: CGFloat  = 51.0
     let borderWidth: CGFloat = 1.5
     
-    var dateInterval: CDateInterval!
+    var thumbViewPanGesture: UIPanGestureRecognizer!
+    
+//    var dateInterval: CDateInterval!
     
     // Design:
     let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
@@ -25,15 +27,31 @@ class CSelectedTimeIntervalView: UIView {
     
     // MARK: - Initialization:
     
-    convenience init(_ dateInterval: CDateInterval) {
-        self.init()
-        self.dateInterval = dateInterval
+//    convenience init(_ dateInterval: CDateInterval) {
+//        self.init()
+//        self.dateInterval = dateInterval
+//    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        configure()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        configure()
+    }
+    
+    func configure() {
+//        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(onThumbViewSlideAction(_:)))
+//        thumbViewPanGesture = panGesture
     }
     
     // MARK: - Lifecycle:
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
+        frame = rect
         
         let context = UIGraphicsGetCurrentContext()
         context?.setFillColor(fillColor.cgColor)

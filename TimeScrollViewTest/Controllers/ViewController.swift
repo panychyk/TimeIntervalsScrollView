@@ -20,7 +20,7 @@ class ViewController: UIViewController {
         let date = Date()
         let unavailableTimeIntervals: [CDateInterval] = [
             CDateInterval(start: date.apply(hours: 0, minutes: 0, calendar: calendar), duration: 3*60*60),
-            CDateInterval(start: date.apply(hours: 6, minutes: 0, calendar: calendar), duration: 60*60)
+            CDateInterval(start: date.apply(hours: 7, minutes: 0, calendar: calendar), duration: 60*60)
         ]
         
         let reservations: [ReservationModel] = [
@@ -28,9 +28,12 @@ class ViewController: UIViewController {
             ReservationModel(CDateInterval(start: date.apply(hours: 18, minutes: 0, calendar: calendar), duration: 15*60), hostName: "Second Best Friend")
         ]
         
+        let selectedTimeInterval = CDateInterval(start: date.apply(hours: 10, minutes: 15, calendar: calendar), duration: 45*60)
+        
         let timeIntervalScrollViewModel = CTimeIntervalScrollViewModel()
         timeIntervalScrollViewModel.unavailableTimeIntervalsList = unavailableTimeIntervals
         timeIntervalScrollViewModel.reservadTimeIntervalsList    = reservations
+        timeIntervalScrollViewModel.selectedTimeInterval         = selectedTimeInterval
         
         scrollView = self.view as! CTimeIntervalScrollView
         scrollView.applyedTimeInterval = .mins15

@@ -22,7 +22,8 @@ class CThumbView: UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-        
+        frame = rect
+
         let innerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: viewCornerRadius)
         fillColor.setFill()
         innerBezierPath.fill()
@@ -31,7 +32,6 @@ class CThumbView: UIView {
         outerBezierPath.lineWidth = borderWidth
         borderColor.setStroke()
         outerBezierPath.stroke()
-        
     }
 
 }
