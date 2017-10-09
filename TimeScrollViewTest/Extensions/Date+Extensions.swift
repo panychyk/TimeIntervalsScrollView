@@ -9,7 +9,18 @@
 import Foundation
 
 public extension Date {
-    func dateWithZeroHourAndMinute(_ calendar: Calendar = Calendar.current) -> Date? {
+    
+    func sinceToday(_ calendar: Calendar = .current) -> Int {
+        let zeroTimeDate = dateWithZeroHourAndMinute(calendar)
+        if let zeroTimeDate = zeroTimeDate {
+            return Int(self.timeIntervalSince(zeroTimeDate))
+        } else {
+            assert(false, "Date.sinceToday() internal var zeroTimeDate unexpectedly found nil")
+            return 0
+        }
+    }
+    
+    func dateWithZeroHourAndMinute(_ calendar: Calendar = .current) -> Date? {
         let components = calendar.dateComponents([.year, .month, .day], from: self)
         return calendar.date(from: components)
     }

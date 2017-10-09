@@ -33,7 +33,7 @@ class ViewController: UIViewController {
         timeIntervalScrollViewModel.reservadTimeIntervalsList    = reservations
         
         scrollView = self.view as! CTimeIntervalScrollView
-        scrollView.timeIntervals = .mins15
+        scrollView.applyedTimeInterval = .mins15
         scrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
     }
 

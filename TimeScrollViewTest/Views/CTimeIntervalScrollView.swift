@@ -57,7 +57,7 @@ class CTimeIntervalScrollView: UIScrollView {
     
     let unavailableSectorImage = UIImage(named: "reserved_image")
     
-    @objc var timeIntervals: CTimeIntervals = .mins30 {
+    @objc var applyedTimeInterval: CTimeIntervals = .mins30 {
         didSet {
             drawTimeIntervals()
         }
@@ -65,7 +65,7 @@ class CTimeIntervalScrollView: UIScrollView {
     
     var intervalStepInPx: CGFloat {
         get {
-            switch self.timeIntervals {
+            switch self.applyedTimeInterval {
             case .mins15:
                 return mins15Step
             case .mins30:
@@ -101,7 +101,7 @@ class CTimeIntervalScrollView: UIScrollView {
     }
     
     func drawTimeIntervals() {
-        contentSize = CGSize(width: (CGFloat(oneDayInSec/timeIntervals.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
+        contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
         setNeedsDisplay()
     }
     

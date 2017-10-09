@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C6075B881F8BA13E005C425C /* CSelectedTimeIntervalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */; };
+		C6075B8A1F8BA21F005C425C /* CThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B891F8BA21F005C425C /* CThumbView.swift */; };
 		C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */ = {isa = PBXBuildFile; fileRef = C6AC8ADB1F822C610049A52B /* CDateInterval.m */; };
 		E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626C1F811AE700C77FAE /* AppDelegate.swift */; };
 		E240626F1F811AE700C77FAE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626E1F811AE700C77FAE /* ViewController.swift */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSelectedTimeIntervalView.swift; sourceTree = "<group>"; };
+		C6075B891F8BA21F005C425C /* CThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CThumbView.swift; sourceTree = "<group>"; };
 		C6AC8ADA1F822C600049A52B /* CDateInterval.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDateInterval.h; sourceTree = "<group>"; };
 		C6AC8ADB1F822C610049A52B /* CDateInterval.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDateInterval.m; sourceTree = "<group>"; };
 		E24062691F811AE700C77FAE /* TimeScrollViewTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeScrollViewTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,6 +58,88 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C6075B8B1F8BB3A1005C425C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E24062841F81576E00C77FAE /* String+Attributes.swift */,
+				E24062861F815C9E00C77FAE /* Date+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		C6075B8C1F8BB3C3005C425C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E2BCA57F1F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift */,
+				E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */,
+				C6AC8ADA1F822C600049A52B /* CDateInterval.h */,
+				C6AC8ADB1F822C610049A52B /* CDateInterval.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C6075B8D1F8BB3CE005C425C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E294A1491F8A20D900F6290D /* CTimeIntervalScrollView.swift */,
+				E24062801F8121EA00C77FAE /* CTimeIntervalDrawableView.swift */,
+				E2BCA5811F8AB32100A2B250 /* CReservationView.swift */,
+				C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */,
+				C6075B891F8BA21F005C425C /* CThumbView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C6075B8F1F8BB3E8005C425C /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				E240626E1F811AE700C77FAE /* ViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		C6075B901F8BB3F2005C425C /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				E240628B1F81637200C77FAE /* CTimeIntervalScrollViewDelegate.h */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		C6075B911F8BB401005C425C /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				E24062701F811AE700C77FAE /* Main.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		C6075B921F8BB41E005C425C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E24062731F811AE700C77FAE /* Assets.xcassets */,
+				E24062781F811AE700C77FAE /* Info.plist */,
+				E240628A1F81637200C77FAE /* TimeScrollViewTest-Bridging-Header.h */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C6075B931F8BB439005C425C /* LaunchScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E24062751F811AE700C77FAE /* LaunchScreen.storyboard */,
+			);
+			path = LaunchScreen;
+			sourceTree = "<group>";
+		};
+		C6075B941F8BB443005C425C /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				E240626C1F811AE700C77FAE /* AppDelegate.swift */,
+			);
+			path = AppDelegate;
+			sourceTree = "<group>";
+		};
 		E24062601F811AE700C77FAE = {
 			isa = PBXGroup;
 			children = (
@@ -73,23 +159,15 @@
 		E240626B1F811AE700C77FAE /* TimeScrollViewTest */ = {
 			isa = PBXGroup;
 			children = (
-				E240626C1F811AE700C77FAE /* AppDelegate.swift */,
-				E240626E1F811AE700C77FAE /* ViewController.swift */,
-				E240628B1F81637200C77FAE /* CTimeIntervalScrollViewDelegate.h */,
-				E2BCA57F1F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift */,
-				E294A1491F8A20D900F6290D /* CTimeIntervalScrollView.swift */,
-				E24062801F8121EA00C77FAE /* CTimeIntervalDrawableView.swift */,
-				E2BCA5811F8AB32100A2B250 /* CReservationView.swift */,
-				E24062841F81576E00C77FAE /* String+Attributes.swift */,
-				E24062861F815C9E00C77FAE /* Date+Extensions.swift */,
-				E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */,
-				C6AC8ADA1F822C600049A52B /* CDateInterval.h */,
-				C6AC8ADB1F822C610049A52B /* CDateInterval.m */,
-				E24062701F811AE700C77FAE /* Main.storyboard */,
-				E24062731F811AE700C77FAE /* Assets.xcassets */,
-				E24062751F811AE700C77FAE /* LaunchScreen.storyboard */,
-				E24062781F811AE700C77FAE /* Info.plist */,
-				E240628A1F81637200C77FAE /* TimeScrollViewTest-Bridging-Header.h */,
+				C6075B941F8BB443005C425C /* AppDelegate */,
+				C6075B8F1F8BB3E8005C425C /* Controllers */,
+				C6075B901F8BB3F2005C425C /* Protocols */,
+				C6075B8D1F8BB3CE005C425C /* Views */,
+				C6075B8C1F8BB3C3005C425C /* Models */,
+				C6075B8B1F8BB3A1005C425C /* Extensions */,
+				C6075B911F8BB401005C425C /* Storyboards */,
+				C6075B921F8BB41E005C425C /* Resources */,
+				C6075B931F8BB439005C425C /* LaunchScreen */,
 			);
 			path = TimeScrollViewTest;
 			sourceTree = "<group>";
@@ -170,7 +248,9 @@
 				E240626F1F811AE700C77FAE /* ViewController.swift in Sources */,
 				E2BCA5801F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift in Sources */,
 				E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */,
+				C6075B881F8BA13E005C425C /* CSelectedTimeIntervalView.swift in Sources */,
 				E2BCA5821F8AB32100A2B250 /* CReservationView.swift in Sources */,
+				C6075B8A1F8BA21F005C425C /* CThumbView.swift in Sources */,
 				E24062871F815C9E00C77FAE /* Date+Extensions.swift in Sources */,
 				C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */,
 				E2BCA57E1F8AA5FD00A2B250 /* ReservationModel.swift in Sources */,
