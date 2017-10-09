@@ -114,16 +114,6 @@
 			path = Storyboards;
 			sourceTree = "<group>";
 		};
-		C6075B921F8BB41E005C425C /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				E24062731F811AE700C77FAE /* Assets.xcassets */,
-				E24062781F811AE700C77FAE /* Info.plist */,
-				E240628A1F81637200C77FAE /* TimeScrollViewTest-Bridging-Header.h */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		C6075B931F8BB439005C425C /* LaunchScreen */ = {
 			isa = PBXGroup;
 			children = (
@@ -138,6 +128,16 @@
 				E240626C1F811AE700C77FAE /* AppDelegate.swift */,
 			);
 			path = AppDelegate;
+			sourceTree = "<group>";
+		};
+		C6075B981F8BB69F005C425C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E24062731F811AE700C77FAE /* Assets.xcassets */,
+				E24062781F811AE700C77FAE /* Info.plist */,
+				E240628A1F81637200C77FAE /* TimeScrollViewTest-Bridging-Header.h */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		E24062601F811AE700C77FAE = {
@@ -166,8 +166,8 @@
 				C6075B8C1F8BB3C3005C425C /* Models */,
 				C6075B8B1F8BB3A1005C425C /* Extensions */,
 				C6075B911F8BB401005C425C /* Storyboards */,
-				C6075B921F8BB41E005C425C /* Resources */,
 				C6075B931F8BB439005C425C /* LaunchScreen */,
+				C6075B981F8BB69F005C425C /* Resources */,
 			);
 			path = TimeScrollViewTest;
 			sourceTree = "<group>";

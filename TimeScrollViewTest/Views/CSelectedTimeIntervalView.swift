@@ -14,12 +14,23 @@ class CSelectedTimeIntervalView: UIView {
     let viewHeight: CGFloat  = 50.0
     let borderWidth: CGFloat = 1.5
     
+    var dateInterval: CDateInterval!
+    
     // Design:
     let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
     let fillColor   = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 0.8)
     
     // Subviews:
     let thumbView = CThumbView()
+    
+    // MARK: - Initialization:
+    
+    convenience init(_ dateInterval: CDateInterval) {
+        self.init()
+        self.dateInterval = dateInterval
+    }
+    
+    // MARK: - Lifecycle:
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)

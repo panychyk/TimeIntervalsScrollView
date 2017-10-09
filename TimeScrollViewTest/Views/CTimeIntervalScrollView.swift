@@ -112,6 +112,9 @@ class CTimeIntervalScrollView: UIScrollView {
     @objc private func onTimeSectionTapAction(_ gesture: UITapGestureRecognizer) {
         let points = gesture.location(in: canvas)
         let index = Int(points.x/intervalStepInPx)
+        
+        
+        
         print("startDate = \(timeSectorsMap[NSNumber(value: index)]!.startDate)\nendDate = \(timeSectorsMap[NSNumber(value: index)]!.endDate)")
     }
     
