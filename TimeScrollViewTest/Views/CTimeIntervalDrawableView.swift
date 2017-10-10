@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CTimeIntervalDrawableView: UIView, UIGestureRecognizerDelegate {
+class CTimeIntervalDrawableView: UIView {
     
     private(set) weak var parentView: CTimeIntervalScrollView!
     
@@ -164,21 +164,16 @@ class CTimeIntervalDrawableView: UIView, UIGestureRecognizerDelegate {
         if let selectedTimeInterval = parentView.timeIntervalScrollViewModel?.selectedTimeInterval {
             let fromSectorIndex = selectedTimeInterval.startDate.sinceToday(parentView.calendar)/parentView.applyedTimeInterval.rawValue
             let selectedTimeIntervalView = CSelectedTimeIntervalView()
-            selectedTimeIntervalView.thumbViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(onThumbViewSlideAction(_:)))
-            selectedTimeIntervalView.thumbViewPanGesture.delegate = self
             self.selectedTimeIntervalView = selectedTimeIntervalView
-            parentView.addGestureRecognizer(selectedTimeIntervalView.thumbViewPanGesture)
-            selectedTimeIntervalView.thumbViewPanGesture.require(toFail: parentView.panGestureRecognizer)
             let startPoint = Int(round((parentView.separatorWidth)/2))
             let xOrigin = CGFloat(startPoint + Int(CGFloat(fromSectorIndex) * parentView.intervalStepInPx))
             
             let width = CGFloat(selectedTimeInterval.duration/TimeInterval(parentView.applyedTimeInterval.rawValue)) * parentView.intervalStepInPx - CGFloat(parentView.separatorWidth * 2)
-            selectedTimeIntervalView.draw(CGRect(x: xOrigin + parentView.separatorWidth,
-                                                 y: rect.height - selectedTimeIntervalView.viewHeight,
-                                                 width: width,
-                                                 height: selectedTimeIntervalView.viewHeight))
-            print("thumb frame = \(selectedTimeIntervalView.thumbView.frame)")
-            
+            selectedTimeIntervalView.frame = CGRect(x: xOrigin + parentView.separatorWidth,
+                                                    y: rect.height - selectedTimeIntervalView.viewHeight,
+                                                    width: width,
+                                                    height: selectedTimeIntervalView.viewHeight)
+            self.addSubview(selectedTimeIntervalView)            
         }
         
     }
@@ -190,42 +185,23 @@ class CTimeIntervalDrawableView: UIView, UIGestureRecognizerDelegate {
         parentView.onApply(newDateInterval, forIndex: NSNumber(value: index))
     }
     
-    // MARK: - Accessories:
-    
-    @objc func onThumbViewSlideAction(_ sender: UIPanGestureRecognizer) {
-        let point = sender.location(in: self)
+    // MARK: - HitTest:
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         
-        if sender.state == .changed {
-            frame = CGRect(x: frame.origin.x,
-                           y: frame.origin.y,
-                           width: point.x - frame.origin.x,
-                           height: frame.size.height)
+        // perform hit test on ThumbView frame
+        if let selectedTimeIntervalView = selectedTimeIntervalView {
+            let pointOnThumbView = self.convert(point, to: selectedTimeIntervalView.thumbView)
+            
+            if selectedTimeIntervalView.thumbView.hitAreaBounds.contains(pointOnThumbView) {
+                return selectedTimeIntervalView.thumbView
+            }
         }
-    }
-    
-    // MARK: - UIGestureRecognizerDelegate:
-    
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        
-//        if selectedTimeIntervalView.thumbViewPanGesture == gestureRecognizer {
-//            return false
-//        }
-//
-//        guard let myView = selectedTimeIntervalView?.thumbViewPanGesture.view,
-//            let otherView = otherGestureRecognizer.view else {
-//                return false
-//        }
-        
-        return gestureRecognizer == selectedTimeIntervalView?.thumbViewPanGesture
-    }
-    
-    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if let selectedTimeIntervalView = selectedTimeIntervalView,
-            selectedTimeIntervalView.thumbView.frame.contains(gestureRecognizer.location(in: self)),
-            selectedTimeIntervalView.thumbViewPanGesture != gestureRecognizer {
-            return true
+        let view = super.hitTest(point, with: event)
+        if let view = view, view.isEqual(self) {
+            return nil
         }
-        return true
+        return view
     }
     
 }
