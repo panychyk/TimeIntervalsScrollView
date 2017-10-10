@@ -11,7 +11,7 @@ import UIKit
 protocol CThumbViewPanDelegate: NSObjectProtocol {
     
     func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void)
-    
+    func thumbView(_ thumbView: CThumbView, didEndChangePoint point: CGPoint) -> (Void)
 }
 
 let MAX_PAN_VELOCITY = 175.0
@@ -20,7 +20,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
 
     // Parameters:
     let viewHeight: CGFloat        = 24.0
-    let viewWidth: CGFloat         = 11.0
+    let viewWidth: CGFloat         = 12.0
     let viewCornerRadius: CGFloat  = 100.0
     let borderWidth: CGFloat       = 2
     
@@ -49,7 +49,6 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     
     func configure() {
         self.backgroundColor = .clear
-        self.clipsToBounds = true
         thumbViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(onThumbViewSlideAction(_:)))
         thumbViewPanGesture.delegate = self
         self.addGestureRecognizer(thumbViewPanGesture)
@@ -74,9 +73,14 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     @objc func onThumbViewSlideAction(_ sender: UIPanGestureRecognizer) {
         let point = sender.location(in: self.superview)
         
-        if sender.state == .changed {
+        switch sender.state {
+        case .changed:
             center = CGPoint(x: point.x, y: self.frame.midY)
             delegate?.thumbView(self, didChangePoint: point)
+        case .ended, .cancelled:
+            delegate?.thumbView(self, didEndChangePoint: point)
+        default:
+            break
         }
     }
     

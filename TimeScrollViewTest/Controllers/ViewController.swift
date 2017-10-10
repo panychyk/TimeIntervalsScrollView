@@ -8,9 +8,9 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIntervalScrollViewDataSource {
 
-    weak var scrollView: CTimeIntervalScrollView!
+    weak var timeIntervalScrollView: CTimeIntervalScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,9 +35,10 @@ class ViewController: UIViewController {
         timeIntervalScrollViewModel.reservadTimeIntervalsList    = reservations
         timeIntervalScrollViewModel.selectedTimeInterval         = selectedTimeInterval
         
-        scrollView = self.view as! CTimeIntervalScrollView
-        scrollView.applyedTimeInterval = .mins15
-        scrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
+        timeIntervalScrollView = self.view as! CTimeIntervalScrollView
+        timeIntervalScrollView.timeIntervalScrollViewDelegate = self
+        timeIntervalScrollView.timeIntervalScrollViewDataSource = self
+        timeIntervalScrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
     }
 
     override func didReceiveMemoryWarning() {
@@ -45,5 +46,31 @@ class ViewController: UIViewController {
     }
 
 
+    // MARK: - CTimeIntervalScrollViewDelegate:
+    
+    func onSelectedTimeIntervalChange(_ dateInterval: CDateInterval!) {
+        print("onSelectedTimeIntervalChange(_:) dateInterval = \(dateInterval)")
+    }
+    
+    func onThumbViewChangeSelectedIntervalRect(_ newRect: CGRect) {
+        print("onThumbViewChangeSelectedIntervalRect(_:) newRect = \(newRect)")
+    }
+    
+    // MARK: - CTimeIntervalScrollViewDataSource:
+    
+    func timeIntervalScrollViewAllowIntersectWithReservations() -> Bool {
+        return true
+    }
+    
+    func stepForTimeIntervalScrollView() -> CTimeIntervals {
+        return .mins15
+    }
+    
+    private let maxIntervalTwoHours = 2*60*60
+    
+    func maxAppliableTimeIntervalInSecs() -> Int {
+        return maxIntervalTwoHours
+    }
+    
 }
 

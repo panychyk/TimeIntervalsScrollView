@@ -11,7 +11,7 @@ import UIKit
 class CSelectedTimeIntervalView: UIView, CThumbViewPanDelegate {
     
     // Parameters:
-    let viewHeight: CGFloat  = 51.0
+    let viewHeight: CGFloat  = 50.0
     let borderWidth: CGFloat = 1.5
         
 //    var dateInterval: CDateInterval!
@@ -85,15 +85,9 @@ class CSelectedTimeIntervalView: UIView, CThumbViewPanDelegate {
                             height: self.frame.size.height)
         setNeedsDisplay()
     }
-
-    // MARK: - Touch:
     
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        let view = super.hitTest(point, with: event)
-        if let view = view, view.isEqual(self) {
-            return nil
-        }
-        return view
+    func thumbView(_ thumbView: CThumbView, didEndChangePoint point: CGPoint) {
+        print("didEndChangePoint = \(point)")
     }
     
 }

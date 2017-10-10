@@ -142,10 +142,11 @@ class CTimeIntervalDrawableView: UIView {
                         {
                             let reservationView = CReservationView(reservation)
                             let numOfMarkedSectors = Int(reservation.reservationTimeInterval.duration) / parentView.applyedTimeInterval.rawValue
-                            reservationView.draw(CGRect(x: CGFloat(xOrigin) + parentView.separatorWidth,
-                                                        y: rect.height - reservationView.contentHeight,
-                                                        width: CGFloat(parentView.intervalStepInPx * CGFloat(numOfMarkedSectors)) - CGFloat(parentView.separatorWidth * 2),
-                                                        height: reservationView.contentHeight))
+                            reservationView.frame = CGRect(x: CGFloat(xOrigin),
+                                                           y: rect.height - reservationView.contentHeight,
+                                                           width: CGFloat(parentView.intervalStepInPx * CGFloat(numOfMarkedSectors)),
+                                                           height: reservationView.contentHeight)
+                            self.addSubview(reservationView)
                             
                             reservationsMutable.remove(reservation)
                             xOrigin += Int(parentView.intervalStepInPx) * numOfMarkedSectors

@@ -8,14 +8,15 @@
 
 import UIKit
 
-@objc enum CTimeIntervals : Int {
-    case mins15 = 900  // 15*60
-    case mins30 = 1800 // 30*60
-    case mins60 = 3600 // 60*60
-}
-
 class CTimeIntervalScrollView: UIScrollView {
     
+    weak var timeIntervalScrollViewDelegate: CTimeIntervalScrollViewDelegate?
+    weak var timeIntervalScrollViewDataSource: CTimeIntervalScrollViewDataSource? {
+        didSet {
+            reloadData()
+        }
+    }
+
     lazy var canvas: CTimeIntervalDrawableView = {
         let tmpCanvas = CTimeIntervalDrawableView(self)
         self.addSubview(tmpCanvas)
@@ -29,6 +30,10 @@ class CTimeIntervalScrollView: UIScrollView {
             drawTimeIntervals()
         }
     }
+    
+    private(set) var allowIntersectWithSelectedTimeInterval = false
+    
+    private(set) var maxAppliableTimeIntervalInSecs = 0
     
     let oneDayInSec = 86400 // 24*60*60
     lazy var calendar: Calendar = {
@@ -57,11 +62,7 @@ class CTimeIntervalScrollView: UIScrollView {
     
     let unavailableSectorImage = UIImage(named: "reserved_image")
     
-    @objc var applyedTimeInterval: CTimeIntervals = .mins30 {
-        didSet {
-            drawTimeIntervals()
-        }
-    }
+    @objc private(set) var applyedTimeInterval: CTimeIntervals = .mins30
     
     var intervalStepInPx: CGFloat {
         get {
@@ -100,11 +101,6 @@ class CTimeIntervalScrollView: UIScrollView {
         }
     }
     
-    func drawTimeIntervals() {
-        contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
-        setNeedsDisplay()
-    }
-    
     override func draw(_ rect: CGRect) {
         canvas.setNeedsDisplay()
     }
@@ -113,19 +109,31 @@ class CTimeIntervalScrollView: UIScrollView {
         let points = gesture.location(in: canvas)
         let index = Int(points.x/intervalStepInPx)
         
-        
-        
         print("startDate = \(timeSectorsMap[NSNumber(value: index)]!.startDate)\nendDate = \(timeSectorsMap[NSNumber(value: index)]!.endDate)")
+    }
+    
+    func reloadData() {
+        if let timeIntervalScrollViewDataSource = timeIntervalScrollViewDataSource {
+            applyedTimeInterval = timeIntervalScrollViewDataSource.stepForTimeIntervalScrollView()
+            allowIntersectWithSelectedTimeInterval = timeIntervalScrollViewDataSource.timeIntervalScrollViewAllowIntersectWithReservations()
+            maxAppliableTimeIntervalInSecs = timeIntervalScrollViewDataSource.maxAppliableTimeIntervalInSecs()
+        }
+        drawTimeIntervals()
+    }
+    
+    func drawTimeIntervals() {
+        contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
+        setNeedsDisplay()
     }
     
 }
 
-extension CTimeIntervalScrollView: CTimeIntervalScrollViewDelegate {
+extension CTimeIntervalScrollView: CTimeIntervalDrawableViewDelegate {
 
     func onApply(_ dateInterval: CDateInterval!, forIndex index: NSNumber!) {
         timeSectorsMap[index] = dateInterval
     }
-    
+
 }
 
 
