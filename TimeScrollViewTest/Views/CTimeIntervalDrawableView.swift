@@ -287,7 +287,7 @@ class CTimeIntervalDrawableView: UIView, CSelectedTimeIntervalViewDelegate {
     
     // MARK: - CSelectedTimeIntervalViewDelegate:
     func selectedTimeIntervalView(_ selectedTimeIntervalView: CSelectedTimeIntervalView, didChangeEndPoint endPoint: CGPoint) {
-        print("selectedTimeIntervalView:didChangeEndPoint endPoint = \(endPoint)")
+//        print("selectedTimeIntervalView:didChangeEndPoint endPoint = \(endPoint)")
     }
     
     func selectedTimeIntervalView(_ selectedTimeIntervalView: CSelectedTimeIntervalView, didFinishScrollingWithEndPoint endPoint: CGPoint) {

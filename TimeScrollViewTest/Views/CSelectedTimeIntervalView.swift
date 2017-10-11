@@ -12,7 +12,6 @@ protocol CSelectedTimeIntervalViewDelegate: NSObjectProtocol {
     
     func selectedTimeIntervalView(_ selectedTimeIntervalView: CSelectedTimeIntervalView, didChangeEndPoint endPoint: CGPoint) -> (Void)
     func selectedTimeIntervalView(_ selectedTimeIntervalView: CSelectedTimeIntervalView, didFinishScrollingWithEndPoint endPoint: CGPoint) -> (Void)
-//    func selectedTimeIntervalView(_ selectedTimeIntervalView: CSelectedTimeIntervalView, convertOnTimeLineView point: CGPoint) -> (CGPoint)
 
 }
 

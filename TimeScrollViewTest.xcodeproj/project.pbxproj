@@ -75,6 +75,7 @@
 		C6075B8C1F8BB3C3005C425C /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				C69ADBF21F8E428B008C039A /* Arithmetics.swift */,
 				E2BCA57F1F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift */,
 				E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */,
 				C6AC8ADA1F822C600049A52B /* CDateInterval.h */,
@@ -151,7 +152,6 @@
 			isa = PBXGroup;
 			children = (
 				C6504DE61F8CF762000EF233 /* CTimeIntervalScrollViewSectorIntervalEnum.h */,
-				C69ADBF21F8E428B008C039A /* Arithmetics.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";

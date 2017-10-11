@@ -14,7 +14,6 @@ protocol CThumbViewPanDelegate: NSObjectProtocol {
     
     func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void)
     func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void)
-//    func thumbView(_ thumbView: CThumbView, convertOnTimeLineView point: CGPoint) -> (CGPoint)
     
 }
 
