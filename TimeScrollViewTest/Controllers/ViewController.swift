@@ -32,7 +32,7 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         
         let timeIntervalScrollViewModel = CTimeIntervalScrollViewModel()
         timeIntervalScrollViewModel.unavailableTimeIntervalsList = unavailableTimeIntervals
-        timeIntervalScrollViewModel.reservadTimeIntervalsList    = reservations
+        timeIntervalScrollViewModel.reservedTimeIntervalsList    = reservations
         timeIntervalScrollViewModel.selectedTimeInterval         = selectedTimeInterval
         
         timeIntervalScrollView = self.view as! CTimeIntervalScrollView

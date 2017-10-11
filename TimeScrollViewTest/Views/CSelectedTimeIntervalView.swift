@@ -8,42 +8,53 @@
 
 import UIKit
 
+protocol CSelectedTimeIntervalViewDelegate: NSObjectProtocol {
+    
+    func selectedTimeIntervalView(_ selectedTimeIntervalView: CSelectedTimeIntervalView, didChangeEndPoint endPoint: CGPoint) -> (Void)
+    func selectedTimeIntervalView(_ selectedTimeIntervalView: CSelectedTimeIntervalView, didFinishScrollingWithEndPoint endPoint: CGPoint) -> (Void)
+//    func selectedTimeIntervalView(_ selectedTimeIntervalView: CSelectedTimeIntervalView, convertOnTimeLineView point: CGPoint) -> (CGPoint)
+
+}
+
 class CSelectedTimeIntervalView: UIView, CThumbViewPanDelegate {
+    
+    var selectionScope: SelectedTimeIntervalScope?
+    
+    weak var delegate: CSelectedTimeIntervalViewDelegate?
     
     // Parameters:
     let viewHeight: CGFloat  = 50.0
     let borderWidth: CGFloat = 1.5
         
-//    var dateInterval: CDateInterval!
+    var dateInterval: CDateInterval!
     
     // Design:
     let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
     let fillColor   = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 0.8)
     
     // Subviews:
-    let thumbView = CThumbView()
+    var thumbView: CThumbView?
+    
+    var isAllowThumbView = true
     
     // MARK: - Initialization:
     
-//    convenience init(_ dateInterval: CDateInterval) {
-//        self.init()
-//        self.dateInterval = dateInterval
-//    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        configure()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    convenience init(showThumbView: Bool) {
+        self.init()
+        self.isAllowThumbView = showThumbView
         configure()
     }
     
     func configure() {
         self.backgroundColor = .clear
-        thumbView.delegate = self
-        self.addSubview(thumbView)
+        self.clipsToBounds = false
+        if isAllowThumbView {
+            let thumbView = CThumbView()
+            self.thumbView = thumbView
+            thumbView.delegate = self
+            self.addSubview(thumbView)
+        }
+        setNeedsLayout()
     }
     
     // MARK: - Lifecycle:
@@ -55,25 +66,37 @@ class CSelectedTimeIntervalView: UIView, CThumbViewPanDelegate {
         context?.setFillColor(fillColor.cgColor)
         context?.fill(rect)
         context?.setLineWidth(borderWidth)
-        context?.move(to: CGPoint(x: rect.minX, y: rect.minY))
-        context?.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        
+        var xLineOrigin = rect.minX + (borderWidth/2)
+        context?.move(to: CGPoint(x: xLineOrigin, y: rect.minY))
+        context?.addLine(to: CGPoint(x: xLineOrigin, y: rect.maxY))
         context?.setStrokeColor(borderColor.cgColor)
         context?.strokePath()
-        context?.move(to: CGPoint(x: rect.maxX, y: rect.minY))
-        context?.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        
+        xLineOrigin = rect.maxX - (borderWidth/2)
+        context?.move(to: CGPoint(x: xLineOrigin, y: rect.minY))
+        context?.addLine(to: CGPoint(x: xLineOrigin, y: rect.maxY))
         context?.setStrokeColor(borderColor.cgColor)
         context?.strokePath()
-        thumbView.setNeedsDisplay()
+        thumbView?.setNeedsDisplay()
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         let rect = self.bounds
-        thumbView.frame = CGRect(x: rect.maxX - CGFloat(thumbView.viewWidth/2),
-                                 y: rect.midY - CGFloat(thumbView.viewHeight/2),
-                                 width: thumbView.viewWidth,
-                                 height: thumbView.viewHeight)
-        self.setNeedsDisplay()
+        if let thumbView = thumbView {
+            thumbView.frame = CGRect(x: rect.maxX - CGFloat(thumbView.viewWidth/2),
+                                     y: rect.midY - CGFloat(thumbView.viewHeight/2),
+                                     width: thumbView.viewWidth,
+                                     height: thumbView.viewHeight)
+        }
+        setNeedsDisplay()
+    }
+    
+    func updateRect(_ rect: CGRect, newTimeInterval: CDateInterval) {
+        frame = rect
+        dateInterval = newTimeInterval
+        setNeedsDisplay()
     }
 
     // MARK: - CThumbViewPanDelegate:
@@ -83,11 +106,35 @@ class CSelectedTimeIntervalView: UIView, CThumbViewPanDelegate {
                             y: self.frame.origin.y,
                             width: point.x,
                             height: self.frame.size.height)
+        delegate?.selectedTimeIntervalView(self, didChangeEndPoint: CGPoint(x: self.frame.maxX,
+                                                                            y: self.frame.origin.y))
         setNeedsDisplay()
     }
     
-    func thumbView(_ thumbView: CThumbView, didEndChangePoint point: CGPoint) {
+    func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) {
         print("didEndChangePoint = \(point)")
+        delegate?.selectedTimeIntervalView(self, didFinishScrollingWithEndPoint: point)
+        // TODO: move end date to nearest time index
+        
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

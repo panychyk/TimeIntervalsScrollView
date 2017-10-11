@@ -14,6 +14,9 @@
 @protocol CTimeIntervalScrollViewDelegate <NSObject>
 
 - (void)onSelectedTimeIntervalChangeDateInterval:(CDateInterval *)dateInterval;
+
+@optional
+// to change other
 - (void)onThumbViewChangeSelectedIntervalRect:(CGRect)newRect;
 
 @end

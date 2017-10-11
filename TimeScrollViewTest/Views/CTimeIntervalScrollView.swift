@@ -25,14 +25,13 @@ class CTimeIntervalScrollView: UIScrollView {
     
     var timeSectorsMap = [NSNumber : CDateInterval]()
     
-    var timeIntervalScrollViewModel: CTimeIntervalScrollViewModel? {
+    var timeIntervalScrollViewModel = CTimeIntervalScrollViewModel() {
         didSet {
             drawTimeIntervals()
         }
     }
-    
+    public var isAllowThumbView = true
     private(set) var allowIntersectWithSelectedTimeInterval = false
-    
     private(set) var maxAppliableTimeIntervalInSecs = 0
     
     let oneDayInSec = 86400 // 24*60*60

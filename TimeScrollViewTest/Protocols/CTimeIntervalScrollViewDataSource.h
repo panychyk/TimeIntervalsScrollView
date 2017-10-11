@@ -14,4 +14,5 @@
 - (BOOL)timeIntervalScrollViewAllowIntersectWithReservations;
 - (CTimeIntervals)stepForTimeIntervalScrollView;
 - (NSInteger)maxAppliableTimeIntervalInSecs;
+
 @end

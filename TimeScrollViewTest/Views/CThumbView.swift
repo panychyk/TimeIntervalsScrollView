@@ -10,8 +10,12 @@ import UIKit
 
 protocol CThumbViewPanDelegate: NSObjectProtocol {
     
+    var selectionScope: SelectedTimeIntervalScope? { get set }
+    
     func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void)
-    func thumbView(_ thumbView: CThumbView, didEndChangePoint point: CGPoint) -> (Void)
+    func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void)
+//    func thumbView(_ thumbView: CThumbView, convertOnTimeLineView point: CGPoint) -> (CGPoint)
+    
 }
 
 let MAX_PAN_VELOCITY = 175.0
@@ -74,11 +78,14 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
         let point = sender.location(in: self.superview)
         
         switch sender.state {
+        case .began:
+            print("began")
+            break
         case .changed:
             center = CGPoint(x: point.x, y: self.frame.midY)
             delegate?.thumbView(self, didChangePoint: point)
         case .ended, .cancelled:
-            delegate?.thumbView(self, didEndChangePoint: point)
+            delegate?.thumbView(self, didFinishScrollingWithPoint: point)
         default:
             break
         }
