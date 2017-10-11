@@ -22,13 +22,12 @@ let MAX_PAN_VELOCITY = 175.0
 class CThumbView: UIView, UIGestureRecognizerDelegate {
 
     // Parameters:
-    let viewHeight: CGFloat        = 24.0
-    let viewWidth: CGFloat         = 12.0
+    let viewSize = CGSize(width: 12.0, height: 24.0)
     let viewCornerRadius: CGFloat  = 100.0
     let borderWidth: CGFloat       = 2
     
     lazy var hitAreaBounds: CGRect = {
-        let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewWidth * 2) + 20, height: viewHeight))
+        let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewSize.width * 2) + 20, height: viewSize.height))
         return rect.offsetBy(dx: -(rect.width/2), dy: 0)
     }()
     
@@ -37,7 +36,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     let fillColor   = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0)
     
     var thumbViewPanGesture: UIPanGestureRecognizer!
-    
+        
     weak var delegate: CThumbViewPanDelegate?
     
     override init(frame: CGRect) {
@@ -71,6 +70,16 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
         outerBezierPath.stroke()
     }
     
+    override var frame: CGRect {
+        get {
+            return super.frame
+        }
+        set {
+            super.frame = CGRect(origin: newValue.origin,
+                                 size: viewSize)
+        }
+    }
+    
     // MARK: - Accessories:
     
     @objc func onThumbViewSlideAction(_ sender: UIPanGestureRecognizer) {
@@ -81,10 +90,18 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
             print("began")
             break
         case .changed:
-            center = CGPoint(x: point.x, y: self.frame.midY)
-            delegate?.thumbView(self, didChangePoint: point)
+            if let selectionScope = delegate?.selectionScope {
+                if point.x >= selectionScope.minValueX &&
+                    point.x <= selectionScope.maxValueX {
+                    center = CGPoint(x: point.x, y: self.frame.midY)
+                    delegate?.thumbView(self, didChangePoint: point)
+                }
+            } else {
+                center = CGPoint(x: point.x, y: self.frame.midY)
+                delegate?.thumbView(self, didChangePoint: point)
+            }
         case .ended, .cancelled:
-            delegate?.thumbView(self, didFinishScrollingWithPoint: point)
+            delegate?.thumbView(self, didFinishScrollingWithPoint: self.center)
         default:
             break
         }

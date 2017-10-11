@@ -25,6 +25,7 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         
         let reservations: [ReservationModel] = [
             ReservationModel(CDateInterval(start: date.apply(hours: 8, minutes: 0, calendar: calendar), duration: 2*60*60), hostName: "Best Friend"),
+            ReservationModel(CDateInterval(start: date.apply(hours: 12, minutes: 0, calendar: calendar), duration: 15*60), hostName: "Second Best Friend"),
             ReservationModel(CDateInterval(start: date.apply(hours: 18, minutes: 0, calendar: calendar), duration: 15*60), hostName: "Second Best Friend")
         ]
         
@@ -59,7 +60,7 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
     // MARK: - CTimeIntervalScrollViewDataSource:
     
     func timeIntervalScrollViewAllowIntersectWithReservations() -> Bool {
-        return true
+        return false
     }
     
     func stepForTimeIntervalScrollView() -> CTimeIntervals {
