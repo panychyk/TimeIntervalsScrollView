@@ -104,11 +104,16 @@ class CTimeIntervalScrollView: UIScrollView {
         canvas.setNeedsDisplay()
     }
     
+    func onApply(_ dateInterval: CDateInterval!, forIndex index: NSNumber!) {
+        timeSectorsMap[index] = dateInterval
+    }
+    
     @objc private func onTimeSectionTapAction(_ gesture: UITapGestureRecognizer) {
         let points = gesture.location(in: canvas)
         let index = Int(points.x/intervalStepInPx)
-        
         print("startDate = \(timeSectorsMap[NSNumber(value: index)]!.startDate)\nendDate = \(timeSectorsMap[NSNumber(value: index)]!.endDate)")
+        
+        canvas.onSelectionEvent(with: index, andPoint: points)
     }
     
     func reloadData() {
@@ -125,14 +130,6 @@ class CTimeIntervalScrollView: UIScrollView {
         setNeedsDisplay()
     }
     
-}
-
-extension CTimeIntervalScrollView: CTimeIntervalDrawableViewDelegate {
-
-    func onApply(_ dateInterval: CDateInterval!, forIndex index: NSNumber!) {
-        timeSectorsMap[index] = dateInterval
-    }
-
 }
 
 

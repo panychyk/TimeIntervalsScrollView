@@ -10,7 +10,8 @@ import UIKit
 
 protocol CThumbViewPanDelegate: NSObjectProtocol {
     
-    var selectionScope: SelectedTimeIntervalScope? { get set }
+    var selectionScope: SelectedTimeIntervalScope? { get }
+    var timeIntervalScope: SelectedTimeIntervalScope { get }
     
     func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void)
     func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void)
@@ -27,7 +28,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     let borderWidth: CGFloat       = 2
     
     lazy var hitAreaBounds: CGRect = {
-        let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewSize.width * 2) + 20, height: viewSize.height))
+        let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewSize.width * 3), height: viewSize.height))
         return rect.offsetBy(dx: -(rect.width/2), dy: 0)
     }()
     
@@ -52,6 +53,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     func configure() {
         self.backgroundColor = .clear
         thumbViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(onThumbViewSlideAction(_:)))
+        thumbViewPanGesture.maximumNumberOfTouches = 1
         thumbViewPanGesture.delegate = self
         self.addGestureRecognizer(thumbViewPanGesture)
         
@@ -90,11 +92,16 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
             print("began")
             break
         case .changed:
-            if let selectionScope = delegate?.selectionScope {
-                if point.x >= selectionScope.minValueX &&
-                    point.x <= selectionScope.maxValueX {
+            if let selectionScope = delegate?.selectionScope,
+                let timeIntervalScope = delegate?.timeIntervalScope {
+                let pointX = point.x
+                if selectionScope.minValueX ... selectionScope.maxValueX ~= pointX &&
+                    timeIntervalScope.minValueX ... timeIntervalScope.maxValueX ~= pointX {
                     center = CGPoint(x: point.x, y: self.frame.midY)
                     delegate?.thumbView(self, didChangePoint: point)
+                } else {
+//                    sender.isEnabled = false
+//                    sender.isEnabled = true
                 }
             } else {
                 center = CGPoint(x: point.x, y: self.frame.midY)

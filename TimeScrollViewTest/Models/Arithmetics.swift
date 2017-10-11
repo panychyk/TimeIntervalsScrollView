@@ -11,4 +11,8 @@ import Foundation
 struct SelectedTimeIntervalScope {
     let minValueX: CGFloat
     let maxValueX: CGFloat
+    
+    static func zero() -> SelectedTimeIntervalScope {
+        return SelectedTimeIntervalScope(minValueX: 0, maxValueX: 0)
+    }
 }

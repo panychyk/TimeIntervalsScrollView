@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate {
+class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDrawableViewProtocol {
     
     private(set) weak var parentView: CTimeIntervalScrollView!
     
@@ -295,7 +295,29 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate {
         return view
     }
     
+    //MARK: - CThumbViewPanDelegate:
     var selectionScope: SelectedTimeIntervalScope?
+    var timeIntervalScope: SelectedTimeIntervalScope {
+        let maxTimeIntervalInSecs = parentView.maxAppliableTimeIntervalInSecs
+        if let selectedTimeInterval = parentView.timeIntervalScrollViewModel.selectedTimeInterval {
+            let width = (CGFloat(maxTimeIntervalInSecs/parentView.applyedTimeInterval.rawValue) * parentView.intervalStepInPx)
+            let minValueX = convertToRect(selectedTimeInterval).minX
+            let maxValueX = minValueX + width
+            return SelectedTimeIntervalScope(minValueX: minValueX,
+                                             maxValueX: maxValueX)
+        }
+        return SelectedTimeIntervalScope.zero()
+    }
+    var maxValueX: CGFloat {
+        let maxTimeIntervalInSecs = parentView.maxAppliableTimeIntervalInSecs
+        if let selectedTimeInterval = parentView.timeIntervalScrollViewModel.selectedTimeInterval {
+            let width = (CGFloat(maxTimeIntervalInSecs/parentView.applyedTimeInterval.rawValue) * parentView.intervalStepInPx)
+            let maxValueX = convertToRect(selectedTimeInterval).minX + width
+            return maxValueX
+        }
+        return 0
+            
+    }
     
     func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void) {
         print("thumbView:didChangePoint point = \(point)")
@@ -328,6 +350,18 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate {
             let newRect = CGRect(origin: selectedTimeIntervalView.frame.origin, size: newSize)
             let newTimeInterval = convertToTimeInterval(newRect)
             parentView.timeIntervalScrollViewModel.selectedTimeInterval = newTimeInterval
+            drawSelectedTimeInterval(on: self.bounds)
+        }
+    }
+    
+    // MARK: - CTimeIntervalDrawableViewProtocol:
+
+    func onSelectionEvent(with index: Int, andPoint point: CGPoint) {
+        let pointOnThumbView = self.convert(point, to: thumbView)
+        if let _ = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: index)],
+            let sectorTimeInterval = parentView.timeSectorsMap[NSNumber(integerLiteral: index)],
+            !thumbView.hitAreaBounds.contains(pointOnThumbView) {
+            parentView.timeIntervalScrollViewModel.selectedTimeInterval = sectorTimeInterval
             drawSelectedTimeInterval(on: self.bounds)
         }
     }
