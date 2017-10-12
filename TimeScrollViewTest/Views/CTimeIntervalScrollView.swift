@@ -27,7 +27,7 @@ class CTimeIntervalScrollView: UIScrollView {
     
     var timeIntervalScrollViewModel = CTimeIntervalScrollViewModel() {
         didSet {
-            drawTimeIntervals()
+            setTimeLineWidth()
         }
     }
     public var isAllowThumbView = true
@@ -116,18 +116,36 @@ class CTimeIntervalScrollView: UIScrollView {
         canvas.onSelectionEvent(with: index, andPoint: points)
     }
     
+    private func setTimeLineWidth() {
+        contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
+        setNeedsDisplay()
+    }
+    
+    // MARK: - API:
+    
     func reloadData() {
         if let timeIntervalScrollViewDataSource = timeIntervalScrollViewDataSource {
             applyedTimeInterval = timeIntervalScrollViewDataSource.stepForTimeIntervalScrollView()
             allowIntersectWithSelectedTimeInterval = timeIntervalScrollViewDataSource.timeIntervalScrollViewAllowIntersectWithReservations()
             maxAppliableTimeIntervalInSecs = timeIntervalScrollViewDataSource.maxAppliableTimeIntervalInSecs()
         }
-        drawTimeIntervals()
+        setTimeLineWidth()
     }
     
-    func drawTimeIntervals() {
-        contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
-        setNeedsDisplay()
+//    func setupThumbViewCenterPoint(_ point: CGPoint) {
+//        canvas.setupThumbViewPosition(center: point)
+//    }
+    
+}
+
+extension CTimeIntervalScrollView: CTimeIntervalDrawableViewDelegate {
+    
+    func timeIntervalDrawableView(_ drawableView: CTimeIntervalDrawableView, didChangeThumbViewCenter point: CGPoint) {
+        timeIntervalScrollViewDelegate?.timeIntervalScrollView(self, onThumbViewChangeCenter: point)
+    }
+    
+    func timeIntervalDrawableView(_ drawableView: CTimeIntervalDrawableView, didChangeSelectionTimeInterval timeInterval: CDateInterval) {
+        timeIntervalScrollViewDelegate?.timeIntervalScrollView(self, onSelectedTimeIntervalChange: timeInterval)
     }
     
 }

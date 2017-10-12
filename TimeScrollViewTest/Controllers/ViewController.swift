@@ -10,7 +10,8 @@ import UIKit
 
 class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIntervalScrollViewDataSource {
 
-    weak var timeIntervalScrollView: CTimeIntervalScrollView!
+    @IBOutlet weak var timeIntervalScrollView: CTimeIntervalScrollView!
+    @IBOutlet weak var timeIntervalScrollView2: CTimeIntervalScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,10 +37,14 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         timeIntervalScrollViewModel.reservedTimeIntervalsList    = reservations
         timeIntervalScrollViewModel.selectedTimeInterval         = selectedTimeInterval
         
-        timeIntervalScrollView = self.view as! CTimeIntervalScrollView
         timeIntervalScrollView.timeIntervalScrollViewDelegate = self
         timeIntervalScrollView.timeIntervalScrollViewDataSource = self
         timeIntervalScrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
+        
+        timeIntervalScrollView2.timeIntervalScrollViewDelegate = self
+        timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
+        timeIntervalScrollView2.timeIntervalScrollViewModel = timeIntervalScrollViewModel
+        timeIntervalScrollView2.isAllowThumbView = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,12 +54,14 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
 
     // MARK: - CTimeIntervalScrollViewDelegate:
     
-    func onSelectedTimeIntervalChange(_ dateInterval: CDateInterval!) {
+    func timeIntervalScrollView(_ scrollView: CTimeIntervalScrollView!, onSelectedTimeIntervalChange dateInterval: CDateInterval!) {
         print("onSelectedTimeIntervalChange(_:) dateInterval = \(dateInterval)")
+        timeIntervalScrollView2.timeIntervalScrollViewModel.selectedTimeInterval = dateInterval
     }
     
-    func onThumbViewChangeSelectedIntervalRect(_ newRect: CGRect) {
-        print("onThumbViewChangeSelectedIntervalRect(_:) newRect = \(newRect)")
+    func timeIntervalScrollView(_ scrollView: CTimeIntervalScrollView!, onThumbViewChangeCenter point: CGPoint) {
+        print("onThumbViewChangePoint(_:) point = \(point)")
+        timeIntervalScrollView2.setupThumbViewCenterPoint(point)
     }
     
     // MARK: - CTimeIntervalScrollViewDataSource:

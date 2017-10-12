@@ -9,14 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CGGeometry.h>
 
-@class CDateInterval;
+@class CDateInterval, CTimeIntervalScrollView;
 
 @protocol CTimeIntervalScrollViewDelegate <NSObject>
 
-- (void)onSelectedTimeIntervalChangeDateInterval:(CDateInterval *)dateInterval;
+- (void)timeIntervalScrollView:(CTimeIntervalScrollView *)scrollView onSelectedTimeIntervalChangeDateInterval:(CDateInterval *)dateInterval;
 
-@optional
-// to change other
-- (void)onThumbViewChangeSelectedIntervalRect:(CGRect)newRect;
+- (void)timeIntervalScrollView:(CTimeIntervalScrollView *)scrollView onThumbViewChangeCenterPoint:(CGPoint)point;
 
 @end

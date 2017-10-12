@@ -88,9 +88,9 @@
 			isa = PBXGroup;
 			children = (
 				E2BCA5811F8AB32100A2B250 /* CReservationView.swift */,
+				C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */,
 				E294A1491F8A20D900F6290D /* CTimeIntervalScrollView.swift */,
 				E24062801F8121EA00C77FAE /* CTimeIntervalDrawableView.swift */,
-				C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */,
 				C6075B891F8BA21F005C425C /* CThumbView.swift */,
 			);
 			path = Views;

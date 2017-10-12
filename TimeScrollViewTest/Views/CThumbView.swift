@@ -24,8 +24,9 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
 
     // Parameters:
     let viewSize = CGSize(width: 12.0, height: 24.0)
-    let viewCornerRadius: CGFloat  = 100.0
-    let borderWidth: CGFloat       = 2
+    
+    private let viewCornerRadius: CGFloat  = 100.0
+    private let borderWidth: CGFloat       = 2
     
     lazy var hitAreaBounds: CGRect = {
         let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewSize.width * 2), height: viewSize.height))
@@ -33,12 +34,14 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     }()
     
     // Design:
-    let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
-    let fillColor   = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0)
+    private let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
+    private let fillColor   = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0)
     
-    var thumbViewPanGesture: UIPanGestureRecognizer!
+    private var thumbViewPanGesture: UIPanGestureRecognizer!
         
     weak var delegate: CThumbViewPanDelegate?
+    
+    private(set) var isPressed = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -50,7 +53,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
         configure()
     }
     
-    func configure() {
+    private func configure() {
         self.backgroundColor = .clear
         thumbViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(onThumbViewSlideAction(_:)))
         thumbViewPanGesture.maximumNumberOfTouches = 1
@@ -84,13 +87,12 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     
     // MARK: - Accessories:
     
-    @objc func onThumbViewSlideAction(_ sender: UIPanGestureRecognizer) {
+    @objc private func onThumbViewSlideAction(_ sender: UIPanGestureRecognizer) {
         let point = sender.location(in: self.superview)
         
         switch sender.state {
         case .began:
-//            print("began")
-            break
+            isPressed = true
         case .changed:
             if let delegate = delegate {
                 let scope = delegate.selectionScope?.intersect(delegate.timeIntervalScope) ?? delegate.timeIntervalScope
@@ -105,6 +107,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
                 assert(false, "CThumbView.onThumbViewSlideAction(_:) need to set delegate")
             }
         case .ended, .cancelled:
+            isPressed = false
             delegate?.thumbView(self, didFinishScrollingWithPoint: self.center)
         default:
             break
