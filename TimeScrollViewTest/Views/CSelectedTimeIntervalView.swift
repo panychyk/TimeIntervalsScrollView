@@ -8,15 +8,31 @@
 
 import UIKit
 
+
 class CSelectedTimeIntervalView: UIView {
+    
+    private typealias ColorSchemeTuple = (borderColor: UIColor, fillColor: UIColor)
     
     // Parameters:
     let viewHeight: CGFloat  = 50.0
     let borderWidth: CGFloat = 1.5
     
+    private(set) var isIntersectState: Bool = false
+    
     // Design:
-    let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
-    let fillColor   = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 0.8)
+    private let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
+    private let fillColor   = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 0.8)
+    
+    private let intersectedBorderColor = UIColor(red: 208.0/255.0, green: 1.0/255.0, blue: 27.0/255.0, alpha: 1.0)
+    private let intersectedFillColor   = UIColor(red: 208.0/255.0, green: 1.0/255.0, blue: 27.0/255.0, alpha: 0.3)
+
+    private var colorScheme: ColorSchemeTuple {
+        if isIntersectState {
+            return (intersectedBorderColor, intersectedFillColor)
+        } else {
+            return (borderColor, fillColor)
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,9 +59,9 @@ class CSelectedTimeIntervalView: UIView {
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
-
+        
         let context = UIGraphicsGetCurrentContext()
-        context?.setFillColor(fillColor.cgColor)
+        context?.setFillColor(colorScheme.fillColor.cgColor)
         context?.fill(rect)
         context?.strokePath()
         
@@ -54,14 +70,21 @@ class CSelectedTimeIntervalView: UIView {
         var xLineOrigin = rect.minX
         context?.move(to: CGPoint(x: xLineOrigin, y: rect.minY))
         context?.addLine(to: CGPoint(x: xLineOrigin, y: rect.maxY))
-        context?.setStrokeColor(borderColor.cgColor)
+        context?.setStrokeColor(colorScheme.borderColor.cgColor)
         context?.strokePath()
         
         xLineOrigin = rect.maxX
         context?.move(to: CGPoint(x: xLineOrigin, y: rect.minY))
         context?.addLine(to: CGPoint(x: xLineOrigin, y: rect.maxY))
-        context?.setStrokeColor(borderColor.cgColor)
+        context?.setStrokeColor(colorScheme.borderColor.cgColor)
         context?.strokePath()
+    }
+    
+    func setIntersectState(_ isIntersect: Bool) {
+        if isIntersectState != isIntersect {
+            isIntersectState = isIntersect
+            setNeedsDisplay()
+        }
     }
     
 }

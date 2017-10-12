@@ -60,7 +60,7 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
     // MARK: - CTimeIntervalScrollViewDataSource:
     
     func timeIntervalScrollViewAllowIntersectWithReservations() -> Bool {
-        return false
+        return true
     }
     
     func stepForTimeIntervalScrollView() -> CTimeIntervals {

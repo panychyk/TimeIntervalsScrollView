@@ -28,8 +28,8 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     let borderWidth: CGFloat       = 2
     
     lazy var hitAreaBounds: CGRect = {
-        let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewSize.width * 3), height: viewSize.height))
-        return rect.offsetBy(dx: -(rect.width/2), dy: 0)
+        let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewSize.width * 2), height: viewSize.height))
+        return rect.offsetBy(dx: -10, dy: 0)
     }()
     
     // Design:
@@ -89,23 +89,20 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
         
         switch sender.state {
         case .began:
-            print("began")
+//            print("began")
             break
         case .changed:
-            if let selectionScope = delegate?.selectionScope,
-                let timeIntervalScope = delegate?.timeIntervalScope {
-                let pointX = point.x
-                if selectionScope.minValueX ... selectionScope.maxValueX ~= pointX &&
-                    timeIntervalScope.minValueX ... timeIntervalScope.maxValueX ~= pointX {
+            if let delegate = delegate {
+                let scope = delegate.selectionScope?.intersect(delegate.timeIntervalScope) ?? delegate.timeIntervalScope
+                if scope.minValueX ... scope.maxValueX ~= point.x {
                     center = CGPoint(x: point.x, y: self.frame.midY)
-                    delegate?.thumbView(self, didChangePoint: point)
+                    delegate.thumbView(self, didChangePoint: point)
                 } else {
 //                    sender.isEnabled = false
 //                    sender.isEnabled = true
                 }
             } else {
-                center = CGPoint(x: point.x, y: self.frame.midY)
-                delegate?.thumbView(self, didChangePoint: point)
+                assert(false, "CThumbView.onThumbViewSlideAction(_:) need to set delegate")
             }
         case .ended, .cancelled:
             delegate?.thumbView(self, didFinishScrollingWithPoint: self.center)
