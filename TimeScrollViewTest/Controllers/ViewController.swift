@@ -41,7 +41,6 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         timeIntervalScrollView.timeIntervalScrollViewDataSource = self
         timeIntervalScrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
         
-        timeIntervalScrollView2.timeIntervalScrollViewDelegate = self
         timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
         timeIntervalScrollView2.timeIntervalScrollViewModel = timeIntervalScrollViewModel
         timeIntervalScrollView2.isAllowThumbView = false
@@ -51,17 +50,10 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         super.didReceiveMemoryWarning()
     }
 
-
     // MARK: - CTimeIntervalScrollViewDelegate:
     
     func timeIntervalScrollView(_ scrollView: CTimeIntervalScrollView!, onSelectedTimeIntervalChange dateInterval: CDateInterval!) {
         print("onSelectedTimeIntervalChange(_:) dateInterval = \(dateInterval)")
-        timeIntervalScrollView2.timeIntervalScrollViewModel.selectedTimeInterval = dateInterval
-    }
-    
-    func timeIntervalScrollView(_ scrollView: CTimeIntervalScrollView!, onThumbViewChangeCenter point: CGPoint) {
-        print("onThumbViewChangePoint(_:) point = \(point)")
-        timeIntervalScrollView2.setupThumbViewCenterPoint(point)
     }
     
     // MARK: - CTimeIntervalScrollViewDataSource:

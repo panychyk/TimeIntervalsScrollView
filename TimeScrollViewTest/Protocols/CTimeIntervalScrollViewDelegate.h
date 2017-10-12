@@ -15,6 +15,4 @@
 
 - (void)timeIntervalScrollView:(CTimeIntervalScrollView *)scrollView onSelectedTimeIntervalChangeDateInterval:(CDateInterval *)dateInterval;
 
-- (void)timeIntervalScrollView:(CTimeIntervalScrollView *)scrollView onThumbViewChangeCenterPoint:(CGPoint)point;
-
 @end

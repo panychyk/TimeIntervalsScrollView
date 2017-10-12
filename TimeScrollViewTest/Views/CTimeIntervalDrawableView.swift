@@ -8,13 +8,6 @@
 
 import UIKit
 
-protocol CTimeIntervalDrawableViewDelegate: NSObjectProtocol {
-    
-    func timeIntervalDrawableView(_ drawableView: CTimeIntervalDrawableView, didChangeThumbViewCenter point: CGPoint) -> (Void)
-    func timeIntervalDrawableView(_ drawableView: CTimeIntervalDrawableView, didChangeSelectionTimeInterval timeInterval: CDateInterval) -> (Void)
-
-}
-
 class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDrawableViewProtocol {
     
     private(set) weak var parentView: CTimeIntervalScrollView!
@@ -412,8 +405,7 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
                     }
                 } while (xMaxPoint - xOriginOfIndex) > parentView.intervalStepInPx
             }
-            
-            assert(false, "CTimeIntervalDrawableView.calcNewDuration(in:for:with:) crash")
+            assert(false, "AssertionError")
             return TimeInterval(parentView.applyedTimeInterval.rawValue)
         } else {
             return TimeInterval(parentView.applyedTimeInterval.rawValue)

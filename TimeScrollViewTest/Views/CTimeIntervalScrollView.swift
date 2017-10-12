@@ -73,7 +73,7 @@ class CTimeIntervalScrollView: UIScrollView {
             case .mins60:
                 return mins60Step
             default:
-                preconditionFailure("CTimeIntervalScrollView wrong intervalStepInPx")
+                preconditionFailure("IllegalStateExeption")
             }
         }
     }
@@ -135,18 +135,6 @@ class CTimeIntervalScrollView: UIScrollView {
 //    func setupThumbViewCenterPoint(_ point: CGPoint) {
 //        canvas.setupThumbViewPosition(center: point)
 //    }
-    
-}
-
-extension CTimeIntervalScrollView: CTimeIntervalDrawableViewDelegate {
-    
-    func timeIntervalDrawableView(_ drawableView: CTimeIntervalDrawableView, didChangeThumbViewCenter point: CGPoint) {
-        timeIntervalScrollViewDelegate?.timeIntervalScrollView(self, onThumbViewChangeCenter: point)
-    }
-    
-    func timeIntervalDrawableView(_ drawableView: CTimeIntervalDrawableView, didChangeSelectionTimeInterval timeInterval: CDateInterval) {
-        timeIntervalScrollViewDelegate?.timeIntervalScrollView(self, onSelectedTimeIntervalChange: timeInterval)
-    }
     
 }
 

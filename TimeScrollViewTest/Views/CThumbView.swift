@@ -104,7 +104,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
 //                    sender.isEnabled = true
                 }
             } else {
-                assert(false, "CThumbView.onThumbViewSlideAction(_:) need to set delegate")
+                assert(false, "NotImplementedError")
             }
         case .ended, .cancelled:
             isPressed = false
