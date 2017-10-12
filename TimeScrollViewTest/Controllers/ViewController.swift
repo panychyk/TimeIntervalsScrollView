@@ -9,9 +9,10 @@
 import UIKit
 
 class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIntervalScrollViewDataSource {
-
+    
     @IBOutlet weak var timeIntervalScrollView: CTimeIntervalScrollView!
     @IBOutlet weak var timeIntervalScrollView2: CTimeIntervalScrollView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,12 +39,14 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         timeIntervalScrollViewModel.selectedTimeInterval         = selectedTimeInterval
         
         timeIntervalScrollView.timeIntervalScrollViewDelegate = self
-        timeIntervalScrollView.timeIntervalScrollViewDataSource = self
+        timeIntervalScrollView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
         timeIntervalScrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
-        
-        timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
+        timeIntervalScrollView.timeIntervalScrollViewDataSource = self
+
+//        timeIntervalScrollView2.isAllowThumbView = false
         timeIntervalScrollView2.timeIntervalScrollViewModel = timeIntervalScrollViewModel
-        timeIntervalScrollView2.isAllowThumbView = false
+        timeIntervalScrollView2.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
+        timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -53,7 +56,7 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
     // MARK: - CTimeIntervalScrollViewDelegate:
     
     func timeIntervalScrollView(_ scrollView: CTimeIntervalScrollView!, onSelectedTimeIntervalChange dateInterval: CDateInterval!) {
-        print("onSelectedTimeIntervalChange(_:) dateInterval = \(dateInterval)")
+        print("newDateInterval startDate = \(dateInterval.startDate) \nendDate = \(dateInterval.endDate)")
     }
     
     // MARK: - CTimeIntervalScrollViewDataSource:

@@ -44,8 +44,8 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="timeIntervalScrollView" destination="A6Z-tR-eCw" id="5JK-Sf-tcZ"/>
-                        <outlet property="timeIntervalScrollView2" destination="A4G-L3-YWk" id="08P-Zk-DZL"/>
+                        <outlet property="timeIntervalScrollView" destination="A6Z-tR-eCw" id="384-Gq-aVG"/>
+                        <outlet property="timeIntervalScrollView2" destination="A4G-L3-YWk" id="qYn-uM-du1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

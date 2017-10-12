@@ -19,20 +19,34 @@ class CTimeIntervalScrollView: UIScrollView {
 
     lazy var canvas: CTimeIntervalDrawableView = {
         let tmpCanvas = CTimeIntervalDrawableView(self)
-        self.addSubview(tmpCanvas)
+        addSubview(tmpCanvas)
         return tmpCanvas
     }()
     
     var timeSectorsMap = [NSNumber : CDateInterval]()
     
+    // DataSource:
+    public var isAllowThumbView = true
+    public var registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = false
+    {
+        didSet {
+            if registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews == true {
+                canvas.registerOnNotificationToChangeTimeIntervalsSimultaneously()
+            } else {
+                canvas.unregisterOnNotificationToChangeTimeIntervalsSimultaneously()
+            }
+        }
+    }
+    
+    private(set) var allowIntersectWithSelectedTimeInterval = false
+    private(set) var maxAppliableTimeIntervalInSecs = 0
+    private(set) var applyedTimeInterval: CTimeIntervals = .mins30
+
     var timeIntervalScrollViewModel = CTimeIntervalScrollViewModel() {
         didSet {
             setTimeLineWidth()
         }
     }
-    public var isAllowThumbView = true
-    private(set) var allowIntersectWithSelectedTimeInterval = false
-    private(set) var maxAppliableTimeIntervalInSecs = 0
     
     let oneDayInSec = 86400 // 24*60*60
     lazy var calendar: Calendar = {
@@ -60,8 +74,6 @@ class CTimeIntervalScrollView: UIScrollView {
     let timeLabelCharSpacing: Float = 0.7
     
     let unavailableSectorImage = UIImage(named: "reserved_image")
-    
-    @objc private(set) var applyedTimeInterval: CTimeIntervals = .mins30
     
     var intervalStepInPx: CGFloat {
         get {
@@ -118,6 +130,8 @@ class CTimeIntervalScrollView: UIScrollView {
     
     private func setTimeLineWidth() {
         contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: bounds.size.height)
+        let canvasFrame = CGRect(origin: bounds.origin, size: contentSize)
+        canvas.frame = canvasFrame
         setNeedsDisplay()
     }
     
@@ -131,10 +145,6 @@ class CTimeIntervalScrollView: UIScrollView {
         }
         setTimeLineWidth()
     }
-    
-//    func setupThumbViewCenterPoint(_ point: CGPoint) {
-//        canvas.setupThumbViewPosition(center: point)
-//    }
     
 }
 

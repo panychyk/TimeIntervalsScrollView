@@ -30,7 +30,6 @@
 		C6075B891F8BA21F005C425C /* CThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CThumbView.swift; sourceTree = "<group>"; };
 		C6504DE51F8CF007000EF233 /* CTimeIntervalScrollViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewDelegate.h; sourceTree = "<group>"; };
 		C6504DE61F8CF762000EF233 /* CTimeIntervalScrollViewSectorIntervalEnum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewSectorIntervalEnum.h; sourceTree = "<group>"; };
-		C6504DE81F8CF9E5000EF233 /* CTimeIntervalScrollViewDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewDataSource.h; sourceTree = "<group>"; };
 		C69ADBF21F8E428B008C039A /* Arithmetics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arithmetics.swift; sourceTree = "<group>"; };
 		C6AC8ADA1F822C600049A52B /* CDateInterval.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDateInterval.h; sourceTree = "<group>"; };
 		C6AC8ADB1F822C610049A52B /* CDateInterval.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDateInterval.m; sourceTree = "<group>"; };
@@ -46,6 +45,7 @@
 		E24062861F815C9E00C77FAE /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		E240628A1F81637200C77FAE /* TimeScrollViewTest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TimeScrollViewTest-Bridging-Header.h"; sourceTree = "<group>"; };
 		E240628B1F81637200C77FAE /* CTimeIntervalDrawableViewProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalDrawableViewProtocol.h; sourceTree = "<group>"; };
+		E25A884B1F9008A500DC95A3 /* CTimeIntervalScrollViewDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewDataSource.h; sourceTree = "<group>"; };
 		E294A1491F8A20D900F6290D /* CTimeIntervalScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeIntervalScrollView.swift; sourceTree = "<group>"; };
 		E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationModel.swift; sourceTree = "<group>"; };
 		E2BCA57F1F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeIntervalScrollViewModel.swift; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 			children = (
 				E240628B1F81637200C77FAE /* CTimeIntervalDrawableViewProtocol.h */,
 				C6504DE51F8CF007000EF233 /* CTimeIntervalScrollViewDelegate.h */,
-				C6504DE81F8CF9E5000EF233 /* CTimeIntervalScrollViewDataSource.h */,
+				E25A884B1F9008A500DC95A3 /* CTimeIntervalScrollViewDataSource.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
