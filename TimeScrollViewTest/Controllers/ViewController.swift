@@ -13,6 +13,7 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
     @IBOutlet weak var timeIntervalScrollView: CTimeIntervalScrollView!
     @IBOutlet weak var timeIntervalScrollView2: CTimeIntervalScrollView!
     
+    @IBOutlet weak var contentScrollView: UIScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,12 +47,12 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         timeIntervalScrollView.timeIntervalScrollViewDataSource = self
         syncManager.listeners.append(timeIntervalScrollView.syncListener)
 
-        timeIntervalScrollView2.isAllowThumbView = false
+//        timeIntervalScrollView2.isAllowThumbView = false
         timeIntervalScrollView2.timeIntervalScrollViewModel = timeIntervalScrollViewModel
         timeIntervalScrollView2.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
         timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
         syncManager.listeners.append(timeIntervalScrollView2.syncListener)
-
+        
     }
 
     override func didReceiveMemoryWarning() {
