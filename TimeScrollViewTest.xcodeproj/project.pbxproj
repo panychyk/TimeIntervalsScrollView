@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C6075B881F8BA13E005C425C /* CSelectedTimeIntervalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */; };
 		C6075B8A1F8BA21F005C425C /* CThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B891F8BA21F005C425C /* CThumbView.swift */; };
+		C6229D2B1F90B23300D1C72B /* TimeScrollViewSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6229D2A1F90B23300D1C72B /* TimeScrollViewSyncManager.swift */; };
 		C69ADBF31F8E428B008C039A /* Arithmetics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69ADBF21F8E428B008C039A /* Arithmetics.swift */; };
 		C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */ = {isa = PBXBuildFile; fileRef = C6AC8ADB1F822C610049A52B /* CDateInterval.m */; };
 		E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626C1F811AE700C77FAE /* AppDelegate.swift */; };
@@ -28,6 +29,7 @@
 /* Begin PBXFileReference section */
 		C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSelectedTimeIntervalView.swift; sourceTree = "<group>"; };
 		C6075B891F8BA21F005C425C /* CThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CThumbView.swift; sourceTree = "<group>"; };
+		C6229D2A1F90B23300D1C72B /* TimeScrollViewSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeScrollViewSyncManager.swift; sourceTree = "<group>"; };
 		C6504DE51F8CF007000EF233 /* CTimeIntervalScrollViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewDelegate.h; sourceTree = "<group>"; };
 		C6504DE61F8CF762000EF233 /* CTimeIntervalScrollViewSectorIntervalEnum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewSectorIntervalEnum.h; sourceTree = "<group>"; };
 		C69ADBF21F8E428B008C039A /* Arithmetics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arithmetics.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				E294A1491F8A20D900F6290D /* CTimeIntervalScrollView.swift */,
 				E24062801F8121EA00C77FAE /* CTimeIntervalDrawableView.swift */,
 				C6075B891F8BA21F005C425C /* CThumbView.swift */,
+				C6229D2A1F90B23300D1C72B /* TimeScrollViewSyncManager.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 				E240628C1F81665700C77FAE /* CTimeIntervalDrawableView.swift in Sources */,
 				E294A14A1F8A20D900F6290D /* CTimeIntervalScrollView.swift in Sources */,
 				E24062851F81576F00C77FAE /* String+Attributes.swift in Sources */,
+				C6229D2B1F90B23300D1C72B /* TimeScrollViewSyncManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

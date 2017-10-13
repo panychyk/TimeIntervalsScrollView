@@ -9,19 +9,13 @@
 import UIKit
 import NotificationCenter
 
-class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDrawableViewProtocol {
+class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDrawableViewProtocol, TimeScrollViewSyncManagerDelegate {
     
     private(set) weak var parentView: CTimeIntervalScrollView!
     
     lazy var date: Date = {
         return Date().dateWithZeroHourAndMinute(self.parentView.calendar)!
     }()
-    
-    // Notification:
-    private let THUMB_VIEW_DID_UPDATE_POSITION_NOTIFICATION = Notification.Name("THUMB_VIEW_DID_UPDATE_POSITION_NOTIFICATION")
-    private let START_X_VALUE_KEY = "START_X_VALUE_KEY"
-    private let END_X_VALUE_KEY   = "END_X_VALUE_KEY"
-    private let TIME_INTERVAL_KEY = "TIME_INTERVAL_KEY"
     
     // Subviews:
     lazy var thumbView: CThumbView = {
@@ -51,10 +45,6 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
         self.init()
         backgroundColor = .white
         parentView = parent
-    }
-    
-    deinit {
-        unregisterOnNotificationToChangeTimeIntervalsSimultaneously()
     }
     
     // MARK: - Draw:
@@ -154,7 +144,7 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
         UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 0.6).setFill()
         UIRectFillUsingBlendMode(rect, .multiply)
     }
-    
+
     // MARK: - Reserved:
     func drawReservations(on rect: CGRect) {
         let reservations = parentView.timeIntervalScrollViewModel.reservedTimeIntervalsList
@@ -234,47 +224,6 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
         let startDateTime = date.dateByAppendingSecs(parentView.applyedTimeInterval.rawValue * index, calendar: parentView.calendar)
         let newDateInterval = CDateInterval(start: startDateTime, duration: TimeInterval(parentView.applyedTimeInterval.rawValue))
         parentView.onApply(newDateInterval, forIndex: NSNumber(value: index))
-    }
-    
-    // MARK: - Notification:
-    private func notifyObservers(_ startX: CGFloat, endX: CGFloat, timeInterval: CDateInterval) {
-        let userInfo: [String : Any] = [START_X_VALUE_KEY : startX,
-                                        END_X_VALUE_KEY   : endX,
-                                        TIME_INTERVAL_KEY : timeInterval]
-        
-        NotificationCenter.default.post(name: THUMB_VIEW_DID_UPDATE_POSITION_NOTIFICATION,
-                                        object: nil,
-                                        userInfo: userInfo)
-    }
-    
-    public func registerOnNotificationToChangeTimeIntervalsSimultaneously() {
-        unregisterOnNotificationToChangeTimeIntervalsSimultaneously()
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onChangeThumbLocation(notification:)),
-                                               name: THUMB_VIEW_DID_UPDATE_POSITION_NOTIFICATION,
-                                               object: nil)
-    }
-    
-    public func unregisterOnNotificationToChangeTimeIntervalsSimultaneously() {
-        NotificationCenter.default.removeObserver(self,
-                                                  name: THUMB_VIEW_DID_UPDATE_POSITION_NOTIFICATION,
-                                                  object: nil)
-    }
-    
-    @objc private func onChangeThumbLocation(notification n: NSNotification) {
-        print("onChangeThumbLocation")
-        if let userInfo = n.userInfo,
-            let minX = userInfo[START_X_VALUE_KEY] as? CGFloat,
-            let maxX = userInfo[END_X_VALUE_KEY] as? CGFloat,
-            let timeInterval = userInfo[TIME_INTERVAL_KEY] as? CDateInterval {
-            if thumbView.isPressed == false {
-                print("minX = \(minX) maxX = \(maxX) thumbView = \(thumbView) timeInterval = \(timeInterval)")
-                onChangeSelctedTimeInterval(minX: minX, maxX: maxX, timeInterval: timeInterval)
-
-            } else {
-                print("thumbView.isPressed")
-            }
-        }
     }
     
     func setupAvailableRangeIntervals(in rect: CGRect) {
@@ -360,30 +309,16 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     }
     
     func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void) {
-//        selectedTimeIntervalView.frame = CGRect(x: selectedTimeIntervalView.frame.origin.x,
-//                                                y: selectedTimeIntervalView.frame.origin.y,
-//                                                width: point.x - selectedTimeIntervalView.frame.origin.x,
-//                                                height: selectedTimeIntervalView.frame.size.height)
-//        // calc intersection with other reservations
-//        if parentView.allowIntersectWithSelectedTimeInterval,
-//            let selectedTimeInterval = parentView.timeIntervalScrollViewModel.selectedTimeInterval {
-//            let index = indexOfDate(selectedTimeInterval.startDate)
-//            if let scope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: index)] {
-//                if point.x > scope.maxValueX {
-//                    // apply intersect color for selected time interval view
-//                    selectedTimeIntervalView.setIntersectState(true)
-//                } else {
-//                    selectedTimeIntervalView.setIntersectState(false)
-//                }
-//            }
         if let selectedTimeInterval = parentView.timeIntervalScrollViewModel.selectedTimeInterval {
             onChangeSelctedTimeInterval(minX: selectedTimeIntervalView.frame.minX, maxX: point.x, timeInterval: selectedTimeInterval)
-            
-            notifyObservers(selectedTimeIntervalView.frame.minX,
-                            endX: selectedTimeIntervalView.frame.maxX,
-                            timeInterval: selectedTimeInterval)
+            if parentView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews {
+                let syncManager = TimeScrollViewSyncManager.shared
+                syncManager.notifyListeners(minX: selectedTimeIntervalView.frame.minX,
+                                            maxX: point.x,
+                                            thumbView: thumbView,
+                                            timeInterval: selectedTimeInterval)
+            }
         }
-//        }
     }
     
     func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void) {
@@ -397,24 +332,16 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
                              height: selectedTimeIntervalView.frame.height)
         let newRect = CGRect(origin: selectedTimeIntervalView.frame.origin, size: newSize)
         let newTimeInterval = convertToTimeInterval(newRect)
-        //        parentView.timeIntervalDrawableView(self, didChangeSelectionTimeInterval: newTimeInterval)
-        onChangeSelctedTimeInterval(minX: selectedTimeIntervalView.frame.minX, maxX: newPointX, timeInterval: newTimeInterval)
-
-        
-//        parentView.timeIntervalScrollViewModel.selectedTimeInterval = newTimeInterval
-
-//        if let startDate = parentView.timeIntervalScrollViewModel.selectedTimeInterval?.startDate {
-//            let index = indexOfDate(startDate)
-//            if let scope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: index)] {
-//                if newPointX > scope.maxValueX {
-//                    // apply intersect color for selected time interval view
-//                    selectedTimeIntervalView.setIntersectState(true)
-//                } else {
-//                    selectedTimeIntervalView.setIntersectState(false)
-//                }
-//            }
-//        }
-//        drawSelectedTimeInterval(on: self.bounds)
+        onChangeSelctedTimeInterval(minX: selectedTimeIntervalView.frame.minX,
+                                    maxX: newPointX,
+                                    timeInterval: newTimeInterval)
+        if parentView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews {
+            let syncManager = TimeScrollViewSyncManager.shared
+            syncManager.notifyListeners(minX: selectedTimeIntervalView.frame.minX,
+                                        maxX: newPointX,
+                                        thumbView: thumbView,
+                                        timeInterval: newTimeInterval)
+        }
     }
     
     // MARK: - CTimeIntervalDrawableViewProtocol:
@@ -433,14 +360,22 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
 //        }
     }
     
+    // MARK: - TimeScrollViewSyncManagerDelegate:
+    
+    func onChangeThumbLocation(minX: CGFloat, maxX: CGFloat, thumbView: CThumbView, timeInterval: CDateInterval) {
+        if self.thumbView != thumbView {
+            onChangeSelctedTimeInterval(minX: minX,
+                                        maxX: maxX,
+                                        timeInterval: timeInterval)
+        }
+    }
+    
     // MARK: - Private:
     
     fileprivate func onChangeSelctedTimeInterval(minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
         parentView.timeIntervalScrollViewModel.selectedTimeInterval = timeInterval
-        selectedTimeIntervalView.frame = CGRect(x: minX,
-                                                y: selectedTimeIntervalView.frame.origin.y,
-                                                width: maxX - minX,
-                                                height: selectedTimeIntervalView.frame.size.height)
+        selectedTimeIntervalView.frame = trackViewRect(minX: minX, maxX: maxX)
+        thumbView.setCenterX(maxX)
         // calc intersection with other reservations
         if parentView.allowIntersectWithSelectedTimeInterval {
             let index = indexOfDate(timeInterval.startDate)
@@ -453,6 +388,16 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
                 }
             }
         }
+    }
+    
+    //returns the rect for the track view between the lower and upper values based on CSelectedTimeIntervalView object
+    private func trackViewRect(minX: CGFloat, maxX: CGFloat) -> CGRect {
+        
+        let rect = CGRect(x: minX,
+                          y: selectedTimeIntervalView.frame.origin.y,
+                          width: maxX - minX,
+                          height: selectedTimeIntervalView.viewHeight)
+        return rect
     }
     
     fileprivate func calcNewDuration(in newRange: SelectedTimeIntervalScope, for index: Int, with oldDuration: TimeInterval?) -> TimeInterval {

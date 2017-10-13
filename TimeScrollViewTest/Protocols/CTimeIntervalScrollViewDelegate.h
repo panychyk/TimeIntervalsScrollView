@@ -16,3 +16,4 @@
 - (void)timeIntervalScrollView:(CTimeIntervalScrollView *)scrollView onSelectedTimeIntervalChangeDateInterval:(CDateInterval *)dateInterval;
 
 @end
+

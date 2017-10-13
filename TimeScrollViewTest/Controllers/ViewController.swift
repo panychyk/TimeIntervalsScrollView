@@ -31,7 +31,9 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
             ReservationModel(CDateInterval(start: date.apply(hours: 18, minutes: 0, calendar: calendar), duration: 15*60), hostName: "Second Best Friend")
         ]
         
-        let selectedTimeInterval = CDateInterval(start: date.apply(hours: 10, minutes: 15, calendar: calendar), duration: 45*60)
+        let selectedTimeInterval = CDateInterval(start: date.apply(hours: 6, minutes: 30, calendar: calendar), duration: 45*60)
+        
+        let syncManager = TimeScrollViewSyncManager.shared
         
         let timeIntervalScrollViewModel = CTimeIntervalScrollViewModel()
         timeIntervalScrollViewModel.unavailableTimeIntervalsList = unavailableTimeIntervals
@@ -42,11 +44,14 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         timeIntervalScrollView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
         timeIntervalScrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
         timeIntervalScrollView.timeIntervalScrollViewDataSource = self
+        syncManager.listeners.append(timeIntervalScrollView.syncListener)
 
-//        timeIntervalScrollView2.isAllowThumbView = false
+        timeIntervalScrollView2.isAllowThumbView = false
         timeIntervalScrollView2.timeIntervalScrollViewModel = timeIntervalScrollViewModel
         timeIntervalScrollView2.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
         timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
+        syncManager.listeners.append(timeIntervalScrollView2.syncListener)
+
     }
 
     override func didReceiveMemoryWarning() {

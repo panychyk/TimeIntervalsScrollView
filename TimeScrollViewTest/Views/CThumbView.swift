@@ -87,6 +87,10 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     
     // MARK: - Accessories:
     
+    public func setCenterX(_ newX: CGFloat) {
+        self.center = CGPoint(x: newX, y: self.center.y)
+    }
+    
     @objc private func onThumbViewSlideAction(_ sender: UIPanGestureRecognizer) {
         let point = sender.location(in: self.superview)
         
