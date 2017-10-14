@@ -16,7 +16,7 @@ class CTimeIntervalScrollView: UIScrollView {
             reloadData()
         }
     }
-
+    
     lazy var canvas: CTimeIntervalDrawableView = {
         let tmpCanvas = CTimeIntervalDrawableView(self)
         addSubview(tmpCanvas)
@@ -26,17 +26,11 @@ class CTimeIntervalScrollView: UIScrollView {
     var timeSectorsMap = [NSNumber : CDateInterval]()
     
     // DataSource:
-    public var isAllowThumbView = true
-    public var registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = false
-    {
-        didSet {
-            if registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews == true {
-                canvas.registerOnNotificationToChangeTimeIntervalsSimultaneously()
-            } else {
-                canvas.unregisterOnNotificationToChangeTimeIntervalsSimultaneously()
-            }
-        }
+    var isAllowThumbView = true
+    weak var syncListener: TimeScrollViewSyncManagerDelegate? {
+        return canvas
     }
+    var registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = false
     
     private(set) var allowIntersectWithSelectedTimeInterval = false
     private(set) var maxAppliableTimeIntervalInSecs = 0
