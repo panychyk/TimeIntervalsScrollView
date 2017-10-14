@@ -1,5 +1,5 @@
 //
-//  CTimeScrollViewCanvas.swift
+//  CTimeLineView.swift
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/1/17.
@@ -7,21 +7,99 @@
 //
 
 import UIKit
-import NotificationCenter
 
-class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDrawableViewProtocol, TimeScrollViewSyncManagerDelegate {
+class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDelegate {
     
-    private(set) weak var parentView: CTimeIntervalScrollView!
+    weak var delegate: CTimeLineViewDelegate?
+    weak var dataSource: CTimeLineViewDataSource? {
+        didSet {
+            reloadData()
+        }
+    }
+    
+    weak var weakReference: CTimeLineView? {
+        return self
+    }
     
     lazy var date: Date = {
-        return Date().dateWithZeroHourAndMinute(self.parentView.calendar)!
+        return Date().dateWithZeroHourAndMinute(self.calendar)!
     }()
+    
+    let oneDayInSec = 86400 // 24*60*60
+    lazy var calendar: Calendar = {
+        var cal = Calendar.current
+        cal.timeZone = TimeZone(secondsFromGMT: 0)!
+        return cal
+    }()
+    
+    // DataSource:
+    var isHiddenThumbView = false
+    
+    var syncManager: TimeLineViewSyncManager? {
+        willSet {
+            if let index = syncManager?.listeners.index(where: { $0 === weakReference }) {
+                syncManager?.listeners.remove(at: index)
+            }
+        }
+        didSet {
+            syncManager?.listeners.append(weakReference)
+        }
+    }
+    
+    private(set) var allowIntersectWithSelectedTimeInterval = false
+    private(set) var maxAppliableTimeIntervalInSecs = 0
+    private(set) var applyedTimeInterval: CTimeIntervals = .mins30
+    
+    var timeLineViewModel = CTimeLineViewModel() {
+        didSet {
+            invalidate(timeLineContentSize())
+        }
+    }
+    
+    // Parameters:
+    let mins15Step: CGFloat = 28.0
+    let mins30Step: CGFloat = 42.0
+    let mins60Step: CGFloat = 82.0
+    
+    let mins15SeparatorHeight: CGFloat = 25.0
+    let mins30SeparatorHeight: CGFloat = 40.0
+    let mins60SeparatorHeight: CGFloat = 70.0
+    
+    var defaultViewHeight: CGFloat = 70
+    
+    let unavailableSectorImageHeight: CGFloat = 50.0
+    
+    var intervalStepInPx: CGFloat {
+        get {
+            switch self.applyedTimeInterval {
+            case .mins15:
+                return mins15Step
+            case .mins30:
+                return mins30Step
+            case .mins60:
+                return mins60Step
+            default:
+                preconditionFailure("IllegalStateExeption")
+            }
+        }
+    }
+    
+    var onTimeSectionTapGesture: UITapGestureRecognizer? = nil
+    
+    // Design:
+    let separatorWidth: CGFloat     = 1.0
+    let separatorColor: CGColor     = UIColor(red: 233/255, green: 233/255, blue: 233/255, alpha: 1).cgColor
+    let timeLabelColor: UIColor     = .red
+    let timeLabelFont: UIFont       = UIFont.systemFont(ofSize: 10)
+    let timeLabelCharSpacing: Float = 0.7
+    
+    let unavailableSectorImage = UIImage(named: "reserved_image")
     
     // Subviews:
     lazy var thumbView: CThumbView = {
         let thumbView = CThumbView()
         thumbView.delegate = self
-        thumbView.isHidden = !parentView.isAllowThumbView
+        thumbView.isHidden = isHiddenThumbView
         addSubview(thumbView)
         return thumbView
     }()
@@ -33,18 +111,56 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     }()
     
     var startPoint: Int {
-        return Int(round((parentView.separatorWidth)/2))
+        return Int(round((separatorWidth)/2))
     }
     
     var disabledIndexMap = [Int : Bool]()
     
+    var timeSectorsMap = [NSNumber : CDateInterval]()
+    
     private var availableRangeIntervalForIndexMap = [NSNumber : SelectedTimeIntervalScope]()
     
-    // MARK: - Lifecycle:
-    convenience init(_ parent: CTimeIntervalScrollView) {
+    // MARK - Init:
+    
+    convenience init(parent: UIView) {
         self.init()
         backgroundColor = .white
-        parentView = parent
+        parent.addSubview(self)
+    }
+    
+    // MARK: - Layout:
+    func timeLineContentSize() -> CGSize {
+        let contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: defaultViewHeight)
+        return contentSize
+    }
+    
+    func invalidate(_ size: CGSize) {
+        let canvasFrame = CGRect(origin: bounds.origin, size: size)
+        frame = canvasFrame
+        setNeedsDisplay()
+    }
+    
+    func invalidateSelectedTimeInterval(minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
+        timeLineViewModel.selectedTimeInterval = timeInterval
+        selectedTimeIntervalView.frame = trackViewRect(minX: minX, maxX: maxX)
+        thumbView.setCenter(x: maxX, y: selectedTimeIntervalView.frame.midY)
+        
+        // calc intersection with other reservations
+        let index = indexOfDate(timeInterval.startDate)
+        if let scope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: index)] {
+            let offset = separatorWidth
+            let isIntersectReservations = maxX > (scope.maxValueX + offset)
+            applySelectedViewIntersectStyle(isIntersectReservations)
+        }
+    }
+    
+    func reloadData() {
+        if let dataSource = dataSource {
+            applyedTimeInterval = dataSource.step(for: self)
+            allowIntersectWithSelectedTimeInterval = dataSource.timeIntersectWithReservations(for: self)
+            maxAppliableTimeIntervalInSecs = dataSource.maxAppliableTimeIntervalInSecs(for: self)
+        }
+        invalidate(timeLineContentSize())
     }
     
     // MARK: - Draw:
@@ -59,14 +175,14 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     // MARK: - Separators:
     func drawSeparatorsAndTimeTitles(in rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
-        context?.setLineWidth(parentView.separatorWidth)
-        for xOrigin in stride(from: startPoint, through: Int(rect.width), by: Int(parentView.intervalStepInPx)) {
-            let index = xOrigin/Int(parentView.intervalStepInPx)
+        context?.setLineWidth(separatorWidth)
+        for xOrigin in stride(from: startPoint, through: Int(rect.width), by: Int(intervalStepInPx)) {
+            let index = xOrigin/Int(intervalStepInPx)
             
             appendDate(forIndex: index)
             if xOrigin == Int(rect.width) &&
-                (parentView.separatorWidth.truncatingRemainder(dividingBy: 2.0)) != 0 {
-                let newX = CGFloat(xOrigin - Int(round((parentView.separatorWidth)/2)))
+                (separatorWidth.truncatingRemainder(dividingBy: 2.0)) != 0 {
+                let newX = CGFloat(xOrigin - Int(round((separatorWidth)/2)))
                 drawLine(context,
                          index:   index,
                          xOrigin: newX,
@@ -81,32 +197,32 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     }
     
     func drawLine(_ context: CGContext?, index: Int, xOrigin: CGFloat, rect: CGRect) {
-        var height: CGFloat = parentView.mins60SeparatorHeight
+        var height: CGFloat = mins60SeparatorHeight
         if index > 0 {
-            switch parentView.applyedTimeInterval {
+            switch applyedTimeInterval {
             case .mins15:
                 if CGFloat(index).truncatingRemainder(dividingBy: 2.0) != 0 {
-                    height = parentView.mins15SeparatorHeight
+                    height = mins15SeparatorHeight
                 } else if CGFloat(index/2).truncatingRemainder(dividingBy: 2.0) != 0 {
-                    height = parentView.mins30SeparatorHeight
+                    height = mins30SeparatorHeight
                 }
             case .mins30:
                 if CGFloat(index).truncatingRemainder(dividingBy: 2.0) != 0 {
-                    height = parentView.mins30SeparatorHeight
+                    height = mins30SeparatorHeight
                 }
             case .mins60:
                 break
             }
         }
         let yOrigin = rect.height - height
-        if height == parentView.mins60SeparatorHeight {
-            if let dateTime = parentView.timeSectorsMap[NSNumber(value: index)] {
-                drawTimeText(dateTime.startDate.shortHoursString(parentView.calendar),
+        if height == mins60SeparatorHeight {
+            if let dateTime = timeSectorsMap[NSNumber(value: index)] {
+                drawTimeText(dateTime.startDate.shortHoursString(calendar),
                          at: CGPoint(x: (xOrigin + 6.0), y: yOrigin))
             }
         }
 
-        context?.setStrokeColor(parentView.separatorColor)
+        context?.setStrokeColor(separatorColor)
         context?.move(to: CGPoint(x: xOrigin, y: yOrigin))
         context?.addLine(to: CGPoint(x: xOrigin, y: rect.height))
         context?.strokePath()
@@ -114,50 +230,50 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     }
     
     func drawTimeText(_ text: String, at point: CGPoint) {
-        let attributedTimeString = text.attributedString(font:      parentView.timeLabelFont,
-                                                         charSpace: parentView.timeLabelCharSpacing,
-                                                         tintColor: parentView.timeLabelColor)
+        let attributedTimeString = text.attributedString(font:      timeLabelFont,
+                                                         charSpace: timeLabelCharSpacing,
+                                                         tintColor: timeLabelColor)
         attributedTimeString.draw(at: point)
     }
     
     // MARK: - Unavailable:
     func drawUnavailableSectors(on rect: CGRect) {
-        for dateInterval in parentView.timeIntervalScrollViewModel.unavailableTimeIntervalsList {
+        for dateInterval in timeLineViewModel.unavailableTimeIntervalsList {
             let fromSectorIndex = indexOfDate(dateInterval.startDate)
             let toSectorIndex   = indexOfDate(dateInterval.endDate)
             for sectorIndex in stride(from: fromSectorIndex, to: toSectorIndex, by: 1) {
                 // Set sector as Unavailable
                 disabledIndexMap[sectorIndex] = true
                 //
-                let xOrigin = CGFloat(sectorIndex) * parentView.intervalStepInPx
+                let xOrigin = CGFloat(sectorIndex) * intervalStepInPx
                 let r = CGRect(origin: CGPoint(x: CGFloat(xOrigin),
-                                               y: rect.height - parentView.unavailableSectorImageHeight),
-                               size: CGSize(width: parentView.intervalStepInPx,
-                                            height: parentView.unavailableSectorImageHeight))
+                                               y: rect.height - unavailableSectorImageHeight),
+                               size: CGSize(width: intervalStepInPx,
+                                            height: unavailableSectorImageHeight))
                 setUnavailable(in: r, at: sectorIndex)
             }
         }
     }
     
     func setUnavailable(in rect: CGRect, at index: Int) {
-        parentView.unavailableSectorImage?.draw(in: rect)
+        unavailableSectorImage?.draw(in: rect)
         UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 0.6).setFill()
         UIRectFillUsingBlendMode(rect, .multiply)
     }
 
     // MARK: - Reserved:
     func drawReservations(on rect: CGRect) {
-        let reservations = parentView.timeIntervalScrollViewModel.reservedTimeIntervalsList
+        let reservations = timeLineViewModel.reservedTimeIntervalsList
         if reservations.count > 0 {
             var xOrigin = startPoint
             
             let reservationsMutable = NSMutableArray(array: reservations)
             
             while xOrigin <= Int(rect.width) {
-                let index = xOrigin/Int(parentView.intervalStepInPx)
+                let index = xOrigin/Int(intervalStepInPx)
                 for reservation in reservationsMutable {
                     if let reservation = (reservation as? ReservationModel),
-                        let dateTime = parentView.timeSectorsMap[NSNumber(value: index)] {
+                        let dateTime = timeSectorsMap[NSNumber(value: index)] {
                         if reservation.reservationTimeInterval.startDate == dateTime.startDate
 //                            && reservation.reservationTimeInterval.duration >= TimeInterval(parentView.applyedTimeInterval.rawValue)
                         {
@@ -169,7 +285,7 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
                                 disabledIndexMap[sectorIndex] = true
                             }
                             //
-                            let width = convertToWidth(reservation.reservationTimeInterval) - CGFloat(parentView.separatorWidth)
+                            let width = convertToWidth(reservation.reservationTimeInterval) - CGFloat(separatorWidth)
                             reservationView.frame = CGRect(x: CGFloat(xOrigin),
                                                            y: rect.height - reservationView.contentHeight,
                                                            width: width,
@@ -182,42 +298,48 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
                         }
                     }
                 }
-                xOrigin += Int(parentView.intervalStepInPx)
+                xOrigin += Int(intervalStepInPx)
             }
         }
     }
     
     // MARK: - SelectedTimeIntervalView:
     func drawSelectedTimeInterval(on rect: CGRect) {
-        if let selectedTimeInterval = parentView.timeIntervalScrollViewModel.selectedTimeInterval {
+        if let selectedTimeInterval = timeLineViewModel.selectedTimeInterval {
             let fromSectorIndex = indexOfDate(selectedTimeInterval.startDate)
-            
-            if parentView.allowIntersectWithSelectedTimeInterval == false {
-                // need to set scope limit [min value -|- max value]
-                let selectedTimeIntervalScope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: fromSectorIndex)]
-                selectionScope = selectedTimeIntervalScope
-            } else {
-                selectionScope = nil
+            let throughSelectedIndex = indexOfDate(selectedTimeInterval.endDate)
+//            disabledIndexMap
+            var isIntersectReservedSection = false
+            for selectedIndex in fromSectorIndex...throughSelectedIndex {
+                if let isDisabled = disabledIndexMap[selectedIndex],
+                    isDisabled == true {
+                    isIntersectReservedSection = true
+                    break
+                }
             }
-            
-            let xOrigin = CGFloat(Int(CGFloat(fromSectorIndex) * parentView.intervalStepInPx))
-
+            let xOrigin = CGFloat(Int(CGFloat(fromSectorIndex) * intervalStepInPx))
             let width = convertToWidth(selectedTimeInterval)// - CGFloat(parentView.separatorWidth)
-            invalidateLayout(minX: xOrigin, maxX: (xOrigin + width), timeInterval: selectedTimeInterval)
+
+            selectedTimeIntervalView.frame = trackViewRect(minX: xOrigin, maxX: (xOrigin + width))
+            thumbView.setCenter(x: (xOrigin + width), y: selectedTimeIntervalView.frame.midY)
+            if isIntersectReservedSection {
+                // apply intersect color for selected time interval view
+                applySelectedViewIntersectStyle(true)
+            }
         }
     }
     
     // MARK: - MISC:
     private func appendDate(forIndex index: Int) {
-        let startDateTime = date.dateByAppendingSecs(parentView.applyedTimeInterval.rawValue * index, calendar: parentView.calendar)
-        let newDateInterval = CDateInterval(start: startDateTime, duration: TimeInterval(parentView.applyedTimeInterval.rawValue))
-        parentView.onApply(newDateInterval, forIndex: NSNumber(value: index))
+        let startDateTime = date.dateByAppendingSecs(applyedTimeInterval.rawValue * index, calendar: calendar)
+        let newDateInterval = CDateInterval(start: startDateTime, duration: TimeInterval(applyedTimeInterval.rawValue))
+        timeSectorsMap[NSNumber(value: index)] = newDateInterval
     }
     
     func setupAvailableRangeIntervals(in rect: CGRect) {
         // find allowed indexs
         var allowedIndexsList = [Int]()
-        for indexNumber in parentView.timeSectorsMap.keys {
+        for indexNumber in timeSectorsMap.keys {
             let index = indexNumber.intValue
             if self.disabledIndexMap[index] == nil {
                 allowedIndexsList.append(index)
@@ -229,8 +351,8 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
         for key in groupedDict.keys.sorted() {
             if let groupedIndexs = groupedDict[key] {
                 for index in groupedIndexs {
-                    let minValueX: CGFloat = CGFloat(groupedIndexs.min() ?? 0) * parentView.intervalStepInPx
-                    let maxValueX: CGFloat = CGFloat(groupedIndexs.max() ?? 0) * parentView.intervalStepInPx + parentView.intervalStepInPx
+                    let minValueX: CGFloat = CGFloat(groupedIndexs.min() ?? 0) * intervalStepInPx
+                    let maxValueX: CGFloat = CGFloat(groupedIndexs.max() ?? 0) * intervalStepInPx + intervalStepInPx
                     availableRangeIntervalForIndexMap[NSNumber(value: index)] =
                         SelectedTimeIntervalScope(minValueX: minValueX,
                                                   maxValueX: maxValueX)
@@ -282,13 +404,25 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     }
     
     //MARK: - CThumbViewPanDelegate:
-    var selectionScope: SelectedTimeIntervalScope?
+    var allowedSelectionScope: SelectedTimeIntervalScope? {
+        if let selectedTimeInterval = timeLineViewModel.selectedTimeInterval {
+            if allowIntersectWithSelectedTimeInterval == false {
+                // need to set scope limit [min value -|- max value]
+                let fromSectorIndex = indexOfDate(selectedTimeInterval.startDate)
+                let selectedTimeIntervalScope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: fromSectorIndex)]
+                return selectedTimeIntervalScope
+            } else {
+                return nil
+            }
+        }
+        return nil
+    }
     
     var timeIntervalScope: SelectedTimeIntervalScope {
-        let maxTimeIntervalInSecs = parentView.maxAppliableTimeIntervalInSecs
-        if let selectedTimeInterval = parentView.timeIntervalScrollViewModel.selectedTimeInterval {
-            let width = (CGFloat(maxTimeIntervalInSecs/parentView.applyedTimeInterval.rawValue) * parentView.intervalStepInPx)
-            let minValueX = convertToRect(selectedTimeInterval).minX + parentView.intervalStepInPx
+        let maxTimeIntervalInSecs = maxAppliableTimeIntervalInSecs
+        if let selectedTimeInterval = timeLineViewModel.selectedTimeInterval {
+            let width = (CGFloat(maxTimeIntervalInSecs/applyedTimeInterval.rawValue) * intervalStepInPx)
+            let minValueX = convertToRect(selectedTimeInterval).minX + intervalStepInPx
             let maxValueX = convertToRect(selectedTimeInterval).minX + width
             return SelectedTimeIntervalScope(minValueX: minValueX,
                                              maxValueX: maxValueX)
@@ -297,25 +431,24 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     }
     
     func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void) {
-        if let selectedTimeInterval = parentView.timeIntervalScrollViewModel.selectedTimeInterval {
-            invalidateLayout(minX: selectedTimeIntervalView.frame.minX, maxX: point.x, timeInterval: selectedTimeInterval)
-            if parentView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews {
-                let syncManager = TimeScrollViewSyncManager.shared
-                syncManager.notifyListeners(minX: selectedTimeIntervalView.frame.minX,
-                                            maxX: point.x,
-                                            thumbView: thumbView,
-                                            timeInterval: selectedTimeInterval)
+        if let selectedTimeInterval = timeLineViewModel.selectedTimeInterval {
+            invalidateSelectedTimeInterval(minX: selectedTimeIntervalView.frame.minX, maxX: point.x, timeInterval: selectedTimeInterval)
+            if let syncManager = syncManager {
+                syncManager.notifyListenersChangeThumbViewLocation(thumbView,
+                                                                   minX: selectedTimeIntervalView.frame.minX,
+                                                                   maxX: point.x,
+                                                                   timeInterval: selectedTimeInterval)
             }
         }
     }
     
     func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void) {
-        let truncRemainder = point.x.truncatingRemainder(dividingBy: parentView.intervalStepInPx)
-        let subtraction = parentView.intervalStepInPx - truncRemainder
+        let truncRemainder = point.x.truncatingRemainder(dividingBy: intervalStepInPx)
+        let subtraction = intervalStepInPx - truncRemainder
         let xOffset = CGFloat(startPoint)
         // round to greater
         var newPointX = point.x + subtraction
-        if subtraction >= parentView.intervalStepInPx/2 {
+        if subtraction >= intervalStepInPx/2 {
             // round to lesser
             newPointX = point.x - truncRemainder
         }
@@ -325,19 +458,18 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
                              height: selectedTimeIntervalView.frame.height)
         let newRect = CGRect(origin: selectedTimeIntervalView.frame.origin, size: newSize)
         let newTimeInterval = convertToTimeInterval(newRect)
-        invalidateLayout(minX: selectedTimeIntervalView.frame.minX,
+        invalidateSelectedTimeInterval(minX: selectedTimeIntervalView.frame.minX,
                          maxX: newPointX + xOffset,
                          timeInterval: newTimeInterval)
-        if parentView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews {
-            let syncManager = TimeScrollViewSyncManager.shared
-            syncManager.notifyListeners(minX: selectedTimeIntervalView.frame.minX,
-                                        maxX: newPointX + xOffset,
-                                        thumbView: thumbView,
-                                        timeInterval: newTimeInterval)
+        if let syncManager = syncManager {
+            syncManager.notifyListenersChangeThumbViewLocation(thumbView,
+                                                               minX: selectedTimeIntervalView.frame.minX,
+                                                               maxX: newPointX + xOffset,
+                                                               timeInterval: newTimeInterval)
         }
     }
     
-    // MARK: - CTimeIntervalDrawableViewProtocol:
+    // MARK: - CTimeLineViewProtocol:
 
     func onSelectionEvent(with index: Int, andPoint point: CGPoint) {
 //        let pointOnThumbView = self.convert(point, to: thumbView)
@@ -353,11 +485,11 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
 //        }
     }
     
-    // MARK: - TimeScrollViewSyncManagerDelegate:
+    // MARK: - TimeLineViewSyncManagerDelegate:
     
-    func onChangeThumbLocation(minX: CGFloat, maxX: CGFloat, thumbView: CThumbView, timeInterval: CDateInterval) {
+    func onChangeThumbLocation(_ thumbView: CThumbView, minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
         if self.thumbView != thumbView {
-            invalidateLayout(minX: minX,
+            invalidateSelectedTimeInterval(minX: minX,
                              maxX: maxX,
                              timeInterval: timeInterval)
         }
@@ -365,23 +497,9 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     
     // MARK: - Private:
     
-    fileprivate func invalidateLayout(minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
-        parentView.timeIntervalScrollViewModel.selectedTimeInterval = timeInterval
-        selectedTimeIntervalView.frame = trackViewRect(minX: minX, maxX: maxX)
-        thumbView.setCenter(x: maxX, y: selectedTimeIntervalView.frame.midY)
-        // calc intersection with other reservations
-        if parentView.allowIntersectWithSelectedTimeInterval {
-            let index = indexOfDate(timeInterval.startDate)
-            if let scope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: index)] {
-                let offset = parentView.separatorWidth
-                if maxX > (scope.maxValueX + offset) {
-                    // apply intersect color for selected time interval view
-                    selectedTimeIntervalView.setIntersectState(true)
-                } else {
-                    selectedTimeIntervalView.setIntersectState(false)
-                }
-            }
-        }
+    private func applySelectedViewIntersectStyle(_ isIntersect: Bool) {
+        thumbView.setIntersectState(isIntersect)
+        selectedTimeIntervalView.setIntersectState(isIntersect)
     }
     
     //returns the rect for the track view between the lower and upper values based on CSelectedTimeIntervalView object
@@ -397,55 +515,55 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     fileprivate func calcNewDuration(in newRange: SelectedTimeIntervalScope, for index: Int, with oldDuration: TimeInterval?) -> TimeInterval {
         if let oldDuration = oldDuration {
             let oldWidth = convertToWidth(oldDuration)
-            let xOriginOfIndex = (CGFloat(index) * parentView.intervalStepInPx)
+            let xOriginOfIndex = (CGFloat(index) * intervalStepInPx)
             var xMaxPoint = xOriginOfIndex + oldWidth
             if xMaxPoint <= newRange.maxValueX {
                 return oldDuration
             } else {
                 repeat {
-                    xMaxPoint -= parentView.intervalStepInPx
+                    xMaxPoint -= intervalStepInPx
                     if xMaxPoint <= newRange.maxValueX {
                         return convertToDuration(xMaxPoint - xOriginOfIndex)
                     }
-                } while (xMaxPoint - xOriginOfIndex) > parentView.intervalStepInPx
+                } while (xMaxPoint - xOriginOfIndex) > intervalStepInPx
             }
             assert(false, "AssertionError")
-            return TimeInterval(parentView.applyedTimeInterval.rawValue)
+            return TimeInterval(applyedTimeInterval.rawValue)
         } else {
-            return TimeInterval(parentView.applyedTimeInterval.rawValue)
+            return TimeInterval(applyedTimeInterval.rawValue)
         }
     }
     
     fileprivate func convertToTimeInterval(_ rect: CGRect) -> CDateInterval {
-        let startIndex = Int(rect.minX / parentView.intervalStepInPx)
-        var endIndex = Int(rect.maxX / parentView.intervalStepInPx)
+        let startIndex = Int(rect.minX / intervalStepInPx)
+        var endIndex = Int(rect.maxX / intervalStepInPx)
         if endIndex > 0 {
             endIndex -= 1
         }
-        let dateInterval = CDateInterval(start: parentView.timeSectorsMap[NSNumber(value: startIndex)]!.startDate,
-                                         end: parentView.timeSectorsMap[NSNumber(value: endIndex)]!.endDate)
+        let dateInterval = CDateInterval(start: timeSectorsMap[NSNumber(value: startIndex)]!.startDate,
+                                         end: timeSectorsMap[NSNumber(value: endIndex)]!.endDate)
         return dateInterval
     }
     
     fileprivate func convertToRect(_ timeInterval: CDateInterval) -> CGRect {
-        let xOrigin = CGFloat(indexOfDate(timeInterval.startDate)) * parentView.intervalStepInPx
-        let width   = convertToWidth(timeInterval) - CGFloat(parentView.separatorWidth)
+        let xOrigin = CGFloat(indexOfDate(timeInterval.startDate)) * intervalStepInPx
+        let width   = convertToWidth(timeInterval) - CGFloat(separatorWidth)
         let rect = CGRect(x: xOrigin, y: 0, width: width, height: 50)
         return rect
     }
     
     fileprivate func indexOfDate(_ date: Date) -> Int {
-        let index = date.sinceToday(parentView.calendar)/parentView.applyedTimeInterval.rawValue
+        let index = date.sinceToday(calendar)/applyedTimeInterval.rawValue
         return index
     }
     
     fileprivate func convertToDuration(_ width: CGFloat) -> TimeInterval {
-        let newDuration = TimeInterval((width / parentView.intervalStepInPx) * CGFloat(parentView.applyedTimeInterval.rawValue))
+        let newDuration = TimeInterval((width / intervalStepInPx) * CGFloat(applyedTimeInterval.rawValue))
         return newDuration
     }
     
     fileprivate func convertToWidth(_ duration: TimeInterval) -> CGFloat {
-        let width = CGFloat(duration/TimeInterval(parentView.applyedTimeInterval.rawValue)) * parentView.intervalStepInPx
+        let width = CGFloat(duration/TimeInterval(applyedTimeInterval.rawValue)) * intervalStepInPx
         return width
     }
     
@@ -454,12 +572,12 @@ class CTimeIntervalDrawableView: UIView, CThumbViewPanDelegate, CTimeIntervalDra
     }
     
     fileprivate func convertToIndex(_ xOrigin: CGFloat) -> Int {
-        let index = Int(xOrigin/parentView.intervalStepInPx)
+        let index = Int(xOrigin/intervalStepInPx)
         return index
     }
     
     fileprivate func xOrigin(for index: Int) -> CGFloat {
-        let xOrigin = CGFloat(index) * parentView.intervalStepInPx
+        let xOrigin = CGFloat(index) * intervalStepInPx
         return xOrigin
     }
     

@@ -7,34 +7,35 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C6075B881F8BA13E005C425C /* CSelectedTimeIntervalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */; };
-		C6075B8A1F8BA21F005C425C /* CThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B891F8BA21F005C425C /* CThumbView.swift */; };
-		C6229D2B1F90B23300D1C72B /* TimeScrollViewSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6229D2A1F90B23300D1C72B /* TimeScrollViewSyncManager.swift */; };
-		C69ADBF31F8E428B008C039A /* Arithmetics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69ADBF21F8E428B008C039A /* Arithmetics.swift */; };
 		C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */ = {isa = PBXBuildFile; fileRef = C6AC8ADB1F822C610049A52B /* CDateInterval.m */; };
+		E23243791F92533B00C433BE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626E1F811AE700C77FAE /* ViewController.swift */; };
+		E232437A1F92537400C433BE /* TimeLineViewSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6229D2A1F90B23300D1C72B /* TimeLineViewSyncManager.swift */; };
+		E232437B1F92537F00C433BE /* CSelectedTimeIntervalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */; };
+		E232437C1F92538300C433BE /* CReservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BCA5811F8AB32100A2B250 /* CReservationView.swift */; };
+		E232437D1F92538500C433BE /* CThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B891F8BA21F005C425C /* CThumbView.swift */; };
+		E232437E1F92538700C433BE /* CTimeLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24062801F8121EA00C77FAE /* CTimeLineView.swift */; };
+		E232437F1F92539700C433BE /* SelectedTimeIntervalScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69ADBF21F8E428B008C039A /* SelectedTimeIntervalScope.swift */; };
+		E23243811F92774900C433BE /* Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23243801F92774900C433BE /* Misc.swift */; };
 		E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626C1F811AE700C77FAE /* AppDelegate.swift */; };
-		E240626F1F811AE700C77FAE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626E1F811AE700C77FAE /* ViewController.swift */; };
 		E24062721F811AE700C77FAE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E24062701F811AE700C77FAE /* Main.storyboard */; };
 		E24062741F811AE700C77FAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E24062731F811AE700C77FAE /* Assets.xcassets */; };
 		E24062771F811AE700C77FAE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E24062751F811AE700C77FAE /* LaunchScreen.storyboard */; };
 		E24062851F81576F00C77FAE /* String+Attributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24062841F81576E00C77FAE /* String+Attributes.swift */; };
 		E24062871F815C9E00C77FAE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24062861F815C9E00C77FAE /* Date+Extensions.swift */; };
-		E240628C1F81665700C77FAE /* CTimeIntervalDrawableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24062801F8121EA00C77FAE /* CTimeIntervalDrawableView.swift */; };
-		E294A14A1F8A20D900F6290D /* CTimeIntervalScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E294A1491F8A20D900F6290D /* CTimeIntervalScrollView.swift */; };
 		E2BCA57E1F8AA5FD00A2B250 /* ReservationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */; };
-		E2BCA5801F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BCA57F1F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift */; };
-		E2BCA5821F8AB32100A2B250 /* CReservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BCA5811F8AB32100A2B250 /* CReservationView.swift */; };
+		E2BCA5801F8AACEB00A2B250 /* CTimeLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BCA57F1F8AACEB00A2B250 /* CTimeLineViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSelectedTimeIntervalView.swift; sourceTree = "<group>"; };
 		C6075B891F8BA21F005C425C /* CThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CThumbView.swift; sourceTree = "<group>"; };
-		C6229D2A1F90B23300D1C72B /* TimeScrollViewSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeScrollViewSyncManager.swift; sourceTree = "<group>"; };
-		C6504DE51F8CF007000EF233 /* CTimeIntervalScrollViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewDelegate.h; sourceTree = "<group>"; };
+		C6229D2A1F90B23300D1C72B /* TimeLineViewSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineViewSyncManager.swift; sourceTree = "<group>"; };
+		C6504DE51F8CF007000EF233 /* CTimeLineViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeLineViewDelegate.h; sourceTree = "<group>"; };
 		C6504DE61F8CF762000EF233 /* CTimeIntervalScrollViewSectorIntervalEnum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewSectorIntervalEnum.h; sourceTree = "<group>"; };
-		C69ADBF21F8E428B008C039A /* Arithmetics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arithmetics.swift; sourceTree = "<group>"; };
+		C69ADBF21F8E428B008C039A /* SelectedTimeIntervalScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTimeIntervalScope.swift; sourceTree = "<group>"; };
 		C6AC8ADA1F822C600049A52B /* CDateInterval.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDateInterval.h; sourceTree = "<group>"; };
 		C6AC8ADB1F822C610049A52B /* CDateInterval.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDateInterval.m; sourceTree = "<group>"; };
+		E23243801F92774900C433BE /* Misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
 		E24062691F811AE700C77FAE /* TimeScrollViewTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeScrollViewTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E240626C1F811AE700C77FAE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E240626E1F811AE700C77FAE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -42,15 +43,13 @@
 		E24062731F811AE700C77FAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E24062761F811AE700C77FAE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E24062781F811AE700C77FAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E24062801F8121EA00C77FAE /* CTimeIntervalDrawableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeIntervalDrawableView.swift; sourceTree = "<group>"; };
+		E24062801F8121EA00C77FAE /* CTimeLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeLineView.swift; sourceTree = "<group>"; };
 		E24062841F81576E00C77FAE /* String+Attributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Attributes.swift"; sourceTree = "<group>"; };
 		E24062861F815C9E00C77FAE /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		E240628A1F81637200C77FAE /* TimeScrollViewTest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TimeScrollViewTest-Bridging-Header.h"; sourceTree = "<group>"; };
-		E240628B1F81637200C77FAE /* CTimeIntervalDrawableViewProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalDrawableViewProtocol.h; sourceTree = "<group>"; };
-		E25A884B1F9008A500DC95A3 /* CTimeIntervalScrollViewDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewDataSource.h; sourceTree = "<group>"; };
-		E294A1491F8A20D900F6290D /* CTimeIntervalScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeIntervalScrollView.swift; sourceTree = "<group>"; };
+		E25A884B1F9008A500DC95A3 /* CTimeLineViewDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeLineViewDataSource.h; sourceTree = "<group>"; };
 		E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationModel.swift; sourceTree = "<group>"; };
-		E2BCA57F1F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeIntervalScrollViewModel.swift; sourceTree = "<group>"; };
+		E2BCA57F1F8AACEB00A2B250 /* CTimeLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeLineViewModel.swift; sourceTree = "<group>"; };
 		E2BCA5811F8AB32100A2B250 /* CReservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CReservationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -77,8 +76,7 @@
 		C6075B8C1F8BB3C3005C425C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C69ADBF21F8E428B008C039A /* Arithmetics.swift */,
-				E2BCA57F1F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift */,
+				E2BCA57F1F8AACEB00A2B250 /* CTimeLineViewModel.swift */,
 				E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */,
 				C6AC8ADA1F822C600049A52B /* CDateInterval.h */,
 				C6AC8ADB1F822C610049A52B /* CDateInterval.m */,
@@ -89,12 +87,10 @@
 		C6075B8D1F8BB3CE005C425C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E24062801F8121EA00C77FAE /* CTimeLineView.swift */,
+				C6075B891F8BA21F005C425C /* CThumbView.swift */,
 				E2BCA5811F8AB32100A2B250 /* CReservationView.swift */,
 				C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */,
-				E294A1491F8A20D900F6290D /* CTimeIntervalScrollView.swift */,
-				E24062801F8121EA00C77FAE /* CTimeIntervalDrawableView.swift */,
-				C6075B891F8BA21F005C425C /* CThumbView.swift */,
-				C6229D2A1F90B23300D1C72B /* TimeScrollViewSyncManager.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -110,9 +106,8 @@
 		C6075B901F8BB3F2005C425C /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				E240628B1F81637200C77FAE /* CTimeIntervalDrawableViewProtocol.h */,
-				C6504DE51F8CF007000EF233 /* CTimeIntervalScrollViewDelegate.h */,
-				E25A884B1F9008A500DC95A3 /* CTimeIntervalScrollViewDataSource.h */,
+				C6504DE51F8CF007000EF233 /* CTimeLineViewDelegate.h */,
+				E25A884B1F9008A500DC95A3 /* CTimeLineViewDataSource.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -144,6 +139,7 @@
 		C6075B981F8BB69F005C425C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E23243801F92774900C433BE /* Misc.swift */,
 				E24062731F811AE700C77FAE /* Assets.xcassets */,
 				E24062781F811AE700C77FAE /* Info.plist */,
 				E240628A1F81637200C77FAE /* TimeScrollViewTest-Bridging-Header.h */,
@@ -157,6 +153,22 @@
 				C6504DE61F8CF762000EF233 /* CTimeIntervalScrollViewSectorIntervalEnum.h */,
 			);
 			path = Enums;
+			sourceTree = "<group>";
+		};
+		E23243771F9251AD00C433BE /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C6229D2A1F90B23300D1C72B /* TimeLineViewSyncManager.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		E23243781F92523E00C433BE /* Arithmetics */ = {
+			isa = PBXGroup;
+			children = (
+				C69ADBF21F8E428B008C039A /* SelectedTimeIntervalScope.swift */,
+			);
+			path = Arithmetics;
 			sourceTree = "<group>";
 		};
 		E24062601F811AE700C77FAE = {
@@ -180,10 +192,12 @@
 			children = (
 				C6075B941F8BB443005C425C /* AppDelegate */,
 				C6504DE71F8CF76B000EF233 /* Enums */,
+				E23243781F92523E00C433BE /* Arithmetics */,
 				C6075B8F1F8BB3E8005C425C /* Controllers */,
 				C6075B901F8BB3F2005C425C /* Protocols */,
 				C6075B8D1F8BB3CE005C425C /* Views */,
 				C6075B8C1F8BB3C3005C425C /* Models */,
+				E23243771F9251AD00C433BE /* Utils */,
 				C6075B8B1F8BB3A1005C425C /* Extensions */,
 				C6075B911F8BB401005C425C /* Storyboards */,
 				C6075B931F8BB439005C425C /* LaunchScreen */,
@@ -265,20 +279,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E240626F1F811AE700C77FAE /* ViewController.swift in Sources */,
-				E2BCA5801F8AACEB00A2B250 /* CTimeIntervalScrollViewModel.swift in Sources */,
+				E232437B1F92537F00C433BE /* CSelectedTimeIntervalView.swift in Sources */,
+				E232437D1F92538500C433BE /* CThumbView.swift in Sources */,
+				E2BCA5801F8AACEB00A2B250 /* CTimeLineViewModel.swift in Sources */,
+				E232437F1F92539700C433BE /* SelectedTimeIntervalScope.swift in Sources */,
+				E232437E1F92538700C433BE /* CTimeLineView.swift in Sources */,
 				E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */,
-				C6075B881F8BA13E005C425C /* CSelectedTimeIntervalView.swift in Sources */,
-				E2BCA5821F8AB32100A2B250 /* CReservationView.swift in Sources */,
-				C69ADBF31F8E428B008C039A /* Arithmetics.swift in Sources */,
-				C6075B8A1F8BA21F005C425C /* CThumbView.swift in Sources */,
+				E232437C1F92538300C433BE /* CReservationView.swift in Sources */,
+				E23243811F92774900C433BE /* Misc.swift in Sources */,
+				E232437A1F92537400C433BE /* TimeLineViewSyncManager.swift in Sources */,
+				E23243791F92533B00C433BE /* ViewController.swift in Sources */,
 				E24062871F815C9E00C77FAE /* Date+Extensions.swift in Sources */,
 				C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */,
 				E2BCA57E1F8AA5FD00A2B250 /* ReservationModel.swift in Sources */,
-				E240628C1F81665700C77FAE /* CTimeIntervalDrawableView.swift in Sources */,
-				E294A14A1F8A20D900F6290D /* CTimeIntervalScrollView.swift in Sources */,
 				E24062851F81576F00C77FAE /* String+Attributes.swift in Sources */,
-				C6229D2B1F90B23300D1C72B /* TimeScrollViewSyncManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

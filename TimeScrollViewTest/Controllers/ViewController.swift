@@ -8,12 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIntervalScrollViewDataSource {
+class ViewController: UIViewController, CTimeLineViewDelegate, CTimeLineViewDataSource {
     
-    @IBOutlet weak var timeIntervalScrollView: CTimeIntervalScrollView!
-    @IBOutlet weak var timeIntervalScrollView2: CTimeIntervalScrollView!
-    
-    @IBOutlet weak var contentScrollView: UIScrollView!
+    @IBOutlet weak var timeIntervalScrollView: UIScrollView!
+    @IBOutlet weak var timeIntervalScrollView2: UIScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,33 +23,47 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
             CDateInterval(start: date.apply(hours: 0, minutes: 0, calendar: calendar), duration: 3*60*60),
             CDateInterval(start: date.apply(hours: 7, minutes: 0, calendar: calendar), duration: 60*60)
         ]
-        
+
         let reservations: [ReservationModel] = [
             ReservationModel(CDateInterval(start: date.apply(hours: 8, minutes: 0, calendar: calendar), duration: 2*60*60), hostName: "Best Friend"),
             ReservationModel(CDateInterval(start: date.apply(hours: 12, minutes: 0, calendar: calendar), duration: 15*60), hostName: "Second Best Friend"),
             ReservationModel(CDateInterval(start: date.apply(hours: 18, minutes: 0, calendar: calendar), duration: 15*60), hostName: "Second Best Friend")
         ]
-        
-        let selectedTimeInterval = CDateInterval(start: date.apply(hours: 6, minutes: 30, calendar: calendar), duration: 45*60)
-        
-        let syncManager = TimeScrollViewSyncManager.shared
-        
-        let timeIntervalScrollViewModel = CTimeIntervalScrollViewModel()
-        timeIntervalScrollViewModel.unavailableTimeIntervalsList = unavailableTimeIntervals
-        timeIntervalScrollViewModel.reservedTimeIntervalsList    = reservations
-        timeIntervalScrollViewModel.selectedTimeInterval         = selectedTimeInterval
-        
-        timeIntervalScrollView.timeIntervalScrollViewDelegate = self
-        timeIntervalScrollView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
-        timeIntervalScrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
-        timeIntervalScrollView.timeIntervalScrollViewDataSource = self
-        syncManager.listeners.append(timeIntervalScrollView.syncListener)
 
-//        timeIntervalScrollView2.isAllowThumbView = false
-        timeIntervalScrollView2.timeIntervalScrollViewModel = timeIntervalScrollViewModel
-        timeIntervalScrollView2.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
-        timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
-        syncManager.listeners.append(timeIntervalScrollView2.syncListener)
+        let selectedTimeInterval = CDateInterval(start: date.apply(hours: 6, minutes: 30, calendar: calendar), duration: 45*60)
+
+        let timeLineSyncManager = TimeLineViewSyncManager()
+        
+        let timeLineViewModel = CTimeLineViewModel()
+        timeLineViewModel.unavailableTimeIntervalsList = unavailableTimeIntervals
+        timeLineViewModel.reservedTimeIntervalsList    = reservations
+        timeLineViewModel.selectedTimeInterval         = selectedTimeInterval
+
+        let timeLineView = CTimeLineView(parent: timeIntervalScrollView)
+        timeLineView.timeLineViewModel = timeLineViewModel
+        timeLineView.dataSource = self
+        timeLineView.syncManager = timeLineSyncManager
+        timeIntervalScrollView.contentSize = timeLineView.timeLineContentSize()
+        timeLineView.invalidate(timeIntervalScrollView.contentSize)
+        
+        let timeLineView2 = CTimeLineView(parent: timeIntervalScrollView2)
+        timeLineView2.timeLineViewModel = timeLineViewModel
+        timeLineView2.dataSource = self
+        timeLineView2.syncManager = timeLineSyncManager
+        timeIntervalScrollView2.contentSize = timeLineView2.timeLineContentSize()
+        timeLineView2.invalidate(timeIntervalScrollView.contentSize)
+        
+//        timeIntervalScrollView.timeIntervalScrollViewDelegate = self
+//        timeIntervalScrollView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
+//        timeIntervalScrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
+//        timeIntervalScrollView.timeIntervalScrollViewDataSource = self
+//        syncManager.listeners.append(timeIntervalScrollView.syncListener)
+//
+////        timeIntervalScrollView2.isAllowThumbView = false
+//        timeIntervalScrollView2.timeIntervalScrollViewModel = timeIntervalScrollViewModel
+//        timeIntervalScrollView2.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
+//        timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
+//        syncManager.listeners.append(timeIntervalScrollView2.syncListener)
         
     }
 
@@ -59,27 +71,28 @@ class ViewController: UIViewController, CTimeIntervalScrollViewDelegate, CTimeIn
         super.didReceiveMemoryWarning()
     }
 
-    // MARK: - CTimeIntervalScrollViewDelegate:
+    // MARK: - CTimeLineViewDelegate:
     
-    func timeIntervalScrollView(_ scrollView: CTimeIntervalScrollView!, onSelectedTimeIntervalChange dateInterval: CDateInterval!) {
+    func timeLineView(_ timeLineView: CTimeLineView!, onSelectedTimeIntervalChange dateInterval: CDateInterval!) {
         print("newDateInterval startDate = \(dateInterval.startDate) \nendDate = \(dateInterval.endDate)")
     }
     
-    // MARK: - CTimeIntervalScrollViewDataSource:
+    // MARK: - CTimeLineViewDataSource:
     
-    func timeIntervalScrollViewAllowIntersectWithReservations() -> Bool {
-        return true
+    func timeIntersectWithReservations(for timeLineView: CTimeLineView!) -> Bool {
+        return false
     }
     
-    func stepForTimeIntervalScrollView() -> CTimeIntervals {
+    func step(for timeLineView: CTimeLineView!) -> CTimeIntervals {
         return .mins15
     }
     
     private let maxIntervalTwoHours = 2*60*60
-    
-    func maxAppliableTimeIntervalInSecs() -> Int {
+
+    func maxAppliableTimeIntervalInSecs(for timeLineView: CTimeLineView!) -> Int {
         return maxIntervalTwoHours
     }
+    
     
 }
 

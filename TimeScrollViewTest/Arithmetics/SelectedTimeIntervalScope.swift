@@ -1,5 +1,5 @@
 //
-//  Arithmetics.swift
+//  SelectedTimeIntervalScope.swift
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/11/17.

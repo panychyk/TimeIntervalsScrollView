@@ -11,8 +11,6 @@ import UIKit
 
 class CSelectedTimeIntervalView: UIView {
     
-    private typealias ColorSchemeTuple = (borderColor: UIColor, fillColor: UIColor)
-    
     // Parameters:
     let viewHeight: CGFloat  = 50.0
     let borderWidth: CGFloat = 1.5

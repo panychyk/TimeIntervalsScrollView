@@ -3,9 +3,8 @@
 //
 
 #pragma mark - Protocols:
-#import "CTimeIntervalDrawableViewProtocol.h"
-#import "CTimeIntervalScrollViewDelegate.h"
-#import "CTimeIntervalScrollViewDataSource.h"
+#import "CTimeLineViewDelegate.h"
+#import "CTimeLineViewDataSource.h"
 
 #pragma mark - Models:
 #import "CDateInterval.h"

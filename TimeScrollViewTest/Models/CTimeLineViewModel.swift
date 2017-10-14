@@ -1,5 +1,5 @@
 //
-//  CTimeIntervalScrollViewModel.swift
+//  CTimeLineViewModel.swift
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/8/17.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class CTimeIntervalScrollViewModel: NSObject {
+class CTimeLineViewModel: NSObject {
     
     var selectedTimeInterval: CDateInterval?
     

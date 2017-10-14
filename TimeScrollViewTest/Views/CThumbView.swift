@@ -10,7 +10,7 @@ import UIKit
 
 protocol CThumbViewPanDelegate: NSObjectProtocol {
     
-    var selectionScope: SelectedTimeIntervalScope? { get }
+    var allowedSelectionScope: SelectedTimeIntervalScope? { get }
     var timeIntervalScope: SelectedTimeIntervalScope { get }
     
     func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void)
@@ -21,7 +21,7 @@ protocol CThumbViewPanDelegate: NSObjectProtocol {
 let MAX_PAN_VELOCITY = 175.0
 
 class CThumbView: UIView, UIGestureRecognizerDelegate {
-
+    
     // Parameters:
     let viewSize = CGSize(width: 12.0, height: 24.0)
     
@@ -33,15 +33,31 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
         return rect.offsetBy(dx: -10, dy: 0)
     }()
     
+    private(set) var isIntersectState: Bool = false
+    
     // Design:
     private let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
     private let fillColor   = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0)
+    
+    private let intersectedBorderColor = UIColor(red: 208.0/255.0, green: 1.0/255.0, blue: 27.0/255.0, alpha: 1.0)
+    private let intersectedFillColor   = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0)
+
+    
+    private var colorScheme: ColorSchemeTuple {
+        if isIntersectState {
+            return (intersectedBorderColor, intersectedFillColor)
+        } else {
+            return (borderColor, fillColor)
+        }
+    }
     
     private var thumbViewPanGesture: UIPanGestureRecognizer!
         
     weak var delegate: CThumbViewPanDelegate?
     
     private(set) var isPressed = false
+    
+    private var prevCenterPoint: CGPoint = .zero
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -66,12 +82,12 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
         super.draw(rect)
 
         let innerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: viewCornerRadius)
-        fillColor.setFill()
+        colorScheme.fillColor.setFill()
         innerBezierPath.fill()
         
         let outerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: viewCornerRadius)
         outerBezierPath.lineWidth = borderWidth
-        borderColor.setStroke()
+        colorScheme.borderColor.setStroke()
         outerBezierPath.stroke()
     }
     
@@ -88,7 +104,15 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     // MARK: - Accessories:
     
     public func setCenter(x: CGFloat, y: CGFloat) {
-        self.center = CGPoint(x: x, y: y)
+        center = CGPoint(x: x, y: y)
+        prevCenterPoint = center
+    }
+    
+    func setIntersectState(_ isIntersect: Bool) {
+        if isIntersectState != isIntersect {
+            isIntersectState = isIntersect
+            setNeedsDisplay()
+        }
     }
     
     @objc private func onThumbViewSlideAction(_ sender: UIPanGestureRecognizer) {
@@ -99,11 +123,19 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
             isPressed = true
         case .changed:
             if let delegate = delegate {
-                let scope = delegate.selectionScope?.intersect(delegate.timeIntervalScope) ?? delegate.timeIntervalScope
-                if scope.minValueX ... scope.maxValueX ~= point.x {
-                    center = CGPoint(x: point.x, y: self.frame.midY)
+                let scope = delegate.allowedSelectionScope?.intersect(delegate.timeIntervalScope) ?? delegate.timeIntervalScope
+                if (scope.minValueX ... scope.maxValueX ~= prevCenterPoint.x) == false {
+                    // calc only by timeIntervalScope
+                    let timeIntervalScope = delegate.timeIntervalScope
+                    if timeIntervalScope.minValueX ... timeIntervalScope.maxValueX ~= point.x {
+                        setCenter(x: point.x, y: frame.midY)
+                        delegate.thumbView(self, didChangePoint: point)
+                    }
+                } else if scope.minValueX ... scope.maxValueX ~= point.x {
+                    setCenter(x: point.x, y: frame.midY)
                     delegate.thumbView(self, didChangePoint: point)
-                } else {
+                }
+                else {
 //                    sender.isEnabled = false
 //                    sender.isEnabled = true
                 }
