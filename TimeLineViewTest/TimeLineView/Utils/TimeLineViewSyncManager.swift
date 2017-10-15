@@ -10,12 +10,12 @@ import Foundation
 
 protocol TimeLineViewSyncManagerDelegate: NSObjectProtocol {
     
-    func onChangeThumbLocation(_ thumbView: CThumbView,
+    func onChangeThumbLocation(_ thumbView: ThumbView,
                                minX: CGFloat,
                                maxX: CGFloat,
                                timeInterval: CDateInterval)
     
-    func onChangeTimeInterval(_ timeLineView: CTimeLineView,
+    func onChangeTimeInterval(_ timeLineView: TimeLineView,
                               timeInterval: CDateInterval)
     
 }
@@ -27,7 +27,7 @@ class TimeLineViewSyncManager {
     
     static let shared = TimeLineViewSyncManager()
     
-    func notifyListenersChangeThumbViewLocation(_ thumbView: CThumbView, minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
+    func notifyListenersChangeThumbViewLocation(_ thumbView: ThumbView, minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
         
         for listener in listeners {
             guard let listener = listener else { continue }
@@ -35,7 +35,7 @@ class TimeLineViewSyncManager {
         }
     }
     
-    func notifyListenersOnChangeTimeInterval(in timeLineView: CTimeLineView, newTimeInterval: CDateInterval) {
+    func notifyListenersOnChangeTimeInterval(in timeLineView: TimeLineView, newTimeInterval: CDateInterval) {
         for listener in listeners {
             guard let listener = listener else { continue }
             listener.onChangeTimeInterval(timeLineView, timeInterval: newTimeInterval)

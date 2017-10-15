@@ -9,30 +9,24 @@
 /* Begin PBXBuildFile section */
 		C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */ = {isa = PBXBuildFile; fileRef = C6AC8ADB1F822C610049A52B /* CDateInterval.m */; };
 		E23243791F92533B00C433BE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626E1F811AE700C77FAE /* ViewController.swift */; };
-		E232437A1F92537400C433BE /* TimeLineViewSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6229D2A1F90B23300D1C72B /* TimeLineViewSyncManager.swift */; };
-		E232437B1F92537F00C433BE /* CSelectedTimeIntervalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */; };
-		E232437C1F92538300C433BE /* CReservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BCA5811F8AB32100A2B250 /* CReservationView.swift */; };
-		E232437D1F92538500C433BE /* CThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6075B891F8BA21F005C425C /* CThumbView.swift */; };
-		E232437E1F92538700C433BE /* CTimeLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24062801F8121EA00C77FAE /* CTimeLineView.swift */; };
-		E232437F1F92539700C433BE /* SelectedTimeIntervalScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69ADBF21F8E428B008C039A /* SelectedTimeIntervalScope.swift */; };
 		E23243811F92774900C433BE /* Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23243801F92774900C433BE /* Misc.swift */; };
 		E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626C1F811AE700C77FAE /* AppDelegate.swift */; };
 		E24062721F811AE700C77FAE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E24062701F811AE700C77FAE /* Main.storyboard */; };
 		E24062741F811AE700C77FAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E24062731F811AE700C77FAE /* Assets.xcassets */; };
 		E24062771F811AE700C77FAE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E24062751F811AE700C77FAE /* LaunchScreen.storyboard */; };
-		E24062851F81576F00C77FAE /* String+Attributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24062841F81576E00C77FAE /* String+Attributes.swift */; };
-		E24062871F815C9E00C77FAE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24062861F815C9E00C77FAE /* Date+Extensions.swift */; };
+		E24742E41F93A92F00409ECE /* TimeLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24742E31F93A82A00409ECE /* TimeLineView.swift */; };
+		E24742E51F93A93200409ECE /* ThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24742E21F93A82A00409ECE /* ThumbView.swift */; };
+		E24742E61F93A93D00409ECE /* SelectedTimeIntervalScope.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24742D41F93A82A00409ECE /* SelectedTimeIntervalScope.swift */; };
+		E24742E71F93A94900409ECE /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24742D81F93A82A00409ECE /* Date+Extensions.swift */; };
+		E24742E81F93A94900409ECE /* String+Attributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24742D91F93A82A00409ECE /* String+Attributes.swift */; };
+		E24742E91F93A94900409ECE /* TimeLineViewSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24742DE1F93A82A00409ECE /* TimeLineViewSyncManager.swift */; };
+		E24742EA1F93A94900409ECE /* ReservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24742E01F93A82A00409ECE /* ReservationView.swift */; };
+		E24742EB1F93A94900409ECE /* SelectedTimeIntervalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24742E11F93A82A00409ECE /* SelectedTimeIntervalView.swift */; };
 		E2BCA57E1F8AA5FD00A2B250 /* ReservationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */; };
 		E2BCA5801F8AACEB00A2B250 /* CTimeLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BCA57F1F8AACEB00A2B250 /* CTimeLineViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSelectedTimeIntervalView.swift; sourceTree = "<group>"; };
-		C6075B891F8BA21F005C425C /* CThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CThumbView.swift; sourceTree = "<group>"; };
-		C6229D2A1F90B23300D1C72B /* TimeLineViewSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineViewSyncManager.swift; sourceTree = "<group>"; };
-		C6504DE51F8CF007000EF233 /* CTimeLineViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeLineViewDelegate.h; sourceTree = "<group>"; };
-		C6504DE61F8CF762000EF233 /* CTimeIntervalScrollViewSectorIntervalEnum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeIntervalScrollViewSectorIntervalEnum.h; sourceTree = "<group>"; };
-		C69ADBF21F8E428B008C039A /* SelectedTimeIntervalScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTimeIntervalScope.swift; sourceTree = "<group>"; };
 		C6AC8ADA1F822C600049A52B /* CDateInterval.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDateInterval.h; sourceTree = "<group>"; };
 		C6AC8ADB1F822C610049A52B /* CDateInterval.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDateInterval.m; sourceTree = "<group>"; };
 		E23243801F92774900C433BE /* Misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
@@ -43,14 +37,20 @@
 		E24062731F811AE700C77FAE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E24062761F811AE700C77FAE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E24062781F811AE700C77FAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E24062801F8121EA00C77FAE /* CTimeLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeLineView.swift; sourceTree = "<group>"; };
-		E24062841F81576E00C77FAE /* String+Attributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Attributes.swift"; sourceTree = "<group>"; };
-		E24062861F815C9E00C77FAE /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		E240628A1F81637200C77FAE /* TimeLineView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TimeLineView-Bridging-Header.h"; sourceTree = "<group>"; };
-		E25A884B1F9008A500DC95A3 /* CTimeLineViewDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTimeLineViewDataSource.h; sourceTree = "<group>"; };
+		E24742D41F93A82A00409ECE /* SelectedTimeIntervalScope.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTimeIntervalScope.swift; sourceTree = "<group>"; };
+		E24742D61F93A82A00409ECE /* TimeIntervalScrollViewSectorIntervalEnum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeIntervalScrollViewSectorIntervalEnum.h; sourceTree = "<group>"; };
+		E24742D81F93A82A00409ECE /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		E24742D91F93A82A00409ECE /* String+Attributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Attributes.swift"; sourceTree = "<group>"; };
+		E24742DB1F93A82A00409ECE /* TimeLineViewDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeLineViewDataSource.h; sourceTree = "<group>"; };
+		E24742DC1F93A82A00409ECE /* TimeLineViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeLineViewDelegate.h; sourceTree = "<group>"; };
+		E24742DE1F93A82A00409ECE /* TimeLineViewSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineViewSyncManager.swift; sourceTree = "<group>"; };
+		E24742E01F93A82A00409ECE /* ReservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationView.swift; sourceTree = "<group>"; };
+		E24742E11F93A82A00409ECE /* SelectedTimeIntervalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTimeIntervalView.swift; sourceTree = "<group>"; };
+		E24742E21F93A82A00409ECE /* ThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbView.swift; sourceTree = "<group>"; };
+		E24742E31F93A82A00409ECE /* TimeLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineView.swift; sourceTree = "<group>"; };
 		E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationModel.swift; sourceTree = "<group>"; };
 		E2BCA57F1F8AACEB00A2B250 /* CTimeLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeLineViewModel.swift; sourceTree = "<group>"; };
-		E2BCA5811F8AB32100A2B250 /* CReservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CReservationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,15 +64,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C6075B8B1F8BB3A1005C425C /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				E24062841F81576E00C77FAE /* String+Attributes.swift */,
-				E24062861F815C9E00C77FAE /* Date+Extensions.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 		C6075B8C1F8BB3C3005C425C /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -84,32 +75,12 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		C6075B8D1F8BB3CE005C425C /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				E24062801F8121EA00C77FAE /* CTimeLineView.swift */,
-				C6075B891F8BA21F005C425C /* CThumbView.swift */,
-				E2BCA5811F8AB32100A2B250 /* CReservationView.swift */,
-				C6075B871F8BA13E005C425C /* CSelectedTimeIntervalView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		C6075B8F1F8BB3E8005C425C /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				E240626E1F811AE700C77FAE /* ViewController.swift */,
 			);
 			path = Controllers;
-			sourceTree = "<group>";
-		};
-		C6075B901F8BB3F2005C425C /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-				C6504DE51F8CF007000EF233 /* CTimeLineViewDelegate.h */,
-				E25A884B1F9008A500DC95A3 /* CTimeLineViewDataSource.h */,
-			);
-			path = Protocols;
 			sourceTree = "<group>";
 		};
 		C6075B911F8BB401005C425C /* Storyboards */ = {
@@ -147,30 +118,6 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		C6504DE71F8CF76B000EF233 /* Enums */ = {
-			isa = PBXGroup;
-			children = (
-				C6504DE61F8CF762000EF233 /* CTimeIntervalScrollViewSectorIntervalEnum.h */,
-			);
-			path = Enums;
-			sourceTree = "<group>";
-		};
-		E23243771F9251AD00C433BE /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				C6229D2A1F90B23300D1C72B /* TimeLineViewSyncManager.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
-		E23243781F92523E00C433BE /* Arithmetics */ = {
-			isa = PBXGroup;
-			children = (
-				C69ADBF21F8E428B008C039A /* SelectedTimeIntervalScope.swift */,
-			);
-			path = Arithmetics;
-			sourceTree = "<group>";
-		};
 		E24062601F811AE700C77FAE = {
 			isa = PBXGroup;
 			children = (
@@ -190,20 +137,81 @@
 		E240626B1F811AE700C77FAE /* TimeLineViewTest */ = {
 			isa = PBXGroup;
 			children = (
+				E24742D21F93A82A00409ECE /* TimeLineView */,
 				C6075B941F8BB443005C425C /* AppDelegate */,
-				C6504DE71F8CF76B000EF233 /* Enums */,
-				E23243781F92523E00C433BE /* Arithmetics */,
 				C6075B8F1F8BB3E8005C425C /* Controllers */,
-				C6075B901F8BB3F2005C425C /* Protocols */,
-				C6075B8D1F8BB3CE005C425C /* Views */,
 				C6075B8C1F8BB3C3005C425C /* Models */,
-				E23243771F9251AD00C433BE /* Utils */,
-				C6075B8B1F8BB3A1005C425C /* Extensions */,
 				C6075B911F8BB401005C425C /* Storyboards */,
 				C6075B931F8BB439005C425C /* LaunchScreen */,
 				C6075B981F8BB69F005C425C /* Resources */,
 			);
 			path = TimeLineViewTest;
+			sourceTree = "<group>";
+		};
+		E24742D21F93A82A00409ECE /* TimeLineView */ = {
+			isa = PBXGroup;
+			children = (
+				E24742D31F93A82A00409ECE /* Arithmetics */,
+				E24742D51F93A82A00409ECE /* Enums */,
+				E24742D71F93A82A00409ECE /* Extensions */,
+				E24742DA1F93A82A00409ECE /* Protocols */,
+				E24742DD1F93A82A00409ECE /* Utils */,
+				E24742DF1F93A82A00409ECE /* Views */,
+			);
+			path = TimeLineView;
+			sourceTree = "<group>";
+		};
+		E24742D31F93A82A00409ECE /* Arithmetics */ = {
+			isa = PBXGroup;
+			children = (
+				E24742D41F93A82A00409ECE /* SelectedTimeIntervalScope.swift */,
+			);
+			path = Arithmetics;
+			sourceTree = "<group>";
+		};
+		E24742D51F93A82A00409ECE /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				E24742D61F93A82A00409ECE /* TimeIntervalScrollViewSectorIntervalEnum.h */,
+			);
+			path = Enums;
+			sourceTree = "<group>";
+		};
+		E24742D71F93A82A00409ECE /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E24742D81F93A82A00409ECE /* Date+Extensions.swift */,
+				E24742D91F93A82A00409ECE /* String+Attributes.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E24742DA1F93A82A00409ECE /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				E24742DB1F93A82A00409ECE /* TimeLineViewDataSource.h */,
+				E24742DC1F93A82A00409ECE /* TimeLineViewDelegate.h */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		E24742DD1F93A82A00409ECE /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				E24742DE1F93A82A00409ECE /* TimeLineViewSyncManager.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		E24742DF1F93A82A00409ECE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E24742E01F93A82A00409ECE /* ReservationView.swift */,
+				E24742E11F93A82A00409ECE /* SelectedTimeIntervalView.swift */,
+				E24742E21F93A82A00409ECE /* ThumbView.swift */,
+				E24742E31F93A82A00409ECE /* TimeLineView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -279,20 +287,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E232437B1F92537F00C433BE /* CSelectedTimeIntervalView.swift in Sources */,
-				E232437D1F92538500C433BE /* CThumbView.swift in Sources */,
+				E24742E71F93A94900409ECE /* Date+Extensions.swift in Sources */,
+				E24742E81F93A94900409ECE /* String+Attributes.swift in Sources */,
+				E24742E91F93A94900409ECE /* TimeLineViewSyncManager.swift in Sources */,
+				E24742EA1F93A94900409ECE /* ReservationView.swift in Sources */,
+				E24742EB1F93A94900409ECE /* SelectedTimeIntervalView.swift in Sources */,
+				E24742E61F93A93D00409ECE /* SelectedTimeIntervalScope.swift in Sources */,
 				E2BCA5801F8AACEB00A2B250 /* CTimeLineViewModel.swift in Sources */,
-				E232437F1F92539700C433BE /* SelectedTimeIntervalScope.swift in Sources */,
-				E232437E1F92538700C433BE /* CTimeLineView.swift in Sources */,
 				E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */,
-				E232437C1F92538300C433BE /* CReservationView.swift in Sources */,
 				E23243811F92774900C433BE /* Misc.swift in Sources */,
-				E232437A1F92537400C433BE /* TimeLineViewSyncManager.swift in Sources */,
 				E23243791F92533B00C433BE /* ViewController.swift in Sources */,
-				E24062871F815C9E00C77FAE /* Date+Extensions.swift in Sources */,
 				C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */,
+				E24742E51F93A93200409ECE /* ThumbView.swift in Sources */,
 				E2BCA57E1F8AA5FD00A2B250 /* ReservationModel.swift in Sources */,
-				E24062851F81576F00C77FAE /* String+Attributes.swift in Sources */,
+				E24742E41F93A92F00409ECE /* TimeLineView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

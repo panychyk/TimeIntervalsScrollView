@@ -1,5 +1,5 @@
 //
-//  CThumbView.swift
+//  ThumbView.swift
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/9/17.
@@ -8,29 +8,29 @@
 
 import UIKit
 
-protocol CThumbViewPanDelegate: NSObjectProtocol {
+protocol ThumbViewPanDelegate: NSObjectProtocol {
     
     var allowedSelectionScope: SelectedTimeIntervalScope? { get }
     var timeIntervalScope: SelectedTimeIntervalScope { get }
     
-    func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void)
-    func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void)
+    func thumbView(_ thumbView: ThumbView, didChangePoint point: CGPoint) -> (Void)
+    func thumbView(_ thumbView: ThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void)
     
 }
 
 let MAX_PAN_VELOCITY = 175.0
 
-class CThumbView: UIView, UIGestureRecognizerDelegate {
+class ThumbView: UIView, UIGestureRecognizerDelegate {
     
     // Parameters:
     let viewSize = CGSize(width: 12.0, height: 24.0)
     
-    private let viewCornerRadius: CGFloat  = 100.0
+    private let viewCornerRadius: CGFloat  = 120.0
     private let borderWidth: CGFloat       = 2
     
     lazy var hitAreaBounds: CGRect = {
         let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewSize.width * 2), height: viewSize.height))
-        return rect.offsetBy(dx: -10, dy: 0)
+        return rect.offsetBy(dx: viewSize.width * 0.2, dy: 0)
     }()
     
     private(set) var isIntersectState: Bool = false
@@ -53,7 +53,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     
     private var thumbViewPanGesture: UIPanGestureRecognizer!
         
-    weak var delegate: CThumbViewPanDelegate?
+    weak var delegate: ThumbViewPanDelegate?
     
     private(set) var isPressed = false
     
@@ -116,28 +116,35 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     }
     
     @objc private func onThumbViewSlideAction(_ sender: UIPanGestureRecognizer) {
-        let point = sender.location(in: self.superview)
+        let pointOnSuperview = sender.location(in: self.superview)
         
         switch sender.state {
         case .began:
             isPressed = true
         case .changed:
             if let delegate = delegate {
+                
+                var point = pointOnSuperview
+                
                 let scope = delegate.allowedSelectionScope?.intersect(delegate.timeIntervalScope) ?? delegate.timeIntervalScope
                 if (scope.minValueX ... scope.maxValueX ~= prevCenterPoint.x) == false {
                     // calc only by timeIntervalScope
                     let timeIntervalScope = delegate.timeIntervalScope
-                    if timeIntervalScope.minValueX ... timeIntervalScope.maxValueX ~= point.x {
-                        setCenter(x: point.x, y: frame.midY)
-                        delegate.thumbView(self, didChangePoint: point)
+                    if timeIntervalScope.maxValueX < pointOnSuperview.x {
+                        point = CGPoint(x: timeIntervalScope.maxValueX, y: pointOnSuperview.y)
+                    } else if timeIntervalScope.minValueX > pointOnSuperview.x {
+                        point = CGPoint(x: timeIntervalScope.minValueX, y: pointOnSuperview.y)
                     }
-                } else if scope.minValueX ... scope.maxValueX ~= point.x {
                     setCenter(x: point.x, y: frame.midY)
                     delegate.thumbView(self, didChangePoint: point)
-                }
-                else {
-//                    sender.isEnabled = false
-//                    sender.isEnabled = true
+                } else {
+                    if scope.maxValueX < pointOnSuperview.x {
+                        point = CGPoint(x: scope.maxValueX, y: pointOnSuperview.y)
+                    } else if scope.minValueX > pointOnSuperview.x {
+                        point = CGPoint(x: scope.minValueX, y: pointOnSuperview.y)
+                    }
+                    setCenter(x: point.x, y: frame.midY)
+                    delegate.thumbView(self, didChangePoint: point)
                 }
             } else {
                 assert(false, "NotImplementedError")

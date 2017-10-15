@@ -1,5 +1,5 @@
 //
-//  CTimeLineView.swift
+//  TimeLineView.swift
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/1/17.
@@ -8,32 +8,41 @@
 
 import UIKit
 
-class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDelegate {
+class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegate {
     
-    weak var delegate: CTimeLineViewDelegate?
-    weak var dataSource: CTimeLineViewDataSource? {
+    weak var delegate: TimeLineViewDelegate?
+    weak var dataSource: TimeLineViewDataSource? {
         didSet {
             reloadData()
         }
     }
     
-    weak var weakReference: CTimeLineView? {
+    weak var weakReference: TimeLineView? {
         return self
     }
     
-    lazy var date: Date = {
-        return Date().dateWithZeroHourAndMinute(self.calendar)!
-    }()
+    private var date: Date {
+        return Date().dateWithZeroHourAndMinute(defaultCalendar)!
+    }
+    
+    private var startPointOffset: Int {
+        return Int(round((separatorWidth)/2))
+    }
     
     let oneDayInSec = 86400 // 24*60*60
-    lazy var calendar: Calendar = {
+    
+    private lazy var defaultCalendar: Calendar = {
         var cal = Calendar.current
         cal.timeZone = TimeZone(secondsFromGMT: 0)!
         return cal
     }()
     
     // DataSource:
-    var isHiddenThumbView = false
+    var isHiddenThumbView = false {
+        didSet {
+            thumbView.isHidden = isHiddenThumbView
+        }
+    }
     
     var syncManager: TimeLineViewSyncManager? {
         willSet {
@@ -47,7 +56,9 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     }
     
     private(set) var allowIntersectWithSelectedTimeInterval = false
+    
     private(set) var maxAppliableTimeIntervalInSecs = 0
+    
     private(set) var applyedTimeInterval: CTimeIntervals = .mins30
     
     var timeLineViewModel = CTimeLineViewModel() {
@@ -84,9 +95,9 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         }
     }
     
-    var applySelectionTimeIntervalUsingTap: Bool = true {
+    var isEnableTapGesture: Bool = true {
         didSet {
-            onTimeSectionTapGesture.isEnabled = applySelectionTimeIntervalUsingTap
+            onTimeSectionTapGesture.isEnabled = isEnableTapGesture
         }
     }
     
@@ -100,27 +111,22 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     let unavailableSectorImage = UIImage(named: "reserved_image")
     
     // Subviews:
-    lazy var thumbView: CThumbView = {
-        let thumbView = CThumbView()
+    lazy var thumbView: ThumbView = {
+        let thumbView = ThumbView()
         thumbView.delegate = self
         thumbView.isHidden = isHiddenThumbView
         addSubview(thumbView)
         return thumbView
     }()
     
-    lazy var selectedTimeIntervalView: CSelectedTimeIntervalView = {
-        let selectedTimeIntervalView = CSelectedTimeIntervalView()
+    lazy var selectedTimeIntervalView: SelectedTimeIntervalView = {
+        let selectedTimeIntervalView = SelectedTimeIntervalView()
         insertSubview(selectedTimeIntervalView, belowSubview: thumbView)
         return selectedTimeIntervalView
     }()
     
-    var startPoint: Int {
-        return Int(round((separatorWidth)/2))
-    }
-    
     var disabledIndexMap = [Int : Bool]()
-    
-    var timeSectorsMap = [NSNumber : CDateInterval]()
+    var timeSectorsMap   = [NSNumber : CDateInterval]()
     
     lazy var onTimeSectionTapGesture: UITapGestureRecognizer = {
         let onTimeSectionTapGesture = UITapGestureRecognizer(target: self, action: #selector(onTimeSectionTapAction(_:)))
@@ -149,16 +155,10 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     // Appearance
     func appearance() {
         backgroundColor = .white
-        isUserInteractionEnabled = true
         addGestureRecognizer(onTimeSectionTapGesture)
     }
     
     // MARK: - Layout:
-    func timeLineContentSize() -> CGSize {
-        let contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: defaultViewHeight)
-        return contentSize
-    }
-    
     func invalidate() {
         let canvasFrame = CGRect(origin: bounds.origin, size: timeLineContentSize())
         frame = canvasFrame
@@ -166,6 +166,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     }
     
     func invalidateSelectedTimeInterval(minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
+        hideSelectedTimeIntervalView(false)
         timeLineViewModel.selectedTimeInterval = timeInterval
         selectedTimeIntervalView.frame = trackViewRect(minX: minX, maxX: maxX)
         thumbView.setCenter(x: maxX, y: selectedTimeIntervalView.frame.midY)
@@ -179,6 +180,11 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         } else {
             applySelectedViewIntersectStyle(true)
         }
+    }
+    
+    func timeLineContentSize() -> CGSize {
+        let contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: defaultViewHeight)
+        return contentSize
     }
     
     func reloadData() {
@@ -199,11 +205,11 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         drawSelectedTimeInterval(on: rect)
     }
     
-    // MARK: - Separators:
+    //Separators:
     func drawSeparatorsAndTimeTitles(in rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
         context?.setLineWidth(separatorWidth)
-        for xOrigin in stride(from: startPoint, through: Int(rect.width), by: Int(intervalStepInPx)) {
+        for xOrigin in stride(from: startPointOffset, through: Int(rect.width), by: Int(intervalStepInPx)) {
             let index = xOrigin/Int(intervalStepInPx)
             
             appendDate(forIndex: index)
@@ -244,7 +250,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         let yOrigin = rect.height - height
         if height == mins60SeparatorHeight {
             if let dateTime = timeSectorsMap[NSNumber(value: index)] {
-                drawTimeText(dateTime.startDate.shortHoursString(calendar),
+                drawTimeText(dateTime.startDate.shortHoursString(defaultCalendar),
                          at: CGPoint(x: (xOrigin + 6.0), y: yOrigin))
             }
         }
@@ -263,7 +269,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         attributedTimeString.draw(at: point)
     }
     
-    // MARK: - Unavailable:
+    //Unavailable:
     func drawUnavailableSectors(on rect: CGRect) {
         for dateInterval in timeLineViewModel.unavailableTimeIntervalsList {
             let fromSectorIndex = indexOfDate(dateInterval.startDate)
@@ -277,22 +283,18 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
                                                y: rect.height - unavailableSectorImageHeight),
                                size: CGSize(width: intervalStepInPx,
                                             height: unavailableSectorImageHeight))
-                setUnavailable(in: r, at: sectorIndex)
+                unavailableSectorImage?.draw(in: r)
+                UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 0.6).setFill()
+                UIRectFillUsingBlendMode(r, .multiply)
             }
         }
     }
-    
-    func setUnavailable(in rect: CGRect, at index: Int) {
-        unavailableSectorImage?.draw(in: rect)
-        UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 0.6).setFill()
-        UIRectFillUsingBlendMode(rect, .multiply)
-    }
 
-    // MARK: - Reserved:
+    //Reserved:
     func drawReservations(on rect: CGRect) {
         let reservations = timeLineViewModel.reservedTimeIntervalsList
         if reservations.count > 0 {
-            var xOrigin = startPoint
+            var xOrigin = startPointOffset
             
             let reservationsMutable = NSMutableArray(array: reservations)
             
@@ -304,7 +306,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
                         if reservation.reservationTimeInterval.startDate == dateTime.startDate
 //                            && reservation.reservationTimeInterval.duration >= TimeInterval(parentView.applyedTimeInterval.rawValue)
                         {
-                            let reservationView = CReservationView(reservation)
+                            let reservationView = ReservationView(reservation)
                             // Set sectors as Unavailable
                             let fromIndex = indexOfDate(reservation.reservationTimeInterval.startDate)
                             let endIndex  = indexOfDate(reservation.reservationTimeInterval.endDate)
@@ -330,12 +332,12 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         }
     }
     
-    // MARK: - SelectedTimeIntervalView:
+    //SelectedTimeInterval:
     func drawSelectedTimeInterval(on rect: CGRect) {
         if let selectedTimeInterval = timeLineViewModel.selectedTimeInterval {
+            hideSelectedTimeIntervalView(false)
             let fromSectorIndex = indexOfDate(selectedTimeInterval.startDate)
             let throughSelectedIndex = indexOfDate(selectedTimeInterval.endDate)
-//            disabledIndexMap
             var isIntersectReservedSection = false
             for selectedIndex in fromSectorIndex...throughSelectedIndex {
                 if let isDisabled = disabledIndexMap[selectedIndex],
@@ -350,20 +352,20 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
             selectedTimeIntervalView.frame = trackViewRect(minX: xOrigin, maxX: (xOrigin + width))
             thumbView.setCenter(x: (xOrigin + width), y: selectedTimeIntervalView.frame.midY)
             if isIntersectReservedSection {
-                // apply intersect color for selected time interval view
                 applySelectedViewIntersectStyle(true)
             }
+        } else {
+            hideSelectedTimeIntervalView(true)
         }
     }
     
-    // MARK: - MISC:
-    private func appendDate(forIndex index: Int) {
-        let startDateTime = date.dateByAppendingSecs(applyedTimeInterval.rawValue * index, calendar: calendar)
-        let newDateInterval = CDateInterval(start: startDateTime, duration: TimeInterval(applyedTimeInterval.rawValue))
-        timeSectorsMap[NSNumber(value: index)] = newDateInterval
+    func hideSelectedTimeIntervalView(_ hide: Bool) {
+        selectedTimeIntervalView.isHidden = hide
+        if !isHiddenThumbView { thumbView.isHidden = hide }
     }
     
-    func setupAvailableRangeIntervals(in rect: CGRect) {
+    // MARK: - Math:
+    private func setupAvailableRangeIntervals(in rect: CGRect) {
         // find allowed indexs
         var allowedIndexsList = [Int]()
         for indexNumber in timeSectorsMap.keys {
@@ -387,8 +389,6 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
             }
         }
     }
-    
-    // MARK: - Math:
     
     private func groupAvailableIndexs(_ availableIndexsList: [Int]) -> [Int : [Int]] {
         var groupArray = [Int : [Int]]()
@@ -425,7 +425,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         return super.hitTest(point, with: event)
     }
     
-    //MARK: - CThumbViewPanDelegate:
+    //MARK: - ThumbViewPanDelegate:
     var allowedSelectionScope: SelectedTimeIntervalScope? {
         if let selectedTimeInterval = timeLineViewModel.selectedTimeInterval {
             if allowIntersectWithSelectedTimeInterval == false {
@@ -452,7 +452,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         return SelectedTimeIntervalScope.zero()
     }
     
-    func thumbView(_ thumbView: CThumbView, didChangePoint point: CGPoint) -> (Void) {
+    func thumbView(_ thumbView: ThumbView, didChangePoint point: CGPoint) -> (Void) {
         if let selectedTimeInterval = timeLineViewModel.selectedTimeInterval {
             invalidateSelectedTimeInterval(minX: selectedTimeIntervalView.frame.minX, maxX: point.x, timeInterval: selectedTimeInterval)
             if let syncManager = syncManager {
@@ -464,7 +464,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         }
     }
     
-    func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void) {
+    func thumbView(_ thumbView: ThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void) {
         let truncRemainder = point.x.truncatingRemainder(dividingBy: intervalStepInPx)
         let subtraction = intervalStepInPx - truncRemainder
         // round to greater
@@ -493,7 +493,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     
     // MARK: - TimeLineViewSyncManagerDelegate:
     
-    func onChangeThumbLocation(_ thumbView: CThumbView, minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
+    func onChangeThumbLocation(_ thumbView: ThumbView, minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
         if self.thumbView !== thumbView {
             invalidateSelectedTimeInterval(minX: minX,
                              maxX: maxX,
@@ -501,7 +501,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         }
     }
     
-    func onChangeTimeInterval(_ timeLineView: CTimeLineView, timeInterval: CDateInterval) {
+    func onChangeTimeInterval(_ timeLineView: TimeLineView, timeInterval: CDateInterval) {
         if timeLineView !== self {
             let minX = xOrigin(for: indexOfDate(timeInterval.startDate))
             let maxX = minX + convertToWidth(timeInterval)
@@ -514,7 +514,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     
     // MARK: - TapGesture:
     
-    @objc private func onTimeSectionTapAction(_ gesture: UITapGestureRecognizer) {
+    @objc fileprivate func onTimeSectionTapAction(_ gesture: UITapGestureRecognizer) {
         let points = gesture.location(in: self)
         let index = convertToIndex(points.x)
         let pointOnThumbView = self.convert(points, to: thumbView)
@@ -536,15 +536,19 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     }
     
     // MARK: - Private:
+    fileprivate func appendDate(forIndex index: Int) {
+        let startDateTime = date.dateByAppendingSecs(applyedTimeInterval.rawValue * index, calendar: defaultCalendar)
+        let newDateInterval = CDateInterval(start: startDateTime, duration: TimeInterval(applyedTimeInterval.rawValue))
+        timeSectorsMap[NSNumber(value: index)] = newDateInterval
+    }
     
-    private func applySelectedViewIntersectStyle(_ isIntersect: Bool) {
+    fileprivate func applySelectedViewIntersectStyle(_ isIntersect: Bool) {
         thumbView.setIntersectState(isIntersect)
         selectedTimeIntervalView.setIntersectState(isIntersect)
     }
     
-    //returns the rect for the track view between the lower and upper values based on CSelectedTimeIntervalView object
-    private func trackViewRect(minX: CGFloat, maxX: CGFloat) -> CGRect {
-        
+    //returns the rect for the track view between the lower and upper values based on SelectedTimeIntervalView object
+    fileprivate func trackViewRect(minX: CGFloat, maxX: CGFloat) -> CGRect {
         let rect = CGRect(x: minX,
                           y: self.frame.height - selectedTimeIntervalView.viewHeight,
                           width: maxX - minX,
@@ -593,7 +597,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     }
     
     fileprivate func indexOfDate(_ date: Date) -> Int {
-        let index = date.sinceToday(calendar)/applyedTimeInterval.rawValue
+        let index = date.sinceToday(defaultCalendar)/applyedTimeInterval.rawValue
         return index
     }
     

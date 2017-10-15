@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension String {
+public extension String {
   
   func attributedString(font: UIFont, charSpace: Float, tintColor: UIColor, upperCase: Bool) -> NSAttributedString {
     let parameters = [NSAttributedStringKey.kern            : NSNumber(value: charSpace),

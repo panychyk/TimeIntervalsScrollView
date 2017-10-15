@@ -3,11 +3,11 @@
 //
 
 #pragma mark - Protocols:
-#import "CTimeLineViewDelegate.h"
-#import "CTimeLineViewDataSource.h"
+#import "TimeLineViewDelegate.h"
+#import "TimeLineViewDataSource.h"
 
 #pragma mark - Models:
 #import "CDateInterval.h"
 
 #pragma mark - Enums:
-#import "CTimeIntervalScrollViewSectorIntervalEnum.h"
+#import "TimeIntervalScrollViewSectorIntervalEnum.h"

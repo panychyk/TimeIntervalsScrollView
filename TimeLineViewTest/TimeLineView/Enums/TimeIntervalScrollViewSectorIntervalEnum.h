@@ -1,13 +1,13 @@
 //
-//  CTimeIntervalScrollViewSectorIntervalEnum.h
+//  TimeIntervalScrollViewSectorIntervalEnum.h
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/10/17.
 //  Copyright © 2017 d'Man. All rights reserved.
 //
 
-#ifndef CTimeIntervalScrollViewSectorIntervalEnum_h
-#define CTimeIntervalScrollViewSectorIntervalEnum_h
+#ifndef TimeIntervalScrollViewSectorIntervalEnum_h
+#define TimeIntervalScrollViewSectorIntervalEnum_h
 
 typedef NS_ENUM(NSInteger, CTimeIntervals) {
     CTimeIntervalsMins15 = 900,  // 15*60
@@ -15,4 +15,4 @@ typedef NS_ENUM(NSInteger, CTimeIntervals) {
     CTimeIntervalsMins60 = 3600, // 60*60
 };
 
-#endif /* CTimeIntervalScrollViewSectorIntervalEnum_h */
+#endif /* TimeIntervalScrollViewSectorIntervalEnum_h */

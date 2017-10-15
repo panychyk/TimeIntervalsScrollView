@@ -1,5 +1,5 @@
 //
-//  CSelectedTimeIntervalView.swift
+//  SelectedTimeIntervalView.swift
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/9/17.
@@ -9,7 +9,7 @@
 import UIKit
 
 
-class CSelectedTimeIntervalView: UIView {
+class SelectedTimeIntervalView: UIView {
     
     // Parameters:
     let viewHeight: CGFloat  = 50.0

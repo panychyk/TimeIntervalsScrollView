@@ -1,5 +1,5 @@
 //
-//  CReservationView.swift
+//  ReservationView.swift
 //  TimeScrollViewTest
 //
 //  Created by Dimitry Panychyk on 10/8/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CReservationView: UIView {
+class ReservationView: UIView {
 
     var reservation: ReservationModel!
     

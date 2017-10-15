@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, CTimeLineViewDelegate, CTimeLineViewDataSource {
+class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSource {
     
     @IBOutlet weak var timeIntervalScrollView: UIScrollView!
     @IBOutlet weak var timeIntervalScrollView2: UIScrollView!
@@ -38,8 +38,8 @@ class ViewController: UIViewController, CTimeLineViewDelegate, CTimeLineViewData
         timeLineViewModel.unavailableTimeIntervalsList = unavailableTimeIntervals
         timeLineViewModel.reservedTimeIntervalsList    = reservations
         timeLineViewModel.selectedTimeInterval         = selectedTimeInterval
-
-        let timeLineView = CTimeLineView(parent: timeIntervalScrollView)
+        
+        let timeLineView = TimeLineView(parent: timeIntervalScrollView)
         timeLineView.timeLineViewModel = timeLineViewModel
         timeLineView.dataSource = self
         timeLineView.delegate = self
@@ -47,8 +47,7 @@ class ViewController: UIViewController, CTimeLineViewDelegate, CTimeLineViewData
         timeIntervalScrollView.contentSize = CGSize(width: timeLineView.timeLineContentSize().width + 40, height: timeLineView.timeLineContentSize().height)
         timeLineView.invalidate()
         
-        let timeLineView2 = CTimeLineView(parent: timeIntervalScrollView2)
-//        timeLineView2.timeLineViewModel = timeLineViewModel
+        let timeLineView2 = TimeLineView(parent: timeIntervalScrollView2)
         timeLineView2.dataSource = self
         timeLineView2.delegate = self
         timeLineView2.syncManager = timeLineSyncManager
@@ -61,25 +60,25 @@ class ViewController: UIViewController, CTimeLineViewDelegate, CTimeLineViewData
         super.didReceiveMemoryWarning()
     }
 
-    // MARK: - CTimeLineViewDelegate:
+    // MARK: - TimeLineViewDelegate:
     
-    func timeLineView(_ timeLineView: CTimeLineView!, onSelectedTimeIntervalChange dateInterval: CDateInterval!) {
+    func timeLineView(_ timeLineView: TimeLineView!, onSelectedTimeIntervalChange dateInterval: CDateInterval!) {
         print("newDateInterval startDate = \(dateInterval.startDate) \nendDate = \(dateInterval.endDate)")
     }
     
-    // MARK: - CTimeLineViewDataSource:
+    // MARK: - TimeLineViewDataSource:
     
-    func timeIntersectWithReservations(for timeLineView: CTimeLineView!) -> Bool {
+    func timeIntersectWithReservations(for timeLineView: TimeLineView!) -> Bool {
         return false
     }
     
-    func step(for timeLineView: CTimeLineView!) -> CTimeIntervals {
+    func step(for timeLineView: TimeLineView!) -> CTimeIntervals {
         return .mins15
     }
     
     private let maxIntervalTwoHours = 2*60*60
 
-    func maxAppliableTimeIntervalInSecs(for timeLineView: CTimeLineView!) -> Int {
+    func maxAppliableTimeIntervalInSecs(for timeLineView: TimeLineView!) -> Int {
         return maxIntervalTwoHours
     }
     
