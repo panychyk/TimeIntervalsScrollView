@@ -52,7 +52,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     
     var timeLineViewModel = CTimeLineViewModel() {
         didSet {
-            invalidate(timeLineContentSize())
+            invalidate()
         }
     }
     
@@ -84,7 +84,11 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         }
     }
     
-    var onTimeSectionTapGesture: UITapGestureRecognizer? = nil
+    var applySelectionTimeIntervalUsingTap: Bool = true {
+        didSet {
+            onTimeSectionTapGesture.isEnabled = applySelectionTimeIntervalUsingTap
+        }
+    }
     
     // Design:
     let separatorWidth: CGFloat     = 1.0
@@ -106,7 +110,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     
     lazy var selectedTimeIntervalView: CSelectedTimeIntervalView = {
         let selectedTimeIntervalView = CSelectedTimeIntervalView()
-        addSubview(selectedTimeIntervalView)
+        insertSubview(selectedTimeIntervalView, belowSubview: thumbView)
         return selectedTimeIntervalView
     }()
     
@@ -118,14 +122,35 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     
     var timeSectorsMap = [NSNumber : CDateInterval]()
     
+    lazy var onTimeSectionTapGesture: UITapGestureRecognizer = {
+        let onTimeSectionTapGesture = UITapGestureRecognizer(target: self, action: #selector(onTimeSectionTapAction(_:)))
+        return onTimeSectionTapGesture
+    }()
+    
     private var availableRangeIntervalForIndexMap = [NSNumber : SelectedTimeIntervalScope]()
     
-    // MARK - Init:
+    // MARK: - Init:
     
     convenience init(parent: UIView) {
         self.init()
-        backgroundColor = .white
         parent.addSubview(self)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        appearance()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        appearance()
+    }
+    
+    // Appearance
+    func appearance() {
+        backgroundColor = .white
+        isUserInteractionEnabled = true
+        addGestureRecognizer(onTimeSectionTapGesture)
     }
     
     // MARK: - Layout:
@@ -134,8 +159,8 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         return contentSize
     }
     
-    func invalidate(_ size: CGSize) {
-        let canvasFrame = CGRect(origin: bounds.origin, size: size)
+    func invalidate() {
+        let canvasFrame = CGRect(origin: bounds.origin, size: timeLineContentSize())
         frame = canvasFrame
         setNeedsDisplay()
     }
@@ -151,6 +176,8 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
             let offset = separatorWidth
             let isIntersectReservations = maxX > (scope.maxValueX + offset)
             applySelectedViewIntersectStyle(isIntersectReservations)
+        } else {
+            applySelectedViewIntersectStyle(true)
         }
     }
     
@@ -160,7 +187,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
             allowIntersectWithSelectedTimeInterval = dataSource.timeIntersectWithReservations(for: self)
             maxAppliableTimeIntervalInSecs = dataSource.maxAppliableTimeIntervalInSecs(for: self)
         }
-        invalidate(timeLineContentSize())
+        invalidate()
     }
     
     // MARK: - Draw:
@@ -318,7 +345,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
                 }
             }
             let xOrigin = CGFloat(Int(CGFloat(fromSectorIndex) * intervalStepInPx))
-            let width = convertToWidth(selectedTimeInterval)// - CGFloat(parentView.separatorWidth)
+            let width = convertToWidth(selectedTimeInterval)
 
             selectedTimeIntervalView.frame = trackViewRect(minX: xOrigin, maxX: (xOrigin + width))
             thumbView.setCenter(x: (xOrigin + width), y: selectedTimeIntervalView.frame.midY)
@@ -351,8 +378,8 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         for key in groupedDict.keys.sorted() {
             if let groupedIndexs = groupedDict[key] {
                 for index in groupedIndexs {
-                    let minValueX: CGFloat = CGFloat(groupedIndexs.min() ?? 0) * intervalStepInPx
-                    let maxValueX: CGFloat = CGFloat(groupedIndexs.max() ?? 0) * intervalStepInPx + intervalStepInPx
+                    let minValueX: CGFloat = xOrigin(for: groupedIndexs.min() ?? 0)
+                    let maxValueX: CGFloat = xOrigin(for: groupedIndexs.max() ?? 0) + intervalStepInPx
                     availableRangeIntervalForIndexMap[NSNumber(value: index)] =
                         SelectedTimeIntervalScope(minValueX: minValueX,
                                                   maxValueX: maxValueX)
@@ -387,20 +414,15 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     
     // MARK: - HitTest:
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        
         // perform hit test on ThumbView frame
         if !thumbView.isHidden {
             let pointOnThumbView = self.convert(point, to: thumbView)
-            
+
             if thumbView.hitAreaBounds.contains(pointOnThumbView) {
                 return thumbView
             }
         }
-        let view = super.hitTest(point, with: event)
-        if let view = view, view.isEqual(self) {
-            return nil
-        }
-        return view
+        return super.hitTest(point, with: event)
     }
     
     //MARK: - CThumbViewPanDelegate:
@@ -445,7 +467,6 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     func thumbView(_ thumbView: CThumbView, didFinishScrollingWithPoint point: CGPoint) -> (Void) {
         let truncRemainder = point.x.truncatingRemainder(dividingBy: intervalStepInPx)
         let subtraction = intervalStepInPx - truncRemainder
-        let xOffset = CGFloat(startPoint)
         // round to greater
         var newPointX = point.x + subtraction
         if subtraction >= intervalStepInPx/2 {
@@ -459,39 +480,58 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
         let newRect = CGRect(origin: selectedTimeIntervalView.frame.origin, size: newSize)
         let newTimeInterval = convertToTimeInterval(newRect)
         invalidateSelectedTimeInterval(minX: selectedTimeIntervalView.frame.minX,
-                         maxX: newPointX + xOffset,
-                         timeInterval: newTimeInterval)
+                                       maxX: newPointX,
+                                       timeInterval: newTimeInterval)
+        delegate?.timeLineView(self, onSelectedTimeIntervalChange: newTimeInterval)
         if let syncManager = syncManager {
             syncManager.notifyListenersChangeThumbViewLocation(thumbView,
                                                                minX: selectedTimeIntervalView.frame.minX,
-                                                               maxX: newPointX + xOffset,
+                                                               maxX: newPointX,
                                                                timeInterval: newTimeInterval)
         }
-    }
-    
-    // MARK: - CTimeLineViewProtocol:
-
-    func onSelectionEvent(with index: Int, andPoint point: CGPoint) {
-//        let pointOnThumbView = self.convert(point, to: thumbView)
-//        if let scope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: index)],
-//            let sectorTimeInterval = parentView.timeSectorsMap[NSNumber(integerLiteral: index)],
-//            !thumbView.hitAreaBounds.contains(pointOnThumbView) {
-//            let newDuration = calcNewDuration(in: scope,
-//                                              for: index,
-//                                              with: parentView.timeIntervalScrollViewModel.selectedTimeInterval?.duration)
-//            let newTimeInterval = CDateInterval(start: sectorTimeInterval.startDate, duration: newDuration)
-//            parentView.timeIntervalScrollViewModel.selectedTimeInterval = newTimeInterval
-//            drawSelectedTimeInterval(on: self.bounds)
-//        }
     }
     
     // MARK: - TimeLineViewSyncManagerDelegate:
     
     func onChangeThumbLocation(_ thumbView: CThumbView, minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
-        if self.thumbView != thumbView {
+        if self.thumbView !== thumbView {
             invalidateSelectedTimeInterval(minX: minX,
                              maxX: maxX,
                              timeInterval: timeInterval)
+        }
+    }
+    
+    func onChangeTimeInterval(_ timeLineView: CTimeLineView, timeInterval: CDateInterval) {
+        if timeLineView !== self {
+            let minX = xOrigin(for: indexOfDate(timeInterval.startDate))
+            let maxX = minX + convertToWidth(timeInterval)
+            invalidateSelectedTimeInterval(minX: minX,
+                                           maxX: maxX,
+                                           timeInterval: timeInterval)
+        }
+    }
+    
+    
+    // MARK: - TapGesture:
+    
+    @objc private func onTimeSectionTapAction(_ gesture: UITapGestureRecognizer) {
+        let points = gesture.location(in: self)
+        let index = convertToIndex(points.x)
+        let pointOnThumbView = self.convert(points, to: thumbView)
+        if let scope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: index)],
+            let sectorTimeInterval = timeSectorsMap[NSNumber(integerLiteral: index)],
+            !thumbView.hitAreaBounds.contains(pointOnThumbView) {
+            let newDuration = calcNewDuration(in: scope,
+                                              for: index,
+                                              with: timeLineViewModel.selectedTimeInterval?.duration)
+            let minX = xOrigin(for: index)
+            let maxX = minX + convertToWidth(newDuration)
+            let newTimeInterval = CDateInterval(start: sectorTimeInterval.startDate, duration: newDuration)
+            invalidateSelectedTimeInterval(minX: minX, maxX: maxX, timeInterval: newTimeInterval)
+            delegate?.timeLineView(self, onSelectedTimeIntervalChange: newTimeInterval)
+            if let syncManager = syncManager {
+                syncManager.notifyListenersOnChangeTimeInterval(in: self, newTimeInterval: newTimeInterval)
+            }
         }
     }
     
@@ -515,7 +555,7 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     fileprivate func calcNewDuration(in newRange: SelectedTimeIntervalScope, for index: Int, with oldDuration: TimeInterval?) -> TimeInterval {
         if let oldDuration = oldDuration {
             let oldWidth = convertToWidth(oldDuration)
-            let xOriginOfIndex = (CGFloat(index) * intervalStepInPx)
+            let xOriginOfIndex = xOrigin(for: index)
             var xMaxPoint = xOriginOfIndex + oldWidth
             if xMaxPoint <= newRange.maxValueX {
                 return oldDuration
@@ -573,12 +613,22 @@ class CTimeLineView: UIView, CThumbViewPanDelegate, TimeLineViewSyncManagerDeleg
     
     fileprivate func convertToIndex(_ xOrigin: CGFloat) -> Int {
         let index = Int(xOrigin/intervalStepInPx)
+        let maxIndex = getMaxIndex()
+        if index > maxIndex { return maxIndex }
         return index
     }
     
     fileprivate func xOrigin(for index: Int) -> CGFloat {
-        let xOrigin = CGFloat(index) * intervalStepInPx
-        return xOrigin
+        let maxIndex = getMaxIndex()
+        if index > maxIndex { return CGFloat(maxIndex) * intervalStepInPx }
+        return CGFloat(index) * intervalStepInPx
+    }
+    
+    fileprivate func getMaxIndex() -> Int {
+        if let maxIndex = timeSectorsMap.keys.max(by: { $0.intValue < $1.intValue })?.intValue {
+            return maxIndex > 0 ? maxIndex - 1 : maxIndex
+        }
+        return 0
     }
     
 }

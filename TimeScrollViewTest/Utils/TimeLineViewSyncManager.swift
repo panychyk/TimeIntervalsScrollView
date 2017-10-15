@@ -15,6 +15,9 @@ protocol TimeLineViewSyncManagerDelegate: NSObjectProtocol {
                                maxX: CGFloat,
                                timeInterval: CDateInterval)
     
+    func onChangeTimeInterval(_ timeLineView: CTimeLineView,
+                              timeInterval: CDateInterval)
+    
 }
 
 class TimeLineViewSyncManager {
@@ -24,11 +27,19 @@ class TimeLineViewSyncManager {
     
     static let shared = TimeLineViewSyncManager()
     
-    public func notifyListenersChangeThumbViewLocation(_ thumbView: CThumbView, minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
+    func notifyListenersChangeThumbViewLocation(_ thumbView: CThumbView, minX: CGFloat, maxX: CGFloat, timeInterval: CDateInterval) {
         
         for listener in listeners {
             guard let listener = listener else { continue }
             listener.onChangeThumbLocation(thumbView, minX: minX, maxX: maxX, timeInterval: timeInterval)
         }
     }
+    
+    func notifyListenersOnChangeTimeInterval(in timeLineView: CTimeLineView, newTimeInterval: CDateInterval) {
+        for listener in listeners {
+            guard let listener = listener else { continue }
+            listener.onChangeTimeInterval(timeLineView, timeInterval: newTimeInterval)
+        }
+    }
+    
 }

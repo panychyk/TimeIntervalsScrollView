@@ -153,7 +153,7 @@ class CThumbView: UIView, UIGestureRecognizerDelegate {
     // MARK: - UIGestureRecognizerDelegate:
     
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer == thumbViewPanGesture {
+        if thumbViewPanGesture === gestureRecognizer {
             let velocity = thumbViewPanGesture.velocity(in: gestureRecognizer.view)
             if fabsf(Float(velocity.y)) > fabsf(Float(velocity.x)) {
                 return false

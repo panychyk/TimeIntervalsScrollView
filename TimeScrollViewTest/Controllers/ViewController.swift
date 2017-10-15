@@ -42,28 +42,18 @@ class ViewController: UIViewController, CTimeLineViewDelegate, CTimeLineViewData
         let timeLineView = CTimeLineView(parent: timeIntervalScrollView)
         timeLineView.timeLineViewModel = timeLineViewModel
         timeLineView.dataSource = self
+        timeLineView.delegate = self
         timeLineView.syncManager = timeLineSyncManager
-        timeIntervalScrollView.contentSize = timeLineView.timeLineContentSize()
-        timeLineView.invalidate(timeIntervalScrollView.contentSize)
+        timeIntervalScrollView.contentSize = CGSize(width: timeLineView.timeLineContentSize().width + 40, height: timeLineView.timeLineContentSize().height)
+        timeLineView.invalidate()
         
         let timeLineView2 = CTimeLineView(parent: timeIntervalScrollView2)
-        timeLineView2.timeLineViewModel = timeLineViewModel
+//        timeLineView2.timeLineViewModel = timeLineViewModel
         timeLineView2.dataSource = self
+        timeLineView2.delegate = self
         timeLineView2.syncManager = timeLineSyncManager
-        timeIntervalScrollView2.contentSize = timeLineView2.timeLineContentSize()
-        timeLineView2.invalidate(timeIntervalScrollView.contentSize)
-        
-//        timeIntervalScrollView.timeIntervalScrollViewDelegate = self
-//        timeIntervalScrollView.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
-//        timeIntervalScrollView.timeIntervalScrollViewModel = timeIntervalScrollViewModel
-//        timeIntervalScrollView.timeIntervalScrollViewDataSource = self
-//        syncManager.listeners.append(timeIntervalScrollView.syncListener)
-//
-////        timeIntervalScrollView2.isAllowThumbView = false
-//        timeIntervalScrollView2.timeIntervalScrollViewModel = timeIntervalScrollViewModel
-//        timeIntervalScrollView2.registerToChangeSelectedTimeIntervalsSimultaneouslyWithOtherViews = true
-//        timeIntervalScrollView2.timeIntervalScrollViewDataSource = self
-//        syncManager.listeners.append(timeIntervalScrollView2.syncListener)
+        timeIntervalScrollView2.contentSize = CGSize(width: timeLineView2.timeLineContentSize().width + 40, height: timeLineView2.timeLineContentSize().height)
+        timeLineView2.invalidate()
         
     }
 
