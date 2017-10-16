@@ -312,6 +312,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
                             break
                         } else {
                             xOrigin += Int(intervalStepInPx)
+                            break
                         }
                     }
                 } else {
