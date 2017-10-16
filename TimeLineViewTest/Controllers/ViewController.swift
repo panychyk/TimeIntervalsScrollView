@@ -18,7 +18,7 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
         
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(secondsFromGMT: 0)!
-        let date = Date()
+        let date = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date())
         let unavailableTimeIntervals: [CDateInterval] = [
             CDateInterval(start: date.apply(hours: 0, minutes: 0, calendar: calendar), duration: 3*60*60),
             CDateInterval(start: date.apply(hours: 7, minutes: 0, calendar: calendar), duration: 60*60),

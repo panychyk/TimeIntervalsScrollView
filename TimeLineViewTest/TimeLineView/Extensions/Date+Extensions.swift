@@ -11,7 +11,8 @@ import Foundation
 public extension Date {
     
     func sinceToday(_ calendar: Calendar = .current) -> Int {
-        let zeroTimeDate = dateWithZeroHourAndMinute(calendar)
+        let todayDate = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date())
+        let zeroTimeDate = todayDate.dateWithZeroHourAndMinute(calendar)
         if let zeroTimeDate = zeroTimeDate {
             return Int(self.timeIntervalSince(zeroTimeDate))
         } else {

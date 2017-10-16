@@ -24,7 +24,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     }
     
     private var date: Date {
-        return Date().dateWithZeroHourAndMinute(defaultCalendar)!
+        return Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date()).dateWithZeroHourAndMinute(defaultCalendar)!
     }
     
     private var startPointOffset: Int {
@@ -283,12 +283,13 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
             let reservationsMutable = NSMutableArray(array: reservations)
             
             while xOrigin <= Int(rect.width) {
-                let index = xOrigin/Int(intervalStepInPx)
-                for reservation in reservationsMutable {
-                    if let reservation = (reservation as? ReservationModel),
-                        let dateTime = timeSectorsMap[NSNumber(value: index)] {
-                        if reservation.reservationTimeInterval.startDate == dateTime.startDate
-//                            && reservation.reservationTimeInterval.duration >= TimeInterval(parentView.applyedTimeInterval.rawValue)
+                let index = self.convertToIndex(CGFloat(xOrigin))
+                if reservationsMutable.count > 0 {
+                    for reservation in reservationsMutable {
+                        if let reservation = (reservation as? ReservationModel),
+                        let dateTime = timeSectorsMap[NSNumber(value: index)],
+                            reservation.reservationTimeInterval.startDate == dateTime.startDate
+                            //                            && reservation.reservationTimeInterval.duration >= TimeInterval(parentView.applyedTimeInterval.rawValue)
                         {
                             let reservationView = ReservationView(reservation)
                             reservationView.timeLineViewAppearance = timeLineViewAppearance
@@ -309,10 +310,13 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
                             reservationsMutable.remove(reservation)
                             xOrigin += Int(width)
                             break
+                        } else {
+                            xOrigin += Int(intervalStepInPx)
                         }
                     }
+                } else {
+                    break
                 }
-                xOrigin += Int(intervalStepInPx)
             }
         }
     }
