@@ -23,31 +23,20 @@ let MAX_PAN_VELOCITY = 175.0
 class ThumbView: UIView, UIGestureRecognizerDelegate {
     
     // Parameters:
-    let viewSize = CGSize(width: 12.0, height: 24.0)
-    
-    private let viewCornerRadius: CGFloat  = 120.0
-    private let borderWidth: CGFloat       = 2
+    var timeLineViewAppearance: TimeLineViewAppearance!
     
     lazy var hitAreaBounds: CGRect = {
-        let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (viewSize.width * 2), height: viewSize.height))
-        return rect.offsetBy(dx: viewSize.width * 0.2, dy: 0)
+        let rect = CGRect(origin: self.bounds.origin, size: CGSize(width: (timeLineViewAppearance.thumbSize.width * 2), height: timeLineViewAppearance.thumbSize.height))
+        return rect.offsetBy(dx: timeLineViewAppearance.thumbSize.width * 0.2, dy: 0)
     }()
     
     private(set) var isIntersectState: Bool = false
     
-    // Design:
-    private let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
-    private let fillColor   = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0)
-    
-    private let intersectedBorderColor = UIColor(red: 208.0/255.0, green: 1.0/255.0, blue: 27.0/255.0, alpha: 1.0)
-    private let intersectedFillColor   = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0)
-
-    
     private var colorScheme: ColorSchemeTuple {
         if isIntersectState {
-            return (intersectedBorderColor, intersectedFillColor)
+            return (timeLineViewAppearance.thumbBorderConflictColor, timeLineViewAppearance.thumbBackgroundConflictColor)
         } else {
-            return (borderColor, fillColor)
+            return (timeLineViewAppearance.thumbBorderColor, timeLineViewAppearance.thumbBackgroundColor)
         }
     }
     
@@ -81,24 +70,14 @@ class ThumbView: UIView, UIGestureRecognizerDelegate {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
 
-        let innerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: viewCornerRadius)
+        let innerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: timeLineViewAppearance.thumbCornerRadius)
         colorScheme.fillColor.setFill()
         innerBezierPath.fill()
         
-        let outerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: viewCornerRadius)
-        outerBezierPath.lineWidth = borderWidth
+        let outerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: timeLineViewAppearance.thumbCornerRadius)
+        outerBezierPath.lineWidth = timeLineViewAppearance.thumbBorderWidth
         colorScheme.borderColor.setStroke()
         outerBezierPath.stroke()
-    }
-    
-    override var frame: CGRect {
-        get {
-            return super.frame
-        }
-        set {
-            super.frame = CGRect(origin: newValue.origin,
-                                 size: viewSize)
-        }
     }
     
     // MARK: - Accessories:
@@ -106,6 +85,11 @@ class ThumbView: UIView, UIGestureRecognizerDelegate {
     public func setCenter(x: CGFloat, y: CGFloat) {
         center = CGPoint(x: x, y: y)
         prevCenterPoint = center
+    }
+    
+    public func setSize(width: CGFloat, height: CGFloat) {
+        let newSize = CGSize(width: width, height: height)
+        frame = CGRect(origin: frame.origin, size: newSize)
     }
     
     func setIntersectState(_ isIntersect: Bool) {

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */ = {isa = PBXBuildFile; fileRef = C6AC8ADB1F822C610049A52B /* CDateInterval.m */; };
+		C6B1AB0A1F94DFF700B87747 /* TimeLineViewAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B1AB091F94DFF700B87747 /* TimeLineViewAppearance.swift */; };
+		C6B1AB0C1F94F1E200B87747 /* TimeLineDefaultAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B1AB0B1F94F1E200B87747 /* TimeLineDefaultAppearance.swift */; };
 		E23243791F92533B00C433BE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626E1F811AE700C77FAE /* ViewController.swift */; };
 		E23243811F92774900C433BE /* Misc.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23243801F92774900C433BE /* Misc.swift */; };
 		E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E240626C1F811AE700C77FAE /* AppDelegate.swift */; };
@@ -29,6 +31,8 @@
 /* Begin PBXFileReference section */
 		C6AC8ADA1F822C600049A52B /* CDateInterval.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDateInterval.h; sourceTree = "<group>"; };
 		C6AC8ADB1F822C610049A52B /* CDateInterval.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDateInterval.m; sourceTree = "<group>"; };
+		C6B1AB091F94DFF700B87747 /* TimeLineViewAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineViewAppearance.swift; sourceTree = "<group>"; };
+		C6B1AB0B1F94F1E200B87747 /* TimeLineDefaultAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineDefaultAppearance.swift; sourceTree = "<group>"; };
 		E23243801F92774900C433BE /* Misc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
 		E24062691F811AE700C77FAE /* TimeLineViewTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeLineViewTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E240626C1F811AE700C77FAE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -67,7 +71,6 @@
 		C6075B8C1F8BB3C3005C425C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				E2BCA57F1F8AACEB00A2B250 /* CTimeLineViewModel.swift */,
 				E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */,
 				C6AC8ADA1F822C600049A52B /* CDateInterval.h */,
 				C6AC8ADB1F822C610049A52B /* CDateInterval.m */,
@@ -118,6 +121,23 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		C6B1AB081F94DF8500B87747 /* Appearance */ = {
+			isa = PBXGroup;
+			children = (
+				C6B1AB091F94DFF700B87747 /* TimeLineViewAppearance.swift */,
+				C6B1AB0B1F94F1E200B87747 /* TimeLineDefaultAppearance.swift */,
+			);
+			path = Appearance;
+			sourceTree = "<group>";
+		};
+		C6B1AB0D1F9505B100B87747 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E2BCA57F1F8AACEB00A2B250 /* CTimeLineViewModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		E24062601F811AE700C77FAE = {
 			isa = PBXGroup;
 			children = (
@@ -151,11 +171,13 @@
 		E24742D21F93A82A00409ECE /* TimeLineView */ = {
 			isa = PBXGroup;
 			children = (
+				C6B1AB081F94DF8500B87747 /* Appearance */,
 				E24742D31F93A82A00409ECE /* Arithmetics */,
 				E24742D51F93A82A00409ECE /* Enums */,
 				E24742D71F93A82A00409ECE /* Extensions */,
 				E24742DA1F93A82A00409ECE /* Protocols */,
 				E24742DD1F93A82A00409ECE /* Utils */,
+				C6B1AB0D1F9505B100B87747 /* Models */,
 				E24742DF1F93A82A00409ECE /* Views */,
 			);
 			path = TimeLineView;
@@ -292,6 +314,8 @@
 				E24742E91F93A94900409ECE /* TimeLineViewSyncManager.swift in Sources */,
 				E24742EA1F93A94900409ECE /* ReservationView.swift in Sources */,
 				E24742EB1F93A94900409ECE /* SelectedTimeIntervalView.swift in Sources */,
+				C6B1AB0A1F94DFF700B87747 /* TimeLineViewAppearance.swift in Sources */,
+				C6B1AB0C1F94F1E200B87747 /* TimeLineDefaultAppearance.swift in Sources */,
 				E24742E61F93A93D00409ECE /* SelectedTimeIntervalScope.swift in Sources */,
 				E2BCA5801F8AACEB00A2B250 /* CTimeLineViewModel.swift in Sources */,
 				E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */,

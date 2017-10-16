@@ -12,23 +12,17 @@ import UIKit
 class SelectedTimeIntervalView: UIView {
     
     // Parameters:
-    let viewHeight: CGFloat  = 50.0
-    let borderWidth: CGFloat = 1.5
+    var timeLineViewAppearance: TimeLineViewAppearance!
     
     private(set) var isIntersectState: Bool = false
-    
-    // Design:
-    private let borderColor = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 1.0)
-    private let fillColor   = UIColor(red: 28.0/255.0, green: 66.0/255.0, blue: 52.0/255.0, alpha: 0.8)
-    
-    private let intersectedBorderColor = UIColor(red: 208.0/255.0, green: 1.0/255.0, blue: 27.0/255.0, alpha: 1.0)
-    private let intersectedFillColor   = UIColor(red: 208.0/255.0, green: 1.0/255.0, blue: 27.0/255.0, alpha: 0.3)
 
     private var colorScheme: ColorSchemeTuple {
         if isIntersectState {
-            return (intersectedBorderColor, intersectedFillColor)
+            return (timeLineViewAppearance.selectedTimeViewBorderConflictColor,
+                    timeLineViewAppearance.selectedTimeViewBackgroundConflictColor)
         } else {
-            return (borderColor, fillColor)
+            return (timeLineViewAppearance.selectedTimeViewBorderColor,
+                    timeLineViewAppearance.selectedTimeViewBackgroundColor)
         }
     }
     
@@ -63,7 +57,7 @@ class SelectedTimeIntervalView: UIView {
         context?.fill(rect)
         context?.strokePath()
         
-        context?.setLineWidth(borderWidth)
+        context?.setLineWidth(timeLineViewAppearance.selectedTimeViewBorderWidth)
         
         var xLineOrigin = rect.minX
         context?.move(to: CGPoint(x: xLineOrigin, y: rect.minY))

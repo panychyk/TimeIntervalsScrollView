@@ -10,6 +10,8 @@ import UIKit
 
 class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegate {
     
+    var timeLineViewAppearance = TimeLineDefaultAppearance()
+    
     weak var delegate: TimeLineViewDelegate?
     weak var dataSource: TimeLineViewDataSource? {
         didSet {
@@ -26,7 +28,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     }
     
     private var startPointOffset: Int {
-        return Int(round((separatorWidth)/2))
+        return Int(round((timeLineViewAppearance.tickMarkWidth)/2))
     }
     
     let oneDayInSec = 86400 // 24*60*60
@@ -67,28 +69,15 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
         }
     }
     
-    // Parameters:
-    let mins15Step: CGFloat = 28.0
-    let mins30Step: CGFloat = 42.0
-    let mins60Step: CGFloat = 82.0
-    
-    let mins15SeparatorHeight: CGFloat = 25.0
-    let mins30SeparatorHeight: CGFloat = 40.0
-    let mins60SeparatorHeight: CGFloat = 70.0
-    
-    var defaultViewHeight: CGFloat = 70
-    
-    let unavailableSectorImageHeight: CGFloat = 50.0
-    
     var intervalStepInPx: CGFloat {
         get {
             switch self.applyedTimeInterval {
             case .mins15:
-                return mins15Step
+                return timeLineViewAppearance.mins15StepPx
             case .mins30:
-                return mins30Step
+                return timeLineViewAppearance.mins30StepPx
             case .mins60:
-                return mins60Step
+                return timeLineViewAppearance.mins60StepPx
             default:
                 preconditionFailure("IllegalStateExeption")
             }
@@ -101,18 +90,12 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
         }
     }
     
-    // Design:
-    let separatorWidth: CGFloat     = 1.0
-    let separatorColor: CGColor     = UIColor(red: 233/255, green: 233/255, blue: 233/255, alpha: 1).cgColor
-    let timeLabelColor: UIColor     = .red
-    let timeLabelFont: UIFont       = UIFont.systemFont(ofSize: 10)
-    let timeLabelCharSpacing: Float = 0.7
-    
-    let unavailableSectorImage = UIImage(named: "reserved_image")
-    
     // Subviews:
     lazy var thumbView: ThumbView = {
         let thumbView = ThumbView()
+        thumbView.timeLineViewAppearance = timeLineViewAppearance
+        thumbView.setSize(width: timeLineViewAppearance.thumbSize.width,
+                          height: timeLineViewAppearance.thumbSize.height)
         thumbView.delegate = self
         thumbView.isHidden = isHiddenThumbView
         addSubview(thumbView)
@@ -121,6 +104,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     
     lazy var selectedTimeIntervalView: SelectedTimeIntervalView = {
         let selectedTimeIntervalView = SelectedTimeIntervalView()
+        selectedTimeIntervalView.timeLineViewAppearance = timeLineViewAppearance
         insertSubview(selectedTimeIntervalView, belowSubview: thumbView)
         return selectedTimeIntervalView
     }()
@@ -174,7 +158,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
         // calc intersection with other reservations
         let index = indexOfDate(timeInterval.startDate)
         if let scope = availableRangeIntervalForIndexMap[NSNumber(integerLiteral: index)] {
-            let offset = separatorWidth
+            let offset = timeLineViewAppearance.tickMarkWidth
             let isIntersectReservations = maxX > (scope.maxValueX + offset)
             applySelectedViewIntersectStyle(isIntersectReservations)
         } else {
@@ -183,7 +167,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     }
     
     func timeLineContentSize() -> CGSize {
-        let contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + separatorWidth, height: defaultViewHeight)
+        let contentSize = CGSize(width: (CGFloat(oneDayInSec/applyedTimeInterval.rawValue) * intervalStepInPx) + timeLineViewAppearance.tickMarkWidth, height: timeLineViewAppearance.timeLineViewHeight)
         return contentSize
     }
     
@@ -208,14 +192,14 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     //Separators:
     func drawSeparatorsAndTimeTitles(in rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
-        context?.setLineWidth(separatorWidth)
+        context?.setLineWidth(timeLineViewAppearance.tickMarkWidth)
         for xOrigin in stride(from: startPointOffset, through: Int(rect.width), by: Int(intervalStepInPx)) {
             let index = xOrigin/Int(intervalStepInPx)
             
             appendDate(forIndex: index)
             if xOrigin == Int(rect.width) &&
-                (separatorWidth.truncatingRemainder(dividingBy: 2.0)) != 0 {
-                let newX = CGFloat(xOrigin - Int(round((separatorWidth)/2)))
+                (timeLineViewAppearance.tickMarkWidth.truncatingRemainder(dividingBy: 2.0)) != 0 {
+                let newX = CGFloat(xOrigin - Int(round((timeLineViewAppearance.tickMarkWidth)/2)))
                 drawLine(context,
                          index:   index,
                          xOrigin: newX,
@@ -230,32 +214,32 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     }
     
     func drawLine(_ context: CGContext?, index: Int, xOrigin: CGFloat, rect: CGRect) {
-        var height: CGFloat = mins60SeparatorHeight
+        var height: CGFloat = timeLineViewAppearance.tickMark60minsHeight
         if index > 0 {
             switch applyedTimeInterval {
             case .mins15:
                 if CGFloat(index).truncatingRemainder(dividingBy: 2.0) != 0 {
-                    height = mins15SeparatorHeight
+                    height = timeLineViewAppearance.tickMark15minsHeight
                 } else if CGFloat(index/2).truncatingRemainder(dividingBy: 2.0) != 0 {
-                    height = mins30SeparatorHeight
+                    height = timeLineViewAppearance.tickMark30minsHeight
                 }
             case .mins30:
                 if CGFloat(index).truncatingRemainder(dividingBy: 2.0) != 0 {
-                    height = mins30SeparatorHeight
+                    height = timeLineViewAppearance.tickMark30minsHeight
                 }
             case .mins60:
                 break
             }
         }
         let yOrigin = rect.height - height
-        if height == mins60SeparatorHeight {
+        if height == timeLineViewAppearance.tickMark60minsHeight {
             if let dateTime = timeSectorsMap[NSNumber(value: index)] {
                 drawTimeText(dateTime.startDate.shortHoursString(defaultCalendar),
                          at: CGPoint(x: (xOrigin + 6.0), y: yOrigin))
             }
         }
 
-        context?.setStrokeColor(separatorColor)
+        context?.setStrokeColor(timeLineViewAppearance.tickMarkColor.cgColor)
         context?.move(to: CGPoint(x: xOrigin, y: yOrigin))
         context?.addLine(to: CGPoint(x: xOrigin, y: rect.height))
         context?.strokePath()
@@ -263,9 +247,9 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     }
     
     func drawTimeText(_ text: String, at point: CGPoint) {
-        let attributedTimeString = text.attributedString(font:      timeLabelFont,
-                                                         charSpace: timeLabelCharSpacing,
-                                                         tintColor: timeLabelColor)
+        let attributedTimeString = text.attributedString(font:      timeLineViewAppearance.timeLabelAttributes.font,
+                                                         charSpace: Float(timeLineViewAppearance.timeLabelAttributes.charSpace),
+                                                         tintColor: timeLineViewAppearance.timeLabelAttributes.color)
         attributedTimeString.draw(at: point)
     }
     
@@ -280,10 +264,10 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
                 //
                 let xOrigin = CGFloat(sectorIndex) * intervalStepInPx
                 let r = CGRect(origin: CGPoint(x: CGFloat(xOrigin),
-                                               y: rect.height - unavailableSectorImageHeight),
+                                               y: rect.height - timeLineViewAppearance.unavailableZoneHeight),
                                size: CGSize(width: intervalStepInPx,
-                                            height: unavailableSectorImageHeight))
-                unavailableSectorImage?.draw(in: r)
+                                            height: timeLineViewAppearance.unavailableZoneHeight))
+                timeLineViewAppearance.unavailableZoneImage?.draw(in: r)
                 UIColor(red: 241/255, green: 241/255, blue: 241/255, alpha: 0.6).setFill()
                 UIRectFillUsingBlendMode(r, .multiply)
             }
@@ -307,6 +291,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
 //                            && reservation.reservationTimeInterval.duration >= TimeInterval(parentView.applyedTimeInterval.rawValue)
                         {
                             let reservationView = ReservationView(reservation)
+                            reservationView.timeLineViewAppearance = timeLineViewAppearance
                             // Set sectors as Unavailable
                             let fromIndex = indexOfDate(reservation.reservationTimeInterval.startDate)
                             let endIndex  = indexOfDate(reservation.reservationTimeInterval.endDate)
@@ -314,11 +299,11 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
                                 disabledIndexMap[sectorIndex] = true
                             }
                             //
-                            let width = convertToWidth(reservation.reservationTimeInterval) - CGFloat(separatorWidth)
-                            reservationView.frame = CGRect(x: CGFloat(xOrigin),
-                                                           y: rect.height - reservationView.contentHeight,
-                                                           width: width,
-                                                           height: reservationView.contentHeight)
+                            let width = convertToWidth(reservation.reservationTimeInterval)
+                            reservationView.frame = CGRect(x: self.xOrigin(for: fromIndex),
+                                                           y: rect.height - reservationView.timeLineViewAppearance.reservationsViewHeight,
+                                                           width: width - timeLineViewAppearance.tickMarkWidth,
+                                                           height: reservationView.timeLineViewAppearance.reservationsViewHeight)
                             self.addSubview(reservationView)
                             
                             reservationsMutable.remove(reservation)
@@ -550,9 +535,9 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     //returns the rect for the track view between the lower and upper values based on SelectedTimeIntervalView object
     fileprivate func trackViewRect(minX: CGFloat, maxX: CGFloat) -> CGRect {
         let rect = CGRect(x: minX,
-                          y: self.frame.height - selectedTimeIntervalView.viewHeight,
+                          y: self.frame.height - selectedTimeIntervalView.timeLineViewAppearance.selectedTimeViewHeight,
                           width: maxX - minX,
-                          height: selectedTimeIntervalView.viewHeight)
+                          height: selectedTimeIntervalView.timeLineViewAppearance.selectedTimeViewHeight)
         return rect
     }
     
@@ -591,8 +576,8 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     
     fileprivate func convertToRect(_ timeInterval: CDateInterval) -> CGRect {
         let xOrigin = CGFloat(indexOfDate(timeInterval.startDate)) * intervalStepInPx
-        let width   = convertToWidth(timeInterval) - CGFloat(separatorWidth)
-        let rect = CGRect(x: xOrigin, y: 0, width: width, height: 50)
+        let width   = convertToWidth(timeInterval) - timeLineViewAppearance.tickMarkWidth
+        let rect    = CGRect(x: xOrigin, y: 0, width: width, height: 50)
         return rect
     }
     
@@ -607,7 +592,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     }
     
     fileprivate func convertToWidth(_ duration: TimeInterval) -> CGFloat {
-        let width = CGFloat(duration/TimeInterval(applyedTimeInterval.rawValue)) * intervalStepInPx
+        let width = CGFloat(duration/TimeInterval(applyedTimeInterval.rawValue)) * intervalStepInPx + CGFloat(startPointOffset)
         return width
     }
     
@@ -616,7 +601,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     }
     
     fileprivate func convertToIndex(_ xOrigin: CGFloat) -> Int {
-        let index = Int(xOrigin/intervalStepInPx)
+        let index = Int((xOrigin - CGFloat(startPointOffset))/intervalStepInPx)
         let maxIndex = getMaxIndex()
         if index > maxIndex { return maxIndex }
         return index

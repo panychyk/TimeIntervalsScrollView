@@ -21,13 +21,16 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
         let date = Date()
         let unavailableTimeIntervals: [CDateInterval] = [
             CDateInterval(start: date.apply(hours: 0, minutes: 0, calendar: calendar), duration: 3*60*60),
-            CDateInterval(start: date.apply(hours: 7, minutes: 0, calendar: calendar), duration: 60*60)
+            CDateInterval(start: date.apply(hours: 7, minutes: 0, calendar: calendar), duration: 60*60),
         ]
 
         let reservations: [ReservationModel] = [
             ReservationModel(CDateInterval(start: date.apply(hours: 8, minutes: 0, calendar: calendar), duration: 2*60*60), hostName: "Best Friend"),
-            ReservationModel(CDateInterval(start: date.apply(hours: 12, minutes: 0, calendar: calendar), duration: 15*60), hostName: "Second Best Friend"),
-            ReservationModel(CDateInterval(start: date.apply(hours: 18, minutes: 0, calendar: calendar), duration: 15*60), hostName: "Second Best Friend")
+            ReservationModel(CDateInterval(start: date.apply(hours: 12, minutes: 30, calendar: calendar), duration: 15*60), hostName: "Second Best Friend"),
+            ReservationModel(CDateInterval(start: date.apply(hours: 13, minutes: 00, calendar: calendar), duration: 60*60), hostName: "Second Best1 Friend"),
+            ReservationModel(CDateInterval(start: date.apply(hours: 14, minutes: 00, calendar: calendar), duration: 30*60), hostName: "Second Best1 Friend"),
+            ReservationModel(CDateInterval(start: date.apply(hours: 19, minutes: 30, calendar: calendar), duration: 30*60), hostName: "Second Best1 Friend"),
+            ReservationModel(CDateInterval(start: date.apply(hours: 23, minutes: 30, calendar: calendar), duration: 30*60), hostName: "Second Best1 Friend")
         ]
 
         let selectedTimeInterval = CDateInterval(start: date.apply(hours: 6, minutes: 30, calendar: calendar), duration: 45*60)
