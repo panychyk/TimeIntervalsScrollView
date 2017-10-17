@@ -113,7 +113,6 @@
 		C6075B981F8BB69F005C425C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E23243801F92774900C433BE /* Misc.swift */,
 				E24062731F811AE700C77FAE /* Assets.xcassets */,
 				E24062781F811AE700C77FAE /* Info.plist */,
 				E240628A1F81637200C77FAE /* TimeLineView-Bridging-Header.h */,
@@ -221,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				E24742DE1F93A82A00409ECE /* TimeLineViewSyncManager.swift */,
+				E23243801F92774900C433BE /* Misc.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";

@@ -6,8 +6,8 @@
 #import "TimeLineViewDelegate.h"
 #import "TimeLineViewDataSource.h"
 
-#pragma mark - Models:
-#import "CDateInterval.h"
-
 #pragma mark - Enums:
 #import "TimeIntervalScrollViewSectorIntervalEnum.h"
+
+#pragma mark - Models:
+#import "CDateInterval.h"
