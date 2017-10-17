@@ -23,9 +23,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
         return self
     }
     
-    private var date: Date {
-        return Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date()).dateWithZeroHourAndMinute(defaultCalendar)!
-    }
+    var date: Date!
     
     private var startPointOffset: Int {
         return Int(round((timeLineViewAppearance.tickMarkWidth)/2))
@@ -182,6 +180,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     
     // MARK: - Draw:
     override func draw(_ rect: CGRect) {
+        precondition(date != nil, "date parameter must not be nil")
         drawSeparatorsAndTimeTitles(in: rect)
         drawUnavailableSectors(on: rect)
         drawReservations(on: rect)
@@ -500,7 +499,6 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
                                            timeInterval: timeInterval)
         }
     }
-    
     
     // MARK: - TapGesture:
     

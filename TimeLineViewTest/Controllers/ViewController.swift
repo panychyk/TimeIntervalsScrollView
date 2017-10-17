@@ -46,6 +46,7 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
         timeLineView.timeLineViewModel = timeLineViewModel
         timeLineView.dataSource = self
         timeLineView.delegate = self
+        timeLineView.date = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date().dateWithZeroHourAndMinute()!)
         timeLineView.syncManager = timeLineSyncManager
         timeIntervalScrollView.contentSize = CGSize(width: timeLineView.timeLineContentSize().width + 40, height: timeLineView.timeLineContentSize().height)
         timeLineView.invalidate()
@@ -53,6 +54,7 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
         let timeLineView2 = TimeLineView(parent: timeIntervalScrollView2)
         timeLineView2.dataSource = self
         timeLineView2.delegate = self
+        timeLineView2.date = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date().dateWithZeroHourAndMinute()!)
         timeLineView2.syncManager = timeLineSyncManager
         timeIntervalScrollView2.contentSize = CGSize(width: timeLineView2.timeLineContentSize().width + 40, height: timeLineView2.timeLineContentSize().height)
         timeLineView2.invalidate()
