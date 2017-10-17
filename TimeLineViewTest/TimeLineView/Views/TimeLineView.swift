@@ -369,8 +369,9 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
         for key in groupedDict.keys.sorted() {
             if let groupedIndexs = groupedDict[key] {
                 for index in groupedIndexs {
-                    let minValueX: CGFloat = xOrigin(for: groupedIndexs.min() ?? 0)
+                    let minValueX: CGFloat = xOrigin(for: groupedIndexs.min() ?? 0) + CGFloat(startPointOffset)
                     let maxValueX: CGFloat = xOrigin(for: groupedIndexs.max() ?? 0) + intervalStepInPx
+                        + CGFloat(startPointOffset)
                     availableRangeIntervalForIndexMap[NSNumber(value: index)] =
                         SelectedTimeIntervalScope(minValueX: minValueX,
                                                   maxValueX: maxValueX)
@@ -554,8 +555,10 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
             } else {
                 repeat {
                     xMaxPoint -= intervalStepInPx
-                    if xMaxPoint <= newRange.maxValueX {
+                    if xMaxPoint <= newRange.maxValueX && xMaxPoint >= intervalStepInPx {
                         return convertToDuration(xMaxPoint - xOriginOfIndex)
+                    } else {
+                        break
                     }
                 } while (xMaxPoint - xOriginOfIndex) > intervalStepInPx
             }
@@ -591,7 +594,9 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     
     fileprivate func convertToDuration(_ width: CGFloat) -> TimeInterval {
         let newDuration = TimeInterval((width / intervalStepInPx) * CGFloat(applyedTimeInterval.rawValue))
-        return newDuration
+        let tr = Int(newDuration.truncatingRemainder(dividingBy: TimeInterval(applyedTimeInterval.rawValue)))
+        let roundDuration = Int(newDuration - TimeInterval(tr))
+        return TimeInterval(roundDuration)
     }
     
     fileprivate func convertToWidth(_ duration: TimeInterval) -> CGFloat {
