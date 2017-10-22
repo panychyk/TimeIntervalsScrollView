@@ -558,7 +558,7 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
                     if xMaxPoint <= newRange.maxValueX && xMaxPoint >= intervalStepInPx {
                         return convertToDuration(xMaxPoint - xOriginOfIndex)
                     } else {
-                        break
+                        continue
                     }
                 } while (xMaxPoint - xOriginOfIndex) > intervalStepInPx
             }
