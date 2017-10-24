@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C60C77CF1F9F443F004C60AE /* TimeLineScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60C77CE1F9F443F004C60AE /* TimeLineScrollView.swift */; };
 		C6AC8ADC1F822C610049A52B /* CDateInterval.m in Sources */ = {isa = PBXBuildFile; fileRef = C6AC8ADB1F822C610049A52B /* CDateInterval.m */; };
 		C6B1AB0A1F94DFF700B87747 /* TimeLineViewAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B1AB091F94DFF700B87747 /* TimeLineViewAppearance.swift */; };
 		C6B1AB0C1F94F1E200B87747 /* TimeLineDefaultAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B1AB0B1F94F1E200B87747 /* TimeLineDefaultAppearance.swift */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C60C77CE1F9F443F004C60AE /* TimeLineScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineScrollView.swift; sourceTree = "<group>"; };
 		C6AC8ADA1F822C600049A52B /* CDateInterval.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDateInterval.h; sourceTree = "<group>"; };
 		C6AC8ADB1F822C610049A52B /* CDateInterval.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDateInterval.m; sourceTree = "<group>"; };
 		C6B1AB091F94DFF700B87747 /* TimeLineViewAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineViewAppearance.swift; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				E24742E11F93A82A00409ECE /* SelectedTimeIntervalView.swift */,
 				E24742E21F93A82A00409ECE /* ThumbView.swift */,
 				E24742E31F93A82A00409ECE /* TimeLineView.swift */,
+				C60C77CE1F9F443F004C60AE /* TimeLineScrollView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 				E24742EB1F93A94900409ECE /* SelectedTimeIntervalView.swift in Sources */,
 				C6B1AB0A1F94DFF700B87747 /* TimeLineViewAppearance.swift in Sources */,
 				C6B1AB0C1F94F1E200B87747 /* TimeLineDefaultAppearance.swift in Sources */,
+				C60C77CF1F9F443F004C60AE /* TimeLineScrollView.swift in Sources */,
 				E24742E61F93A93D00409ECE /* SelectedTimeIntervalScope.swift in Sources */,
 				E2BCA5801F8AACEB00A2B250 /* CTimeLineViewModel.swift in Sources */,
 				E240626D1F811AE700C77FAE /* AppDelegate.swift in Sources */,

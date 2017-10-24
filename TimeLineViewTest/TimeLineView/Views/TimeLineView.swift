@@ -178,6 +178,16 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
         invalidate()
     }
     
+    // MARK: - Public:
+    
+    func xOffsetForDate(_ date: Date) -> CGFloat {
+        if self.date.dateWithZeroHourAndMinute(defaultCalendar) == date.dateWithZeroHourAndMinute(defaultCalendar) {
+            let index = indexOfDate(date)
+            return xOrigin(for: index)
+        }
+        return CGFloat(startPointOffset)
+    }
+    
     // MARK: - Draw:
     override func draw(_ rect: CGRect) {
         precondition(date != nil, "date parameter must not be nil")
@@ -616,8 +626,6 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
     }
     
     fileprivate func xOrigin(for index: Int) -> CGFloat {
-        let maxIndex = getMaxIndex()
-        if index > maxIndex { return CGFloat(maxIndex) * intervalStepInPx }
         return CGFloat(index) * intervalStepInPx
     }
     
