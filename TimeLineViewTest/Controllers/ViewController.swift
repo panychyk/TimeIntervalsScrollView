@@ -10,8 +10,8 @@ import UIKit
 
 class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSource {
     
-    @IBOutlet weak var timeIntervalScrollView: UIScrollView!
-    @IBOutlet weak var timeIntervalScrollView2: UIScrollView!
+    @IBOutlet weak var timeIntervalScrollView: TimeLineScrollView!
+    @IBOutlet weak var timeIntervalScrollView2: TimeLineScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,21 +43,24 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
         timeLineViewModel.selectedTimeInterval         = selectedTimeInterval
         
         let timeLineView = TimeLineView(parent: timeIntervalScrollView)
+        timeIntervalScrollView.timeLineView = timeLineView
         timeLineView.timeLineViewModel = timeLineViewModel
         timeLineView.dataSource = self
         timeLineView.delegate = self
         timeLineView.date = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date().dateWithZeroHourAndMinute()!)
         timeLineView.syncManager = timeLineSyncManager
-        timeIntervalScrollView.contentSize = CGSize(width: timeLineView.timeLineContentSize().width + 40, height: timeLineView.timeLineContentSize().height)
+        timeIntervalScrollView.applyContentSize()
         timeLineView.invalidate()
         
         let timeLineView2 = TimeLineView(parent: timeIntervalScrollView2)
+        timeIntervalScrollView2.timeLineView = timeLineView2
         timeLineView2.dataSource = self
         timeLineView2.delegate = self
         timeLineView2.date = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date().dateWithZeroHourAndMinute()!)
         timeLineView2.syncManager = timeLineSyncManager
-        timeIntervalScrollView2.contentSize = CGSize(width: timeLineView2.timeLineContentSize().width + 40, height: timeLineView2.timeLineContentSize().height)
+        timeIntervalScrollView2.applyContentSize()
         timeLineView2.invalidate()
+        timeIntervalScrollView2.scroll(date: date.apply(hours: 1, minutes: 00, calendar: calendar), animate: false)
         
     }
 
