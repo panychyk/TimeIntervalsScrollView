@@ -9,12 +9,18 @@
 #import <Foundation/Foundation.h>
 #import "TimeIntervalScrollViewSectorIntervalEnum.h"
 
-@class TimeLineView;
+@class TimeLineView, CTimeLineViewModel;
+
+NS_ASSUME_NONNULL_BEGIN
 
 @protocol TimeLineViewDataSource <NSObject>
 
 - (BOOL)timeIntersectWithReservationsForTimeLineView:(TimeLineView *)timeLineView;
 - (CTimeIntervals)stepForTimeLineView:(TimeLineView *)timeLineView;
 - (NSInteger)maxAppliableTimeIntervalInSecsForTimeLineView:(TimeLineView *)timeLineView;;
+- (CTimeLineViewModel *)timeLineViewModelFroView:(TimeLineView *)timeLineView;
 
 @end
+
+NS_ASSUME_NONNULL_END
+

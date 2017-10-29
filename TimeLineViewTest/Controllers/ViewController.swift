@@ -13,13 +13,16 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
     @IBOutlet weak var timeIntervalScrollView: TimeLineScrollView!
     @IBOutlet weak var timeIntervalScrollView2: TimeLineScrollView!
     
+    let timeLineViewModel = CTimeLineViewModel()
+    let timeLineSyncManager = TimeLineViewSyncManager()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(secondsFromGMT: 0)!
         let date = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date())
-        let unavailableTimeIntervals: [CDateInterval] = [
+        let availableTimeIntervals: [CDateInterval] = [
             CDateInterval(start: date.apply(hours: 0, minutes: 0, calendar: calendar), duration: 3*60*60),
             CDateInterval(start: date.apply(hours: 7, minutes: 0, calendar: calendar), duration: 60*60),
         ]
@@ -34,20 +37,16 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
         ]
 
         let selectedTimeInterval = CDateInterval(start: date.apply(hours: 6, minutes: 30, calendar: calendar), duration: 45*60)
-
-        let timeLineSyncManager = TimeLineViewSyncManager()
         
-        let timeLineViewModel = CTimeLineViewModel()
-        timeLineViewModel.unavailableTimeIntervalsList = unavailableTimeIntervals
+        timeLineViewModel.availableTimeIntervalsList   = availableTimeIntervals
         timeLineViewModel.reservedTimeIntervalsList    = reservations
         timeLineViewModel.selectedTimeInterval         = selectedTimeInterval
         
         let timeLineView = TimeLineView(parent: timeIntervalScrollView)
         timeIntervalScrollView.timeLineView = timeLineView
-        timeLineView.timeLineViewModel = timeLineViewModel
         timeLineView.dataSource = self
         timeLineView.delegate = self
-        timeLineView.date = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date().dateWithZeroHourAndMinute()!)
+        timeLineView.date = Date().dateWithZeroHourAndMinute(calendar)!
         timeLineView.syncManager = timeLineSyncManager
         timeIntervalScrollView.applyContentSize()
         timeLineView.invalidate()
@@ -56,11 +55,11 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
         timeIntervalScrollView2.timeLineView = timeLineView2
         timeLineView2.dataSource = self
         timeLineView2.delegate = self
-        timeLineView2.date = Date(timeInterval: TimeInterval(TimeZone.current.secondsFromGMT()), since: Date().dateWithZeroHourAndMinute()!)
+        timeLineView2.date = Date().dateWithZeroHourAndMinute(calendar)!
         timeLineView2.syncManager = timeLineSyncManager
         timeIntervalScrollView2.applyContentSize()
         timeLineView2.invalidate()
-        timeIntervalScrollView2.scroll(date: date.apply(hours: 1, minutes: 00, calendar: calendar), animate: false)
+        timeIntervalScrollView2.scroll(date: date.apply(hours: 1, minutes: 00, calendar: calendar), position: .center, animate: false)
         
     }
 
@@ -70,26 +69,33 @@ class ViewController: UIViewController, TimeLineViewDelegate, TimeLineViewDataSo
 
     // MARK: - TimeLineViewDelegate:
     
+    func timeLineView(_ timeLineView: TimeLineView!, didSelectTime dateInterval: CDateInterval!) {
+        print("newDateInterval startDate = \(dateInterval.startDate) \nendDate = \(dateInterval.endDate)")
+    }
+    
     func timeLineView(_ timeLineView: TimeLineView!, onSelectedTimeIntervalChange dateInterval: CDateInterval!) {
         print("newDateInterval startDate = \(dateInterval.startDate) \nendDate = \(dateInterval.endDate)")
     }
     
     // MARK: - TimeLineViewDataSource:
     
-    func timeIntersectWithReservations(for timeLineView: TimeLineView!) -> Bool {
+    func timeIntersectWithReservations(for timeLineView: TimeLineView) -> Bool {
         return false
     }
     
-    func step(for timeLineView: TimeLineView!) -> CTimeIntervals {
+    func step(for timeLineView: TimeLineView) -> CTimeIntervals {
         return .mins15
     }
     
     private let maxIntervalTwoHours = 2*60*60
 
-    func maxAppliableTimeIntervalInSecs(for timeLineView: TimeLineView!) -> Int {
+    func maxAppliableTimeIntervalInSecs(for timeLineView: TimeLineView) -> Int {
         return maxIntervalTwoHours
     }
     
+    func timeLineViewModelFroView(_ timeLineView: TimeLineView) -> CTimeLineViewModel {
+        return timeLineViewModel
+    }
     
 }
 

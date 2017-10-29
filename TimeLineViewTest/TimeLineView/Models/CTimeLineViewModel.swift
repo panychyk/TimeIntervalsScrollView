@@ -12,15 +12,15 @@ class CTimeLineViewModel: NSObject {
     
     var selectedTimeInterval: CDateInterval?
     
-    var reservedTimeIntervalsList = [ReservationModel]() {
+    var reservedTimeIntervalsList = [TimeLineReservation]() {
         didSet {
-            reservedTimeIntervalsList.sort { $0.reservationTimeInterval.startDate < $1.reservationTimeInterval.startDate }
+            reservedTimeIntervalsList.sort { $0.startDate < $1.startDate }
         }
     }
     
-    var unavailableTimeIntervalsList = [CDateInterval]() {
+    var availableTimeIntervalsList = [CDateInterval]() {
         didSet {
-            unavailableTimeIntervalsList.sort { $0.startDate < $1.startDate }
+            availableTimeIntervalsList.sort { $0.startDate < $1.startDate }
         }
     }
     

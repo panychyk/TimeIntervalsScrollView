@@ -55,6 +55,7 @@
 		E24742E11F93A82A00409ECE /* SelectedTimeIntervalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTimeIntervalView.swift; sourceTree = "<group>"; };
 		E24742E21F93A82A00409ECE /* ThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbView.swift; sourceTree = "<group>"; };
 		E24742E31F93A82A00409ECE /* TimeLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineView.swift; sourceTree = "<group>"; };
+		E2A57FD11FA5F83E00C5110C /* TimeLineReservation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeLineReservation.h; sourceTree = "<group>"; };
 		E2BCA57D1F8AA5FD00A2B250 /* ReservationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationModel.swift; sourceTree = "<group>"; };
 		E2BCA57F1F8AACEB00A2B250 /* CTimeLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTimeLineViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -214,6 +215,7 @@
 			children = (
 				E24742DB1F93A82A00409ECE /* TimeLineViewDataSource.h */,
 				E24742DC1F93A82A00409ECE /* TimeLineViewDelegate.h */,
+				E2A57FD11FA5F83E00C5110C /* TimeLineReservation.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";

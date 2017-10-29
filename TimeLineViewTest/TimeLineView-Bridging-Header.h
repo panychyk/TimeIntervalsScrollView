@@ -5,6 +5,7 @@
 #pragma mark - Protocols:
 #import "TimeLineViewDelegate.h"
 #import "TimeLineViewDataSource.h"
+#import "TimeLineReservation.h"
 
 #pragma mark - Enums:
 #import "TimeIntervalScrollViewSectorIntervalEnum.h"

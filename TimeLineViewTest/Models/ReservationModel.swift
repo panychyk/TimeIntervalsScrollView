@@ -8,7 +8,23 @@
 
 import Foundation
 
-class ReservationModel: NSObject {
+class ReservationModel: NSObject, TimeLineReservation {
+    
+    var imagePath: String? {
+        return hostImageName
+    }
+    
+    var image: UIImage? {
+        return nil
+    }
+    
+    var startDate: Date {
+        return reservationTimeInterval.startDate
+    }
+    
+    var endDate: Date {
+        return reservationTimeInterval.endDate
+    }
 
     var reservationId            = NSNumber(integerLiteral: 1)
     var reservationTimeInterval  = CDateInterval(start: Date(), duration: 30*60*60)

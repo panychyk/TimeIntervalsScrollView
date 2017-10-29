@@ -10,12 +10,12 @@ import UIKit
 
 class ReservationView: UIView {
 
-    var reservation: ReservationModel!
+    var reservation: TimeLineReservation!
     
     // Parameters:
     var timeLineViewAppearance: TimeLineViewAppearance!
     
-    convenience init(_ reservation: ReservationModel) {
+    convenience init(_ reservation: TimeLineReservation) {
         self.init()
         self.reservation = reservation
     }
@@ -49,7 +49,7 @@ class ReservationView: UIView {
         context?.addPath(path)
         context?.drawPath(using: .fillStroke)
         
-        let image = UIImage(named: self.reservation.hostImageName)
+        let image = UIImage(named: self.reservation.imagePath ?? "")
         
         let imagePoint = CGPoint(x: rect.midX - CGFloat(timeLineViewAppearance.reservationsViewUserImageSize.width/2),
                                  y: rect.midY - CGFloat(timeLineViewAppearance.reservationsViewUserImageSize.height/2))

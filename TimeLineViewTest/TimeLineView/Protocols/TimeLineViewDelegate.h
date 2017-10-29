@@ -13,6 +13,7 @@
 
 @protocol TimeLineViewDelegate <NSObject>
 
+- (void)timeLineView:(TimeLineView *)timeLineView didSelectTimeInterval:(CDateInterval *)dateInterval;
 - (void)timeLineView:(TimeLineView *)timeLineView onSelectedTimeIntervalChangeDateInterval:(CDateInterval *)dateInterval;
 
 @end
