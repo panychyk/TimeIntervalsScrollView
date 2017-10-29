@@ -421,6 +421,8 @@ class TimeLineView: UIView, ThumbViewPanDelegate, TimeLineViewSyncManagerDelegat
         thumbView.setCenter(x: (xOrigin + width), y: selectedTimeIntervalView.frame.midY)
         if isIntersectReservedSection {
             applySelectedViewIntersectStyle(true)
+        } else {
+            applySelectedViewIntersectStyle(false)
         }
     }
 
