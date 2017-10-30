@@ -60,6 +60,8 @@ class ThumbView: UIView, UIGestureRecognizerDelegate {
     
     private func configure() {
         self.backgroundColor = .clear
+        self.clipsToBounds = true
+        self.layer.masksToBounds = true
         thumbViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(onThumbViewSlideAction(_:)))
         thumbViewPanGesture.maximumNumberOfTouches = 1
         thumbViewPanGesture.delegate = self
@@ -73,11 +75,10 @@ class ThumbView: UIView, UIGestureRecognizerDelegate {
         let innerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: timeLineViewAppearance.thumbCornerRadius)
         colorScheme.fillColor.setFill()
         innerBezierPath.fill()
-        
-        let outerBezierPath = UIBezierPath(roundedRect: rect, cornerRadius: timeLineViewAppearance.thumbCornerRadius)
-        outerBezierPath.lineWidth = timeLineViewAppearance.thumbBorderWidth
-        colorScheme.borderColor.setStroke()
-        outerBezierPath.stroke()
+
+        self.layer.cornerRadius = timeLineViewAppearance.thumbSize.width/2
+        self.layer.borderWidth = timeLineViewAppearance.thumbBorderWidth
+        self.layer.borderColor = colorScheme.borderColor.cgColor
     }
     
     // MARK: - Accessories:
