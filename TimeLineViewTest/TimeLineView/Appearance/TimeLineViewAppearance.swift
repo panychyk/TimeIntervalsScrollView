@@ -5,7 +5,7 @@
 //  Created by Dimitry Panychyk on 10/16/17.
 //  Copyright © 2017 d'Man. All rights reserved.
 //
-// test
+// t
 import Foundation
 import UIKit
 
