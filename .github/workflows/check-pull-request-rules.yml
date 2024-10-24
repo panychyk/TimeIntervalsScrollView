@@ -1,0 +1,31 @@
+name: Check PR Description
+
+on:
+  push:
+    branch:
+        master
+jobs:
+  check-pull-request-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR Description
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const title = pr.title;
+            const description = pr.body;
+            // Define the regex pattern to match the required title format
+            const titlePattern = /^.+: .+/;
+            // Define the regex pattern to match the Asana link
+            const asanaPattern = /https:\/\/app\.asana\.com\/\d+/;
+
+            // Check if the description matches the required format
+            if (!titlePattern.test(title)) {
+              throw new Error("The pull request title must follow the format: Task Type: Task Name");
+            }
+
+            // Check if the description matches the required format
+            if (!asanaPattern.test(description)) {
+              throw new Error("The pull request description must include an Asana task link in the format: https://app.asana.com/...");
+            }
